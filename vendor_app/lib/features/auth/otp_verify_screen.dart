@@ -212,12 +212,14 @@ class _OtpVerifyScreenState extends State<OtpVerifyScreen> {
       );
 
       if (res.statusCode == 200 || res.statusCode == 201) {
-        final data = jsonDecode(res.body);
+        final raw = jsonDecode(res.body);
+        final data = raw['data'] ?? raw;
         if (!mounted) return;
         widget.onVerified(data);
       } else {
         final body = jsonDecode(res.body);
-        setState(() => _error = body['message'] ?? 'Invalid OTP. Please try again.');
+        final msg = body['message'];
+        setState(() => _error = (msg is List ? msg.join(', ') : msg?.toString()) ?? 'Invalid OTP. Please try again.');
         _clearOtp();
       }
     } catch (e) {

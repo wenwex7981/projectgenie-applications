@@ -171,10 +171,12 @@ class _BuyerOtpScreenState extends State<BuyerOtpScreen> {
         body: jsonEncode({'email': widget.email, 'code': code, 'role': 'buyer'}));
       if (res.statusCode == 200 || res.statusCode == 201) {
         if (!mounted) return;
-        widget.onVerified(jsonDecode(res.body));
+        final raw = jsonDecode(res.body);
+        widget.onVerified(raw['data'] ?? raw);
       } else {
         final body = jsonDecode(res.body);
-        setState(() => _error = body['message'] ?? 'Invalid OTP');
+        final msg = body['message'];
+        setState(() => _error = (msg is List ? msg.join(', ') : msg?.toString()) ?? 'Invalid OTP');
         for (var c in _ctrls) c.clear();
         _focuses[0].requestFocus();
       }

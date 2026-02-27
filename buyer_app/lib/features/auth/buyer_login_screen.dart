@@ -228,11 +228,13 @@ class _BuyerLoginScreenState extends State<BuyerLoginScreen> {
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'email': _emailCtrl.text, 'password': _passwordCtrl.text}));
       if (res.statusCode == 200 || res.statusCode == 201) {
-        final data = jsonDecode(res.body);
+        final raw = jsonDecode(res.body);
+        final data = raw['data'] ?? raw;
         if (data['requiresVerification'] == true) _goOtp(_emailCtrl.text, 'login', data['userName']);
       } else {
         final body = jsonDecode(res.body);
-        setState(() => _error = body['message'] ?? 'Invalid email or password');
+        final msg = body['message'];
+        setState(() => _error = (msg is List ? msg.join(', ') : msg?.toString()) ?? 'Invalid email or password');
       }
     } catch (e) { setState(() => _error = 'Connection error. Check if backend is running.'); }
     if (mounted) setState(() => _loading = false);
@@ -250,11 +252,13 @@ class _BuyerLoginScreenState extends State<BuyerLoginScreen> {
           'phone': _phoneCtrl.text, 'college': _collegeCtrl.text, 'branch': _branchCtrl.text,
         }));
       if (res.statusCode == 200 || res.statusCode == 201) {
-        final data = jsonDecode(res.body);
+        final raw = jsonDecode(res.body);
+        final data = raw['data'] ?? raw;
         if (data['requiresVerification'] == true) _goOtp(_emailCtrl.text, 'register', _nameCtrl.text);
       } else {
         final body = jsonDecode(res.body);
-        setState(() => _error = body['message'] ?? 'Registration failed');
+        final msg = body['message'];
+        setState(() => _error = (msg is List ? msg.join(', ') : msg?.toString()) ?? 'Registration failed');
       }
     } catch (e) { setState(() => _error = 'Connection error.'); }
     if (mounted) setState(() => _loading = false);
