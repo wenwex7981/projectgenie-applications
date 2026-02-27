@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import '../../core/theme/app_colors.dart';
+import '../../core/services/notification_service.dart';
 import '../../core/services/api_service.dart';
 import '../dashboard/vendor_main_navigation.dart';
 import 'otp_verify_screen.dart';
@@ -209,6 +210,11 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
         onVerified: (result) {
           ApiService.setToken(result['token']);
           ApiService.setVendorId(result['vendor']['id']); // Fix: Ensure vendorId is set globally
+          
+          if (result['vendor']?['id'] != null) {
+            NotificationService().listenToRealtimeNotifications(result['vendor']['id']);
+          }
+
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (_) => VendorMainNavigation(

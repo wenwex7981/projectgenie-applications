@@ -5,9 +5,12 @@ import 'core/theme/app_theme.dart';
 import 'features/auth/vendor_login_screen.dart';
 import 'core/services/supabase_service.dart';
 
+import 'core/services/notification_service.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SupabaseService.initialize();
+  await NotificationService().initialize();
   
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

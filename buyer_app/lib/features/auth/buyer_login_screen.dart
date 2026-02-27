@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
+import '../../core/services/notification_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../dashboard/dashboard_screen.dart';
 import 'otp_verify_screen.dart';
@@ -215,6 +216,9 @@ class _BuyerLoginScreenState extends State<BuyerLoginScreen> {
       builder: (_) => BuyerOtpScreen(email: email, type: type, name: name, onVerified: (result) {
         loggedInUser = result['user'];
         jwtToken = result['token'];
+        if (result['user']?['id'] != null) {
+          NotificationService().listenToRealtimeNotifications(result['user']['id']);
+        }
         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const DashboardScreen()), (_) => false);
       }),
     ));

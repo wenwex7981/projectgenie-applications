@@ -5,11 +5,16 @@ import 'core/theme/app_theme.dart';
 import 'features/auth/buyer_login_screen.dart';
 import 'core/services/supabase_service.dart';
 
+import 'core/services/notification_service.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   // Initialize Supabase before running the app
   await SupabaseService.initialize();
+  
+  // Initialize Push Notifications
+  await NotificationService().initialize();
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
