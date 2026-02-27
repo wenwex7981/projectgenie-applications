@@ -14,7 +14,7 @@ class BuyerLoginScreen extends StatefulWidget {
 }
 
 class _BuyerLoginScreenState extends State<BuyerLoginScreen> {
-  static const String baseUrl = 'http://localhost:3000';
+  static const String baseUrl = 'https://projectgenie-api.onrender.com';
 
   final _emailCtrl = TextEditingController(text: 'vardhan@university.edu');
   final _passwordCtrl = TextEditingController(text: 'password123');

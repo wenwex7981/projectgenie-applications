@@ -21,7 +21,7 @@ class BuyerOtpScreen extends StatefulWidget {
 }
 
 class _BuyerOtpScreenState extends State<BuyerOtpScreen> {
-  static const String baseUrl = 'http://localhost:3000';
+  static const String baseUrl = 'https://projectgenie-api.onrender.com';
 
   final List<TextEditingController> _ctrls = List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _focuses = List.generate(6, (_) => FocusNode());

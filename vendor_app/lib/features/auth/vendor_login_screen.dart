@@ -15,7 +15,7 @@ class VendorLoginScreen extends StatefulWidget {
 }
 
 class _VendorLoginScreenState extends State<VendorLoginScreen> {
-  static const String baseUrl = 'http://localhost:3000';
+  static const String baseUrl = 'https://projectgenie-api.onrender.com';
 
   final _emailCtrl = TextEditingController(text: 'ailab@projectgenie.com');
   final _passwordCtrl = TextEditingController(text: 'password123');
