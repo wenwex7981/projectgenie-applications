@@ -4,10 +4,7 @@ import 'dart:io' show Platform;
 
 class ApiService {
   static String get baseUrl {
-    try {
-      if (Platform.isAndroid) return 'http://10.0.2.2:3000';
-    } catch (_) {}
-    return 'http://localhost:3000';
+    return 'https://projectgenie-api.onrender.com';
   }
 
   // ─── Stored JWT Token & Vendor ID ──────────────────────────────────
