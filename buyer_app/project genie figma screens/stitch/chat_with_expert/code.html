@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Chat with Expert - Project Genie</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4169e1",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .typing-dot {
+            width: 4px;
+            height: 4px;
+            background-color: #516294;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 2px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="font-display bg-background-light dark:bg-background-dark text-[#0e111a] antialiased">
+<div class="relative flex flex-col h-screen max-w-md mx-auto bg-white dark:bg-[#1a1d29] shadow-2xl overflow-hidden">
+<!-- Header Bar -->
+<header class="flex items-center justify-between p-4 border-b border-primary/10 bg-white dark:bg-[#1a1d29] z-10">
+<div class="flex items-center gap-3">
+<button class="p-1 hover:bg-primary/5 rounded-full transition-colors">
+<span class="material-symbols-outlined text-gray-600 dark:text-gray-300">arrow_back</span>
+</button>
+<div class="relative">
+<div class="size-10 rounded-lg bg-cover bg-center border border-primary/10" data-alt="Professional headshot of Dr. Aris Thorne" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDnrD4yXKBV_UyGLh4INLF7J8q8v4N1KEsjzfdZcBjO46VrUU-9H7-jCY_sJJRXZwZJrzRoQfoROzr6SYutVoRHBb7tKGWvzL5UQEQQCQm2LR7IrauD0rIa4m7I1JW2Zjb4ZsQMo8CnXPrGcnbe_wVE7Ebae9HxHIddGV8mWUS_hynulfeZJpBUhWR02VUgTYrXu5qCQ-C2PB175p4tI55wvGUJrIHjHgvsPUHcmJg8hyVKK-SGuvj0EzD3V6uu09moPh6FhkGI64I")'>
+</div>
+<div class="absolute -bottom-1 -right-1 size-3 bg-green-500 border-2 border-white dark:border-[#1a1d29] rounded-full"></div>
+</div>
+<div class="flex flex-col">
+<h1 class="text-sm font-bold leading-none text-[#0e111a] dark:text-white">Dr. Aris Thorne</h1>
+<span class="text-[11px] text-[#516294] dark:text-gray-400 font-medium mt-1">PhD in Applied Physics</span>
+</div>
+</div>
+<div class="flex items-center gap-1">
+<button class="p-2 text-primary hover:bg-primary/5 rounded-full">
+<span class="material-symbols-outlined">videocam</span>
+</button>
+<button class="p-2 text-primary hover:bg-primary/5 rounded-full">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Message List -->
+<main class="flex-1 overflow-y-auto p-4 space-y-6 bg-background-light/50 dark:bg-background-dark/30">
+<!-- Date Divider -->
+<div class="flex items-center justify-center gap-4 py-2">
+<div class="h-[1px] flex-1 bg-primary/10"></div>
+<span class="text-[11px] font-bold tracking-wider text-[#516294] uppercase">Today</span>
+<div class="h-[1px] flex-1 bg-primary/10"></div>
+</div>
+<!-- Expert Message -->
+<div class="flex items-start gap-3">
+<div class="size-8 rounded-lg bg-cover bg-center shrink-0 mt-1" data-alt="Dr. Aris Thorne profile icon" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBy-ea4DySZldYIyJHHZgBSRjwmeRUlKEw6tgLKX_BpXRvJQmkIBzWEs0foACSRNAb6ec3oGm-bB33qPwEfySNtpRK0FS-dOU5ie0M5qylk3v5NF9Je7103FjqEoiqzLS1Xcz0JO9U9td2NeY6l8mg1Tfy2mHGxnNbIUZ4K_NRH5cqIQrs5N0zWsUWFfzMkKB1jR9DmTKncFELCc-vJNGEs7WbHsskfTjW9etpBf3zOaqEtykYdn58nVVsvVJY21LukE40wP9h6NgI")'>
+</div>
+<div class="flex flex-col gap-1.5 max-w-[80%]">
+<div class="bg-white dark:bg-[#252a3d] p-3 rounded-lg rounded-tl-none shadow-sm border border-primary/5">
+<p class="text-sm text-[#0e111a] dark:text-gray-200 leading-relaxed">
+                            Hello! I've finished reviewing the methodology section of your thesis draft. Your approach to the thermodynamic variables is solid.
+                        </p>
+</div>
+<span class="text-[10px] text-[#516294] px-1">10:15 AM</span>
+</div>
+</div>
+<!-- Expert Message with Attachment -->
+<div class="flex items-start gap-3">
+<div class="size-8 rounded-lg bg-cover bg-center shrink-0 mt-1 opacity-0"></div>
+<div class="flex flex-col gap-1.5 max-w-[80%]">
+<div class="bg-white dark:bg-[#252a3d] p-3 rounded-lg rounded-tl-none shadow-sm border border-primary/5">
+<p class="text-sm text-[#0e111a] dark:text-gray-200 mb-3">
+                            Please see my annotated notes in the file below. I've highlighted the areas where the data set needs more granularity.
+                        </p>
+<!-- File Card -->
+<div class="flex items-center gap-3 p-3 bg-primary/5 dark:bg-primary/10 rounded-lg border border-primary/10 cursor-pointer hover:bg-primary/10 transition-colors">
+<div class="size-10 bg-white dark:bg-[#1a1d29] rounded-lg flex items-center justify-center text-red-500 shadow-sm">
+<span class="material-symbols-outlined text-2xl">description</span>
+</div>
+<div class="flex-1 overflow-hidden">
+<p class="text-[13px] font-semibold text-primary truncate">Thesis_Annotated_V2.pdf</p>
+<p class="text-[11px] text-[#516294]">2.4 MB • PDF Document</p>
+</div>
+<span class="material-symbols-outlined text-primary text-xl">download</span>
+</div>
+</div>
+<span class="text-[10px] text-[#516294] px-1">10:16 AM</span>
+</div>
+</div>
+<!-- Student Message -->
+<div class="flex flex-col items-end gap-1.5">
+<div class="bg-primary p-3 rounded-lg rounded-tr-none shadow-md max-w-[80%]">
+<p class="text-sm text-white leading-relaxed">
+                        Thank you so much, Dr. Thorne! I'll go through the notes immediately. Should I focus on the heat transfer variables for the next update?
+                    </p>
+</div>
+<div class="flex items-center gap-1.5 px-1">
+<span class="text-[10px] text-[#516294]">10:22 AM</span>
+<span class="material-symbols-outlined text-[14px] text-primary font-bold">done_all</span>
+</div>
+</div>
+<!-- Typing Indicator -->
+<div class="flex items-center gap-3">
+<div class="size-8 rounded-lg bg-cover bg-center shrink-0" data-alt="Dr. Aris Thorne typing" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAMiTBg1joHmszkmnQdzd8owzE4tx_vN1b_miKVh2gqNN_Cwn3kIDIxT4Wh2tKBiTEpjXyVZbosN6vY5xaYzQtDwfvGT7Z3xYm3o3EN5XLLz7a-V5C8JnMuEBacQiYPHw4IGnNQWbiiPbG7RPUjEgJchb_6wR6USw9nLNCGgu8fnGEzzBmILLko5EQtwFupekJ5uwz2NiNjcYEj-1e3OIlXbRaI9-RdI-Y-L5rgh9CAUHolqJ556eIcgT-ez82heyIxVRG4sHOWro4")'>
+</div>
+<div class="bg-white/80 dark:bg-[#252a3d]/80 px-3 py-2 rounded-lg rounded-tl-none flex items-center gap-1">
+<div class="typing-dot"></div>
+<div class="typing-dot"></div>
+<div class="typing-dot"></div>
+<span class="text-[11px] text-[#516294] ml-1 font-medium">Dr. Thorne is typing...</span>
+</div>
+</div>
+</main>
+<!-- Input Action Bar -->
+<footer class="p-4 bg-white dark:bg-[#1a1d29] border-t border-primary/10 shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
+<div class="flex flex-col gap-3">
+<!-- Attachment Options (Peek) -->
+<div class="flex gap-4 overflow-x-auto pb-1 scrollbar-hide">
+<button class="flex flex-col items-center gap-1 shrink-0">
+<div class="size-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">upload_file</span>
+</div>
+<span class="text-[10px] font-medium text-[#516294]">File</span>
+</button>
+<button class="flex flex-col items-center gap-1 shrink-0">
+<div class="size-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">image</span>
+</div>
+<span class="text-[10px] font-medium text-[#516294]">Image</span>
+</button>
+<button class="flex flex-col items-center gap-1 shrink-0">
+<div class="size-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">analytics</span>
+</div>
+<span class="text-[10px] font-medium text-[#516294]">Dataset</span>
+</button>
+</div>
+<!-- Text Input Area -->
+<div class="flex items-center gap-2">
+<div class="flex-1 bg-background-light dark:bg-[#252a3d] rounded-xl border border-primary/5 flex items-center px-4 py-1 focus-within:ring-2 ring-primary/20 transition-all">
+<textarea class="flex-1 bg-transparent border-none focus:ring-0 text-sm py-3 text-[#0e111a] dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 resize-none" placeholder="Type your message..." rows="1"></textarea>
+<button class="text-[#516294] hover:text-primary p-1">
+<span class="material-symbols-outlined">sentiment_satisfied</span>
+</button>
+</div>
+<button class="size-12 bg-primary hover:bg-primary/90 rounded-xl flex items-center justify-center text-white shadow-lg shadow-primary/20 transition-transform active:scale-95">
+<span class="material-symbols-outlined fill-1">send</span>
+</button>
+</div>
+</div>
+</footer>
+</div>
+</body></html>

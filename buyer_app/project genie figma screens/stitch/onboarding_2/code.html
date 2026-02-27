@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Genie - Onboarding</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4169e1",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display antialiased">
+<div class="relative flex h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-hidden">
+<!-- Top Navigation -->
+<div class="flex items-center justify-end p-6">
+<button class="text-primary/70 hover:text-primary text-base font-semibold leading-normal tracking-[0.015em] transition-colors">
+                Skip
+            </button>
+</div>
+<!-- Content Container -->
+<div class="flex w-full grow flex-col px-6">
+<!-- Hero Visual Section -->
+<div class="w-full grow flex items-center justify-center">
+<div class="relative w-full aspect-square max-w-sm">
+<!-- Background decorative shape -->
+<div class="absolute inset-0 bg-primary/5 rounded-full scale-110 blur-3xl"></div>
+<!-- Main Image Frame -->
+<div class="relative h-full w-full rounded-3xl overflow-hidden shadow-2xl shadow-primary/10">
+<div class="h-full w-full bg-center bg-no-repeat bg-cover" data-alt="Professional experts collaborating around a computer screen" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCQ9ON665GijQ2TsT9dRyjeqV3MQEZ2Qa66aUygLcLPnGZc682G55qD-G9On7QInAqUytAw0TdrCJAZYwW3V19irpPh19Yaa1ggSkFVuc25pwvcQp-j1jLxA4Md3AsqzJg0AZa7B7zWKAOS88qVnP71Uo1SEk5zkt5cAJXnQ69nHgqOyfoBHzruLGj1oDA75grlgw6_BykRk5BG9itKjrXUctjj2owg-13nBgJnBwJDharj99AggZcG4cJkdBmfU8tdWX4EcPm1sjk");'>
+</div>
+<!-- Expert Badge Overlay -->
+<div class="absolute bottom-6 right-6 bg-white/90 backdrop-blur-md p-3 rounded-xl shadow-lg flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl" data-icon="verified">verified</span>
+<span class="text-slate-900 font-bold text-sm">Expert Verified</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Typography Block -->
+<div class="pt-8 pb-12 text-center">
+<h2 class="text-slate-900 dark:text-white tracking-tight text-[28px] font-bold leading-tight pb-4">
+                    Verified Experts &amp; On-Time Delivery
+                </h2>
+<p class="text-slate-600 dark:text-slate-400 text-lg font-normal leading-relaxed max-w-xs mx-auto">
+                    Every project is handled by subject matter experts and delivered within your deadline.
+                </p>
+</div>
+<!-- Bottom Controls -->
+<div class="pb-12 space-y-8">
+<!-- Progress Indicators (2 of 3) -->
+<div class="flex w-full flex-row items-center justify-center gap-2.5">
+<div class="h-2 w-2 rounded-full bg-primary/20"></div>
+<div class="h-2 w-6 rounded-full bg-primary transition-all duration-300"></div>
+<div class="h-2 w-2 rounded-full bg-primary/20"></div>
+</div>
+<!-- Primary Action -->
+<div class="flex justify-center px-4">
+<button class="group flex h-14 w-full max-w-md items-center justify-center gap-2 rounded-xl bg-primary px-4 text-white font-bold text-lg shadow-lg shadow-primary/30 active:scale-[0.98] transition-all">
+<span>Next Step</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Safe Area Spacer -->
+<div class="h-4 bg-background-light dark:bg-background-dark"></div>
+</div>
+</body></html>

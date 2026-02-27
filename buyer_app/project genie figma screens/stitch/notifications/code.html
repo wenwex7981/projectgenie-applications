@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Genie - Notifications</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4169e1",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab {
+            border-bottom: 3px solid #4169e1;
+            color: #0e111a;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#0e111a] dark:text-white antialiased">
+<div class="relative flex h-screen w-full flex-col overflow-hidden max-w-md mx-auto bg-white dark:bg-background-dark shadow-xl">
+<!-- Header -->
+<header class="flex items-center justify-between p-4 border-b border-primary/10 bg-white dark:bg-background-dark sticky top-0 z-10">
+<div class="flex items-center gap-3">
+<button class="flex h-10 w-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight">Notifications</h1>
+</div>
+<button class="text-primary text-sm font-semibold hover:underline decoration-2 underline-offset-4">
+                Mark all as read
+            </button>
+</header>
+<!-- Category Tabs -->
+<nav class="flex border-b border-primary/10 bg-white dark:bg-background-dark px-2 overflow-x-auto no-scrollbar shrink-0">
+<a class="flex flex-1 min-w-[80px] flex-col items-center justify-center pt-4 pb-3 active-tab" href="#">
+<span class="text-sm font-bold">All</span>
+</a>
+<a class="flex flex-1 min-w-[80px] flex-col items-center justify-center pt-4 pb-3 text-slate-500 dark:text-slate-400 border-b-[3px] border-transparent" href="#">
+<span class="text-sm font-bold">Updates</span>
+</a>
+<a class="flex flex-1 min-w-[80px] flex-col items-center justify-center pt-4 pb-3 text-slate-500 dark:text-slate-400 border-b-[3px] border-transparent" href="#">
+<span class="text-sm font-bold">Offers</span>
+</a>
+<a class="flex flex-1 min-w-[80px] flex-col items-center justify-center pt-4 pb-3 text-slate-500 dark:text-slate-400 border-b-[3px] border-transparent" href="#">
+<span class="text-sm font-bold">Orders</span>
+</a>
+</nav>
+<!-- Notification List -->
+<main class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark/50">
+<!-- Today Section -->
+<div class="px-4 py-3">
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Today</h3>
+</div>
+<!-- Notification Item: Update -->
+<div class="group relative flex items-start gap-4 bg-white dark:bg-slate-800/40 p-4 mb-px hover:bg-primary/5 transition-colors cursor-pointer border-l-4 border-primary">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+<span class="material-symbols-outlined">notifications_active</span>
+</div>
+<div class="flex flex-1 flex-col pr-2">
+<div class="flex items-center justify-between mb-0.5">
+<span class="text-base font-bold text-slate-900 dark:text-white">Assignment Due Soon</span>
+<span class="text-xs font-medium text-slate-400">2m ago</span>
+</div>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">Your Mathematics assignment for "Calculus II" is due in 2 hours. Submit now to avoid penalties.</p>
+</div>
+</div>
+<!-- Notification Item: Offer -->
+<div class="group relative flex items-start gap-4 bg-white dark:bg-slate-800/40 p-4 mb-px hover:bg-primary/5 transition-colors cursor-pointer border-l-4 border-transparent">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-green-100 dark:bg-green-900/30 text-green-600">
+<span class="material-symbols-outlined">sell</span>
+</div>
+<div class="flex flex-1 flex-col pr-2">
+<div class="flex items-center justify-between mb-0.5">
+<span class="text-base font-bold text-slate-900 dark:text-white">50% Off Tutoring</span>
+<span class="text-xs font-medium text-slate-400">1h ago</span>
+</div>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">Flash Sale! Unlock your potential with half-priced private sessions this week only.</p>
+</div>
+</div>
+<!-- Notification Item: Order -->
+<div class="group relative flex items-start gap-4 bg-white dark:bg-slate-800/40 p-4 mb-px hover:bg-primary/5 transition-colors cursor-pointer border-l-4 border-transparent">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30 text-blue-600">
+<span class="material-symbols-outlined">local_shipping</span>
+</div>
+<div class="flex flex-1 flex-col pr-2">
+<div class="flex items-center justify-between mb-0.5">
+<span class="text-base font-bold text-slate-900 dark:text-white">Study Material Shipped</span>
+<span class="text-xs font-medium text-slate-400">4h ago</span>
+</div>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">Great news! Your "Physics Exam Prep Pack" has been dispatched and is on its way.</p>
+</div>
+</div>
+<!-- Yesterday Section -->
+<div class="px-4 py-3 mt-4">
+<h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Yesterday</h3>
+</div>
+<!-- Notification Item: Update -->
+<div class="group relative flex items-start gap-4 bg-white dark:bg-slate-800/40 p-4 mb-px hover:bg-primary/5 transition-colors cursor-pointer border-l-4 border-transparent opacity-80">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-500">
+<span class="material-symbols-outlined">library_books</span>
+</div>
+<div class="flex flex-1 flex-col pr-2">
+<div class="flex items-center justify-between mb-0.5">
+<span class="text-base font-bold text-slate-900 dark:text-white">New Lecture Uploaded</span>
+<span class="text-xs font-medium text-slate-400">Yesterday</span>
+</div>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">Professor Smith has uploaded the lecture notes for "World History 101".</p>
+</div>
+</div>
+<!-- Notification Item: Order -->
+<div class="group relative flex items-start gap-4 bg-white dark:bg-slate-800/40 p-4 mb-px hover:bg-primary/5 transition-colors cursor-pointer border-l-4 border-transparent opacity-80">
+<div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-500">
+<span class="material-symbols-outlined">receipt_long</span>
+</div>
+<div class="flex flex-1 flex-col pr-2">
+<div class="flex items-center justify-between mb-0.5">
+<span class="text-base font-bold text-slate-900 dark:text-white">Payment Successful</span>
+<span class="text-xs font-medium text-slate-400">Yesterday</span>
+</div>
+<p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">Your payment for the Monthly Premium Subscription has been processed successfully.</p>
+</div>
+</div>
+<div class="h-20 bg-transparent"></div>
+</main>
+<!-- Bottom Navigation Bar -->
+<footer class="flex gap-2 border-t border-primary/10 bg-white dark:bg-background-dark px-4 pb-6 pt-2 shrink-0 z-10">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-[24px]">home</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-[24px]">search</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Search</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<span class="material-symbols-outlined text-[24px]" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Alerts</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-[24px]">shopping_bag</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Orders</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined text-[24px]">account_circle</span>
+<p class="text-[10px] font-bold uppercase tracking-wider">Profile</p>
+</a>
+</footer>
+</div>
+</body></html>

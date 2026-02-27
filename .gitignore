@@ -1,0 +1,53 @@
+# ─── Flutter / Dart ──────────────────────────────────────────────────
+**/build/
+**/.dart_tool/
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/.packages
+**/.pub-cache/
+**/.pub/
+**/pubspec.lock
+**/*.iml
+**/*.ipr
+**/*.iws
+**/.idea/
+**/.vscode/
+
+# ─── Android ─────────────────────────────────────────────────────────
+**/android/.gradle/
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/android/local.properties
+**/android/key.properties
+**/*.jks
+**/*.keystore
+
+# ─── iOS ─────────────────────────────────────────────────────────────
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/app.flx
+**/ios/Flutter/app.zip
+**/ios/Flutter/engine/
+**/ios/ServiceDefinitions.json
+
+# ─── Node.js / Backend ──────────────────────────────────────────────
+**/node_modules/
+**/dist/
+**/.env
+**/.env.local
+**/.env.production
+**/npm-debug.log
+**/yarn-error.log
+
+# ─── General ─────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+*.swo
+*~
+.gemini/

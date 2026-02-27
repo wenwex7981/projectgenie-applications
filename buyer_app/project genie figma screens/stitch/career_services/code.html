@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Genie - Career Services</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4169e1",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-[#0e111a] dark:text-white antialiased">
+<div class="relative flex min-h-screen w-full flex-col max-w-md mx-auto bg-white dark:bg-background-dark shadow-xl overflow-x-hidden pb-24">
+<!-- Header -->
+<header class="sticky top-0 z-10 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md px-4 py-4 flex items-center justify-between border-b border-gray-100 dark:border-gray-800">
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined text-gray-700 dark:text-gray-300">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight">Career Services</h1>
+</div>
+<button class="flex items-center justify-center size-10 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800">
+<span class="material-symbols-outlined text-gray-700 dark:text-gray-300">notifications</span>
+</button>
+</header>
+<!-- Hero Section -->
+<section class="px-4 pt-6 pb-4">
+<div class="bg-primary/10 dark:bg-primary/20 rounded-xl p-6 relative overflow-hidden">
+<div class="relative z-10">
+<h2 class="text-2xl font-bold text-primary dark:text-blue-400 mb-2">Elevate your profile</h2>
+<p class="text-sm text-primary/80 dark:text-blue-300 max-w-[200px]">Get expert help to land your dream job with our specialized career services.</p>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-20">
+<span class="material-symbols-outlined !text-[120px] text-primary">rocket_launch</span>
+</div>
+</div>
+</section>
+<!-- Services List -->
+<main class="flex flex-col gap-4 px-4 mt-2">
+<h3 class="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400 px-1">Available Services</h3>
+<!-- Service Card: Resume Writing -->
+<div class="group flex flex-col bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<div class="h-32 bg-gray-200 dark:bg-gray-800 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/40 to-primary/10"></div>
+<span class="absolute inset-0 flex items-center justify-center material-symbols-outlined !text-5xl text-white/50">description</span>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<div>
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold">Resume Writing</h4>
+<span class="text-lg font-bold text-primary dark:text-blue-400">₹1,999</span>
+</div>
+<p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">High-impact professional resume creation tailored for your target roles.</p>
+</div>
+<div class="flex items-center gap-4 text-xs font-medium text-gray-500 dark:text-gray-400">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined !text-base">schedule</span>
+                            48-72 hrs delivery
+                        </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined !text-base">verified</span>
+                            Expert Review
+                        </div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
+<span>Buy Now</span>
+<span class="material-symbols-outlined !text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Service Card: ATS Resume -->
+<div class="group flex flex-col bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<div class="h-32 bg-gray-200 dark:bg-gray-800 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-blue-600/40 to-blue-400/10"></div>
+<span class="absolute inset-0 flex items-center justify-center material-symbols-outlined !text-5xl text-white/50">robot_2</span>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<div>
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold">ATS Resume</h4>
+<span class="text-lg font-bold text-primary dark:text-blue-400">₹2,499</span>
+</div>
+<p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Specialized formatting and keyword optimization for Applicant Tracking Systems.</p>
+</div>
+<div class="flex items-center gap-4 text-xs font-medium text-gray-500 dark:text-gray-400">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined !text-base">bolt</span>
+                            24-48 hrs delivery
+                        </div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
+<span>Buy Now</span>
+</button>
+</div>
+</div>
+<!-- Service Card: LinkedIn Optimization -->
+<div class="group flex flex-col bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<div class="h-32 bg-gray-200 dark:bg-gray-800 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-indigo-500/40 to-indigo-300/10"></div>
+<span class="absolute inset-0 flex items-center justify-center material-symbols-outlined !text-5xl text-white/50">share</span>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<div>
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold">LinkedIn Optimization</h4>
+<span class="text-lg font-bold text-primary dark:text-blue-400">₹1,499</span>
+</div>
+<p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Profile overhaul to boost search visibility and attract top recruiters.</p>
+</div>
+<div class="flex items-center gap-4 text-xs font-medium text-gray-500 dark:text-gray-400">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined !text-base">schedule</span>
+                            3-4 days delivery
+                        </div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
+<span>Buy Now</span>
+</button>
+</div>
+</div>
+<!-- Service Card: Mock Interview -->
+<div class="group flex flex-col bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<div class="h-32 bg-gray-200 dark:bg-gray-800 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-purple-500/40 to-purple-300/10"></div>
+<span class="absolute inset-0 flex items-center justify-center material-symbols-outlined !text-5xl text-white/50">record_voice_over</span>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<div>
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold">Mock Interview</h4>
+<span class="text-lg font-bold text-primary dark:text-blue-400">₹2,999</span>
+</div>
+<p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">1-on-1 practice sessions with industry experts and detailed feedback.</p>
+</div>
+<div class="flex items-center gap-4 text-xs font-medium text-gray-500 dark:text-gray-400">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined !text-base">video_call</span>
+                            60 min session
+                        </div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
+<span>Book Session</span>
+</button>
+</div>
+</div>
+<!-- Service Card: Placement Training -->
+<div class="group flex flex-col bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+<div class="h-32 bg-gray-200 dark:bg-gray-800 relative overflow-hidden">
+<div class="absolute inset-0 bg-gradient-to-br from-cyan-500/40 to-cyan-300/10"></div>
+<span class="absolute inset-0 flex items-center justify-center material-symbols-outlined !text-5xl text-white/50">school</span>
+</div>
+<div class="p-4 flex flex-col gap-3">
+<div>
+<div class="flex justify-between items-start mb-1">
+<h4 class="text-lg font-bold">Placement Training</h4>
+<span class="text-lg font-bold text-primary dark:text-blue-400">₹4,999</span>
+</div>
+<p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">Comprehensive modules covering aptitude, soft skills, and technical preparation.</p>
+</div>
+<div class="flex items-center gap-4 text-xs font-medium text-gray-500 dark:text-gray-400">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined !text-base">calendar_month</span>
+                            4-week course
+                        </div>
+</div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 rounded-lg transition-colors flex items-center justify-center gap-2">
+<span>Enroll Now</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white/95 dark:bg-background-dark/95 backdrop-blur-md border-t border-gray-100 dark:border-gray-800 px-2 pb-6 pt-2 flex items-center justify-around z-50">
+<a class="flex flex-col items-center gap-1 py-1 px-3 text-gray-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 py-1 px-3 text-gray-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">briefcase_meal</span>
+<span class="text-[10px] font-medium">Projects</span>
+</a>
+<a class="flex flex-col items-center gap-1 py-1 px-3 text-gray-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">child_hat</span>
+<span class="text-[10px] font-medium">Internships</span>
+</a>
+<a class="active-tab flex flex-col items-center gap-1 py-1 px-3 text-primary transition-colors relative" href="#">
+<span class="absolute -top-2 left-1/2 -translate-x-1/2 w-8 h-1 bg-primary rounded-full"></span>
+<span class="material-symbols-outlined">badge</span>
+<span class="text-[10px] font-bold">Career</span>
+</a>
+<a class="flex flex-col items-center gap-1 py-1 px-3 text-gray-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-[10px] font-medium">Account</span>
+</a>
+</nav>
+</div>
+</body></html>

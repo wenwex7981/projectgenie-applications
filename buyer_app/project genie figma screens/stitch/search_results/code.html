@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4169e1",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+<!-- Search Header -->
+<header class="sticky top-0 z-50 bg-white dark:bg-background-dark border-b border-slate-200 dark:border-slate-800 px-4 py-3">
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">arrow_back</span>
+</button>
+<div class="flex-1">
+<label class="flex items-center h-12 w-full bg-slate-100 dark:bg-slate-800 rounded-xl px-4 gap-3 focus-within:ring-2 focus-within:ring-primary/50 transition-all">
+<span class="material-symbols-outlined text-primary">search</span>
+<input class="flex-1 bg-transparent border-none focus:ring-0 text-base font-medium placeholder:text-slate-400" placeholder="Search projects, internships..." value="Blockchain"/>
+<button class="text-slate-400 hover:text-slate-600">
+<span class="material-symbols-outlined">cancel</span>
+</button>
+</label>
+</div>
+<button class="flex items-center justify-center p-2 rounded-xl bg-slate-100 dark:bg-slate-800">
+<span class="material-symbols-outlined text-slate-600 dark:text-slate-400">tune</span>
+</button>
+</div>
+<!-- Category Tabs -->
+<div class="flex gap-6 mt-4 overflow-x-auto no-scrollbar">
+<a class="flex flex-col items-center border-b-2 border-primary pb-2 shrink-0" href="#">
+<span class="text-sm font-bold text-slate-900 dark:text-white">All</span>
+</a>
+<a class="flex flex-col items-center border-b-2 border-transparent pb-2 shrink-0" href="#">
+<span class="text-sm font-medium text-slate-500">Projects</span>
+</a>
+<a class="flex flex-col items-center border-b-2 border-transparent pb-2 shrink-0" href="#">
+<span class="text-sm font-medium text-slate-500">Internships</span>
+</a>
+<a class="flex flex-col items-center border-b-2 border-transparent pb-2 shrink-0" href="#">
+<span class="text-sm font-medium text-slate-500">Services</span>
+</a>
+</div>
+</header>
+<main class="flex-1 p-4 space-y-6 pb-24">
+<!-- Projects Section -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold">Projects</h3>
+<a class="text-primary text-sm font-semibold" href="#">See all</a>
+</div>
+<div class="space-y-4">
+<!-- Project Card 1 -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="flex justify-between items-start mb-2">
+<span class="bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded">Academic Research</span>
+<span class="material-symbols-outlined text-slate-300">bookmark</span>
+</div>
+<h4 class="text-base font-bold mb-1">Decentralized Voting System using <span class="text-primary">Blockchain</span></h4>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-4">Implementing a secure, transparent voting mechanism for university elections.</p>
+<div class="flex items-center justify-between">
+<div class="flex -space-x-2">
+<img class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 shadow-sm" data-alt="User avatar 1" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHrEcQ2tgOW83Nehm9UcR4zCREwwg9THp4PTFohuyiXPXlWZoCVLsqWuUogaRul4HNCViOvRCK38xxvjI63CnxdiDRqiGmLcIxid1zEzqssd239zhez1tbo4Kw9e7BDOyA2zwDl-LA-4D3kNik4lKXwY9VG1N9g5DyUxC1o6OUpLJNI_F2N0BFvwhcyAXVH0nPYVs-s3qsmLlt46LFFfnQoEd9iKHCC2QJW2Qw8ZXDixV7cH6qjRB3VsshS0gR2lAo1owf5kWNveM"/>
+<img class="w-8 h-8 rounded-full border-2 border-white dark:border-slate-900 shadow-sm" data-alt="User avatar 2" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ5j9u6dZ4OxN2k2oyhZILLnZRJcb_UboN5qQuzvesZG6WaTaYR8Fkua46JXV27RRpbu24mmUaamjuXsQo6QVUOyF5jixkW2GjZm2j9KykfbPDv6oAo9IVHwZrqAabRJLpnLUkxOlJMrPdEhgWzgjvBmh9hMdA2c5fQMG64ur3B0eV-zNS9nUsvNrWWIJj7frzfr-LngTpHZNXsSmCutMfcstYDJqgf_iq4Ja8HaxQKPXD5ENu0BSXfE8M9KdcHCyyK8GMjw_Lc1g"/>
+<div class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 border-2 border-white dark:border-slate-900 flex items-center justify-center text-[10px] font-bold">+3</div>
+</div>
+<button class="bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold">Join Project</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Internships Section -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold">Internships</h3>
+<a class="text-primary text-sm font-semibold" href="#">See all</a>
+</div>
+<div class="space-y-4">
+<!-- Internship Card -->
+<div class="bg-white dark:bg-slate-900 p-4 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800 flex gap-4">
+<div class="w-14 h-14 bg-slate-50 dark:bg-slate-800 rounded-lg flex items-center justify-center shrink-0 border border-slate-100 dark:border-slate-700">
+<span class="material-symbols-outlined text-primary text-3xl">account_balance</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<h4 class="text-base font-bold leading-tight">Web3 Developer Intern</h4>
+<span class="text-primary font-bold text-sm">$800/mo</span>
+</div>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-2">FinLab Technologies • Remote</p>
+<div class="flex gap-2 mb-3">
+<span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] px-2 py-0.5 rounded">Solidity</span>
+<span class="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] px-2 py-0.5 rounded">Ethereum</span>
+</div>
+<button class="w-full bg-primary/10 text-primary py-2 rounded-lg text-sm font-bold hover:bg-primary hover:text-white transition-colors">Quick Apply</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Services Section -->
+<section>
+<div class="flex items-center justify-between mb-4">
+<h3 class="text-lg font-bold">Expert Services</h3>
+<a class="text-primary text-sm font-semibold" href="#">See all</a>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<!-- Service Card 1 -->
+<div class="bg-white dark:bg-slate-900 p-3 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="aspect-square bg-slate-100 dark:bg-slate-800 rounded-lg mb-3 flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl text-primary/40">description</span>
+</div>
+<h5 class="text-sm font-bold line-clamp-1">Smart Contract Audit</h5>
+<div class="flex items-center gap-1 my-1">
+<span class="material-symbols-outlined text-yellow-400 text-xs">star</span>
+<span class="text-[10px] font-bold">4.9 (124)</span>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="text-primary text-sm font-bold">50 GENIE</span>
+<span class="material-symbols-outlined text-slate-400 text-sm">add_circle</span>
+</div>
+</div>
+<!-- Service Card 2 -->
+<div class="bg-white dark:bg-slate-900 p-3 rounded-xl shadow-sm border border-slate-100 dark:border-slate-800">
+<div class="aspect-square bg-slate-100 dark:bg-slate-800 rounded-lg mb-3 flex items-center justify-center">
+<span class="material-symbols-outlined text-4xl text-primary/40">draw</span>
+</div>
+<h5 class="text-sm font-bold line-clamp-1">DApp UI/UX Design</h5>
+<div class="flex items-center gap-1 my-1">
+<span class="material-symbols-outlined text-yellow-400 text-xs">star</span>
+<span class="text-[10px] font-bold">4.7 (89)</span>
+</div>
+<div class="flex items-center justify-between mt-2">
+<span class="text-primary text-sm font-bold">35 GENIE</span>
+<span class="material-symbols-outlined text-slate-400 text-sm">add_circle</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Floating Sort Button -->
+<button class="fixed bottom-24 right-4 bg-primary text-white flex items-center gap-2 px-4 py-3 rounded-full shadow-lg shadow-primary/30 z-40">
+<span class="material-symbols-outlined">sort</span>
+<span class="text-sm font-bold">Sort &amp; Filter</span>
+</button>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full flex gap-2 border-t border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-background-dark/90 backdrop-blur-md px-4 pb-6 pt-2 z-50">
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<p class="text-[10px] font-medium">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined">search</span>
+<p class="text-[10px] font-bold">Search</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<div class="bg-primary/10 p-2 rounded-full -mt-4 mb-1">
+<span class="material-symbols-outlined text-primary">auto_awesome</span>
+</div>
+<p class="text-[10px] font-medium">My Genie</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">group</span>
+<p class="text-[10px] font-medium">Network</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<p class="text-[10px] font-medium">Profile</p>
+</a>
+</nav>
+</div>
+</body></html>

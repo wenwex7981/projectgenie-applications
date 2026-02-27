@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Downloads - Project Genie</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4169e1",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#0e111a] antialiased">
+<div class="relative flex min-h-screen w-full flex-col bg-background-light dark:bg-background-dark overflow-x-hidden max-w-md mx-auto shadow-2xl">
+<!-- Header -->
+<header class="sticky top-0 z-10 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
+<div class="flex items-center p-4 justify-between gap-2">
+<button class="text-[#0e111a] dark:text-white flex size-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-[#0e111a] dark:text-white text-xl font-bold leading-tight tracking-tight flex-1">My Downloads</h1>
+<button class="text-[#0e111a] dark:text-white flex size-10 items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</header>
+<!-- Search Bar -->
+<div class="px-4 py-3">
+<label class="flex flex-col min-w-40 h-12 w-full">
+<div class="flex w-full flex-1 items-stretch rounded-xl h-full shadow-sm">
+<div class="text-gray-400 flex border-none bg-white dark:bg-gray-800 items-center justify-center pl-4 rounded-l-xl">
+<span class="material-symbols-outlined">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-xl text-[#0e111a] dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/20 border-none bg-white dark:bg-gray-800 h-full placeholder:text-gray-400 px-4 rounded-l-none pl-2 text-base font-normal" placeholder="Search your assets..." value=""/>
+</div>
+</label>
+</div>
+<!-- Segmented Filter -->
+<div class="flex px-4 py-2">
+<div class="flex h-11 flex-1 items-center justify-center rounded-xl bg-gray-200/50 dark:bg-gray-800 p-1">
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-white has-[:checked]:text-primary has-[:checked]:shadow-sm text-gray-500 dark:text-gray-400 text-sm font-semibold transition-all">
+<span class="truncate">All</span>
+<input checked="" class="hidden" name="filter" type="radio" value="All"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-white has-[:checked]:text-primary has-[:checked]:shadow-sm text-gray-500 dark:text-gray-400 text-sm font-semibold transition-all">
+<span class="truncate">Projects</span>
+<input class="hidden" name="filter" type="radio" value="Projects"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-white has-[:checked]:text-primary has-[:checked]:shadow-sm text-gray-500 dark:text-gray-400 text-sm font-semibold transition-all">
+<span class="truncate">Code</span>
+<input class="hidden" name="filter" type="radio" value="Source Code"/>
+</label>
+<label class="flex cursor-pointer h-full grow items-center justify-center overflow-hidden rounded-lg px-2 has-[:checked]:bg-white has-[:checked]:text-primary has-[:checked]:shadow-sm text-gray-500 dark:text-gray-400 text-sm font-semibold transition-all">
+<span class="truncate">Certificates</span>
+<input class="hidden" name="filter" type="radio" value="Certificates"/>
+</label>
+</div>
+</div>
+<!-- Asset List -->
+<main class="flex-1 overflow-y-auto px-4 pb-24">
+<!-- Item 1: Project File -->
+<div class="mt-4 bg-white dark:bg-gray-900 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-3">
+<div class="flex items-start gap-4">
+<div class="flex items-center justify-center rounded-lg bg-red-50 dark:bg-red-900/20 text-red-500 shrink-0 size-12">
+<span class="material-symbols-outlined text-3xl">picture_as_pdf</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<p class="text-[#0e111a] dark:text-white text-base font-bold leading-tight line-clamp-1">Advanced Machine Learning Thesis.pdf</p>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">Ready</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal mt-1">Oct 12, 2023 • 2.4 MB</p>
+</div>
+</div>
+<div class="flex gap-2 mt-1">
+<button class="flex-1 flex items-center justify-center gap-2 rounded-lg h-10 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined text-sm">download</span>
+                        Download
+                    </button>
+</div>
+</div>
+<!-- Item 2: Source Code -->
+<div class="mt-4 bg-white dark:bg-gray-900 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-3">
+<div class="flex items-start gap-4">
+<div class="flex items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/20 text-primary shrink-0 size-12">
+<span class="material-symbols-outlined text-3xl">code</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<p class="text-[#0e111a] dark:text-white text-base font-bold leading-tight line-clamp-1">E-commerce React Native Template</p>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">Ready</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal mt-1">Oct 05, 2023 • 15.8 MB</p>
+</div>
+</div>
+<div class="flex gap-2 mt-1">
+<button class="flex-1 flex items-center justify-center gap-2 rounded-lg h-10 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined text-sm">download</span>
+                        Download Source
+                    </button>
+<button class="flex items-center justify-center px-3 rounded-lg h-10 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 transition-colors">
+<span class="material-symbols-outlined text-xl">hub</span>
+</button>
+</div>
+</div>
+<!-- Item 3: Active Download -->
+<div class="mt-4 bg-white dark:bg-gray-900 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-3">
+<div class="flex items-start gap-4">
+<div class="flex items-center justify-center rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-500 shrink-0 size-12">
+<span class="material-symbols-outlined text-3xl">terminal</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<p class="text-[#0e111a] dark:text-white text-base font-bold leading-tight line-clamp-1">Python Data Scraper - V2.zip</p>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">Downloading...</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal mt-1">7.2 MB of 12.0 MB • 45s left</p>
+</div>
+</div>
+<div class="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-1.5 mt-1">
+<div class="bg-primary h-1.5 rounded-full" style="width: 60%"></div>
+</div>
+<div class="flex gap-2">
+<button class="flex-1 rounded-lg h-10 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-bold hover:bg-gray-200 transition-colors">Cancel</button>
+</div>
+</div>
+<!-- Item 4: Certificate -->
+<div class="mt-4 bg-white dark:bg-gray-900 rounded-xl p-4 shadow-sm border border-gray-100 dark:border-gray-800 flex flex-col gap-3">
+<div class="flex items-start gap-4">
+<div class="flex items-center justify-center rounded-lg bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 shrink-0 size-12">
+<span class="material-symbols-outlined text-3xl">workspace_premium</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<p class="text-[#0e111a] dark:text-white text-base font-bold leading-tight line-clamp-1">Python for Data Science Completion</p>
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400">Verified</span>
+</div>
+<p class="text-gray-500 dark:text-gray-400 text-sm font-normal mt-1">Sept 28, 2023 • 1.1 MB</p>
+</div>
+</div>
+<div class="flex gap-2 mt-1">
+<button class="flex-1 flex items-center justify-center gap-2 rounded-lg h-10 bg-primary text-white text-sm font-bold hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined text-sm">visibility</span>
+                        View Certificate
+                    </button>
+<button class="flex items-center justify-center px-3 rounded-lg h-10 bg-primary/10 text-primary hover:bg-primary/20 transition-colors">
+<span class="material-symbols-outlined text-xl">share</span>
+</button>
+</div>
+</div>
+<!-- Storage Warning -->
+<div class="mt-6 p-4 rounded-xl bg-primary/5 border border-primary/10 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">info</span>
+<p class="text-sm text-gray-600 dark:text-gray-400">
+<span class="font-semibold text-primary">Storage Tip:</span> You have 4.2 GB free on your device. Bulk downloads may take longer.
+                </p>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white dark:bg-background-dark border-t border-gray-200 dark:border-gray-800 px-4 pb-4 pt-2 flex justify-around">
+<a class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">home</span>
+<span class="text-[10px] font-medium">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">menu_book</span>
+<span class="text-[10px] font-medium">Library</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined material-symbols-fill text-2xl">download</span>
+<span class="text-[10px] font-bold">Downloads</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">bar_chart</span>
+<span class="text-[10px] font-medium">Stats</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-2xl">person</span>
+<span class="text-[10px] font-medium">Profile</span>
+</a>
+</nav>
+</div>
+</body></html>

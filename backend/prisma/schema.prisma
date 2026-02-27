@@ -1,0 +1,232 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── VENDOR / SELLER ────────────────────────────────────────────────
+model Vendor {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String
+  name          String
+  businessName  String
+  phone         String?
+  profileImage  String?
+  bio           String?
+  rating        Float     @default(0)
+  totalEarnings Float     @default(0)
+  totalOrders   Int       @default(0)
+  isVerified    Boolean   @default(false)
+  emailVerified Boolean   @default(false)
+  status        String    @default("active")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  services      Service[]
+  projects      Project[]
+  orders        Order[]
+  customOrders  CustomOrder[]
+  transactions  Transaction[]
+}
+
+// ─── BUYER / USER ───────────────────────────────────────────────────
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String
+  name          String
+  phone         String?
+  college       String?
+  branch        String?
+  profileImage  String?
+  walletBalance Float     @default(0)
+  emailVerified Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  orders        Order[]
+  customOrders  CustomOrder[]
+  chats         ChatMessage[]
+  reviews       Review[]
+}
+
+// ─── OTP TOKENS ─────────────────────────────────────────────────────
+model OtpToken {
+  id        String   @id @default(uuid())
+  email     String
+  code      String
+  type      String   // register, login, reset
+  role      String   // buyer, vendor
+  verified  Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+// ─── CATEGORY ───────────────────────────────────────────────────────
+model Category {
+  id        String    @id @default(uuid())
+  title     String    @unique
+  icon      String
+  count     Int       @default(0)
+  sortOrder Int       @default(0)
+  services  Service[]
+  projects  Project[]
+}
+
+// ─── SERVICE ────────────────────────────────────────────────────────
+model Service {
+  id            String    @id @default(uuid())
+  title         String
+  description   String
+  vendorName    String
+  price         Float
+  originalPrice Float?
+  rating        Float     @default(0)
+  reviewCount   Int       @default(0)
+  deliveryDays  String
+  isFeatured    Boolean   @default(false)
+  isTrending    Boolean   @default(false)
+  isActive      Boolean   @default(true)
+  imageUrl      String?
+  categoryId    String
+  category      Category  @relation(fields: [categoryId], references: [id])
+  vendorId      String?
+  vendor        Vendor?   @relation(fields: [vendorId], references: [id])
+  features      String?   // JSON array string
+  orders        Order[]
+  reviews       Review[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// ─── PROJECT ────────────────────────────────────────────────────────
+model Project {
+  id            String    @id @default(uuid())
+  title         String
+  domain        String
+  branch        String?
+  price         String
+  originalPrice String?
+  description   String
+  imageUrl      String?
+  techStack     String?   // JSON array string
+  rating        Float     @default(0)
+  reviewCount   Int       @default(0)
+  enrollees     Int       @default(0)
+  videoUrl      String?
+  difficulty    String    @default("Intermediate")
+  isFeatured    Boolean   @default(false)
+  isActive      Boolean   @default(true)
+  vendorId      String?
+  vendor        Vendor?   @relation(fields: [vendorId], references: [id])
+  categoryId    String?
+  category      Category? @relation(fields: [categoryId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+// ─── REVIEW ─────────────────────────────────────────────────────────
+model Review {
+  id        String    @id @default(uuid())
+  userName  String
+  rating    Float
+  comment   String
+  date      String
+  serviceId String
+  service   Service   @relation(fields: [serviceId], references: [id])
+  userId    String?
+  user      User?     @relation(fields: [userId], references: [id])
+}
+
+// ─── ORDER ──────────────────────────────────────────────────────────
+model Order {
+  id          String   @id @default(uuid())
+  orderNumber String   @unique
+  status      String   @default("Pending") // Pending, Active, Completed, Cancelled
+  totalPrice  Float
+  date        DateTime @default(now())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  serviceId   String
+  service     Service  @relation(fields: [serviceId], references: [id])
+  vendorId    String?
+  vendor      Vendor?  @relation(fields: [vendorId], references: [id])
+  timeline    String?  // JSON string for timeline steps
+  notes       String?
+}
+
+// ─── CUSTOM PROJECT ORDER ───────────────────────────────────────────
+model CustomOrder {
+  id            String   @id @default(uuid())
+  title         String
+  studentName   String
+  collegeName   String
+  branch        String?
+  semester      String?
+  domain        String
+  abstractText  String
+  requirements  String?
+  budget        String?
+  deadline      String?
+  contactEmail  String
+  contactPhone  String
+  documentPaths String?  // JSON array string
+  pptPaths      String?  // JSON array string
+  status        String   @default("Pending Review") // Pending Review, Accepted, In Progress, Completed, Rejected
+  vendorNotes   String?
+  quotedPrice   Float?
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  vendorId      String?
+  vendor        Vendor?  @relation(fields: [vendorId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ─── CHAT MESSAGE ───────────────────────────────────────────────────
+model ChatMessage {
+  id        String   @id @default(uuid())
+  text      String
+  isSender  Boolean
+  time      DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  vendorId  String
+}
+
+// ─── BUNDLE ─────────────────────────────────────────────────────────
+model Bundle {
+  id            String  @id @default(uuid())
+  title         String
+  subtitle      String
+  tag           String
+  price         Float
+  originalPrice Float?
+  color         Int
+}
+
+// ─── TRANSACTION ────────────────────────────────────────────────────
+model Transaction {
+  id          String   @id @default(uuid())
+  type        String   // credit, debit, withdrawal
+  amount      Float
+  description String
+  status      String   @default("completed") // completed, pending, failed
+  vendorId    String
+  vendor      Vendor   @relation(fields: [vendorId], references: [id])
+  createdAt   DateTime @default(now())
+}
+
+// ─── NOTIFICATION ───────────────────────────────────────────────────
+model Notification {
+  id        String   @id @default(uuid())
+  title     String
+  message   String
+  type      String   // order, system, promo
+  isRead    Boolean  @default(false)
+  targetId  String?  // userId or vendorId
+  createdAt DateTime @default(now())
+}

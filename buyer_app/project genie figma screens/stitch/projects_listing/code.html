@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Genie - Projects Marketplace</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4169e1",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 antialiased">
+<!-- Header & Search -->
+<header class="sticky top-0 z-30 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center px-4 py-4 justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-3xl">auto_awesome</span>
+<h1 class="text-xl font-bold tracking-tight">Project Genie</h1>
+</div>
+<div class="flex gap-2">
+<button class="p-2 hover:bg-primary/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="p-2 hover:bg-primary/10 rounded-full transition-colors">
+<span class="material-symbols-outlined">shopping_cart</span>
+</button>
+</div>
+</div>
+<!-- Search Bar -->
+<div class="px-4 pb-3">
+<div class="relative group">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+<input class="w-full bg-white dark:bg-slate-800 border-none rounded-xl py-3 pl-11 pr-4 shadow-sm focus:ring-2 focus:ring-primary/20 transition-all text-sm" placeholder="Search for projects, domains..." type="text"/>
+</div>
+</div>
+<!-- Filter Chips -->
+<div class="flex gap-3 px-4 pb-4 overflow-x-auto hide-scrollbar">
+<button class="flex items-center gap-1.5 px-4 py-2 bg-primary text-white rounded-full text-sm font-medium whitespace-nowrap shadow-md shadow-primary/20">
+<span>Degree</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<button class="flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-medium whitespace-nowrap hover:border-primary/50 transition-colors">
+<span>Branch</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<button class="flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-medium whitespace-nowrap hover:border-primary/50 transition-colors">
+<span>Price Range</span>
+<span class="material-symbols-outlined text-sm">expand_more</span>
+</button>
+<button class="flex items-center gap-1.5 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-medium whitespace-nowrap hover:border-primary/50 transition-colors">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+<span>All Filters</span>
+</button>
+</div>
+</header>
+<!-- Main Content: Project Cards -->
+<main class="max-w-2xl mx-auto px-4 py-6 space-y-6 pb-24">
+<!-- Card 1 -->
+<div class="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-700">
+<div class="relative h-48 w-full bg-slate-200" data-alt="Abstract 3D rendering of blockchain nodes and connections" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAX_SUvRosXFj84xGKKDdkFW0eDdtdE1BDaH1ijkS9VuCxM8AbUJxLSE1VJfaob8Q3oGpLo4isRkapjpLjXKtvRdybo47ewjVo4Snmmk_HtZQAd_psYgIZXVM1Zipbszfvux832xafCTPZuApu7Bq36tsOIADVO83RBz0yB48CNZTPnXpEiveUVL3DK-OYQiuohiGAqqcgBj4O328JKTco1rsYtDLy8GlOgIZE-Zj07vi458lpD29Me9mI6DN8Y-skslgM8G3JmdSo'); background-size: cover; background-position: center;">
+<div class="absolute top-3 right-3">
+<span class="bg-primary/90 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider backdrop-blur-sm">Blockchain</span>
+</div>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-lg font-bold leading-tight flex-1 pr-4">Decentralized E-Voting System using Ethereum</h3>
+<span class="text-primary font-bold text-xl">$49.99</span>
+</div>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-4 line-clamp-2">
+                    A secure, transparent, and immutable voting system built on the Ethereum blockchain ensuring zero tampering and verifiable results for institutional elections.
+                </p>
+<div class="flex gap-3">
+<button class="flex-1 py-2.5 border border-primary/20 text-primary font-semibold rounded-lg hover:bg-primary/5 transition-colors text-sm">
+                        View Details
+                    </button>
+<button class="flex-1 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary-hover transition-colors shadow-lg shadow-primary/20 text-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                        Add to Cart
+                    </button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-700">
+<div class="relative h-48 w-full bg-slate-200" data-alt="Conceptual image of artificial intelligence and digital brain" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCK6lY37IrZnOzSeTm9wTPRHIkKOVPMCE-GS0WBe3XISiHJrVq_jAbvQZ2sA7Xri5LaeXc5POPkVRnI3rb3pYiJkg3TTgfdmaOmWABPiL2UZcFuvl7Pc5n1HKugovFA2BHiZHS40BftMWDXHqCjRsC8TtgTR9K8goU_C751iDEuzSR8kKtubZisCPsOO8UovuiGWoqRopVYQNkv1-aseQF5Wtku78UqIQc6A0wjU0ufcKJPzDBpQK4FUGwZ2D_BCn_JE7UilYDpE0c'); background-size: cover; background-position: center;">
+<div class="absolute top-3 right-3">
+<span class="bg-indigo-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">AI / ML</span>
+</div>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-lg font-bold leading-tight flex-1 pr-4">Predictive Maintenance for Smart Factories</h3>
+<span class="text-primary font-bold text-xl">$59.90</span>
+</div>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-4 line-clamp-2">
+                    Utilizing IoT sensor data and LSTM neural networks to predict equipment failures before they occur, optimizing factory uptime and reducing costs.
+                </p>
+<div class="flex gap-3">
+<button class="flex-1 py-2.5 border border-primary/20 text-primary font-semibold rounded-lg hover:bg-primary/5 transition-colors text-sm">
+                        View Details
+                    </button>
+<button class="flex-1 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary-hover transition-colors shadow-lg shadow-primary/20 text-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                        Add to Cart
+                    </button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-white dark:bg-slate-800 rounded-xl overflow-hidden shadow-sm border border-slate-100 dark:border-slate-700">
+<div class="relative h-48 w-full bg-slate-200" data-alt="Microcontroller and circuit board components for IoT" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBJtJsP411v66bBrpPGS4b74RapmEwuE2betYWVs9ruVh4c88q8QzfXYmwtlz09fU-A4chg7c0k1K73oo7KyRMEulJhmnGT5GZEsMIa8N2R3zwoIuYpZFQWZua_tuop8B8HDy5n1_gXIde7x7aN6bJlDQzpDobsYzKGBSme6RSME2DUwTAVvfgWJJRUP19EqHfiuASeQRyaNKMQUTGloMnllNCRSKFHSC0U8rxNzzC0Amdg9BMuuQIfKNhDzHWvKXtS-cV9LFDZzxs'); background-size: cover; background-position: center;">
+<div class="absolute top-3 right-3">
+<span class="bg-emerald-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider">IoT</span>
+</div>
+</div>
+<div class="p-5">
+<div class="flex justify-between items-start mb-2">
+<h3 class="text-lg font-bold leading-tight flex-1 pr-4">Solar Powered Smart Irrigation System</h3>
+<span class="text-primary font-bold text-xl">$35.00</span>
+</div>
+<p class="text-sm text-slate-500 dark:text-slate-400 mb-4 line-clamp-2">
+                    An automated watering system that detects soil moisture levels and uses solar energy to pump water, controlled via a mobile application.
+                </p>
+<div class="flex gap-3">
+<button class="flex-1 py-2.5 border border-primary/20 text-primary font-semibold rounded-lg hover:bg-primary/5 transition-colors text-sm">
+                        View Details
+                    </button>
+<button class="flex-1 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary-hover transition-colors shadow-lg shadow-primary/20 text-sm flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add_shopping_cart</span>
+                        Add to Cart
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 px-2 pb-6 pt-3 z-50">
+<div class="flex justify-around items-center max-w-lg mx-auto">
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">home</span>
+<span class="text-[10px] font-medium text-slate-500 group-hover:text-primary uppercase tracking-tighter">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<div class="relative">
+<span class="material-symbols-outlined text-primary fill-[1]">dashboard</span>
+<div class="absolute -top-1 -right-1 w-1.5 h-1.5 bg-primary rounded-full"></div>
+</div>
+<span class="text-[10px] font-bold text-primary uppercase tracking-tighter">Projects</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">work_history</span>
+<span class="text-[10px] font-medium text-slate-500 group-hover:text-primary uppercase tracking-tighter">Internships</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">school</span>
+<span class="text-[10px] font-medium text-slate-500 group-hover:text-primary uppercase tracking-tighter">Career</span>
+</a>
+<a class="flex flex-col items-center gap-1 group" href="#">
+<span class="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">account_circle</span>
+<span class="text-[10px] font-medium text-slate-500 group-hover:text-primary uppercase tracking-tighter">Account</span>
+</a>
+</div>
+</nav>
+</body></html>

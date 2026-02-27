@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Payment Method - Project Genie</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4169e1",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100">
+<div class="relative flex h-auto min-h-screen w-full max-w-md mx-auto flex-col bg-white dark:bg-background-dark shadow-sm overflow-x-hidden">
+<!-- Sticky Header -->
+<div class="sticky top-0 z-10 flex items-center bg-white dark:bg-background-dark p-4 border-b border-slate-100 dark:border-slate-800 justify-between">
+<div class="text-primary cursor-pointer flex size-10 shrink-0 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<h2 class="text-slate-900 dark:text-white text-lg font-bold leading-tight tracking-tight flex-1 text-center pr-10">Payment</h2>
+</div>
+<div class="flex flex-col gap-6 p-4">
+<!-- Order Summary Card -->
+<section>
+<h3 class="text-slate-900 dark:text-white text-base font-bold mb-3">Order Summary</h3>
+<div class="bg-slate-50 dark:bg-slate-900/50 rounded-xl p-4 border border-slate-100 dark:border-slate-800">
+<div class="flex justify-between gap-x-6 py-2">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal">Semester Pro Plan</p>
+<p class="text-slate-900 dark:text-white text-sm font-semibold text-right">₹2,499.00</p>
+</div>
+<div class="flex justify-between gap-x-6 py-2 border-b border-slate-200 dark:border-slate-800 mb-2 pb-3">
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal">GST (18%)</p>
+<p class="text-slate-900 dark:text-white text-sm font-semibold text-right">₹449.82</p>
+</div>
+<div class="flex justify-between gap-x-6 py-2">
+<p class="text-slate-900 dark:text-white text-base font-bold">Total Amount</p>
+<p class="text-primary text-base font-bold text-right">₹2,948.82</p>
+</div>
+</div>
+</section>
+<!-- UPI Methods -->
+<section>
+<h3 class="text-slate-900 dark:text-white text-base font-bold mb-3">UPI Methods</h3>
+<div class="space-y-3">
+<!-- GPay -->
+<div class="flex items-center gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-lg hover:border-primary transition-colors cursor-pointer">
+<div class="bg-slate-100 dark:bg-slate-800 flex items-center justify-center rounded-lg size-10">
+<span class="material-symbols-outlined text-primary">account_balance_wallet</span>
+</div>
+<p class="text-slate-900 dark:text-white text-sm font-medium flex-1">Google Pay</p>
+<div class="shrink-0">
+<input checked="" class="w-5 h-5 text-primary border-slate-300 focus:ring-primary" name="payment_method" type="radio"/>
+</div>
+</div>
+<!-- PhonePe -->
+<div class="flex items-center gap-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-lg hover:border-primary transition-colors cursor-pointer">
+<div class="bg-slate-100 dark:bg-slate-800 flex items-center justify-center rounded-lg size-10">
+<span class="material-symbols-outlined text-primary">payments</span>
+</div>
+<p class="text-slate-900 dark:text-white text-sm font-medium flex-1">PhonePe</p>
+<div class="shrink-0">
+<input class="w-5 h-5 text-primary border-slate-300 focus:ring-primary" name="payment_method" type="radio"/>
+</div>
+</div>
+<!-- Other UPI -->
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-lg">
+<div class="flex items-center gap-4 mb-3">
+<div class="bg-slate-100 dark:bg-slate-800 flex items-center justify-center rounded-lg size-10">
+<span class="material-symbols-outlined text-primary">alternate_email</span>
+</div>
+<p class="text-slate-900 dark:text-white text-sm font-medium flex-1">Other UPI ID</p>
+<input class="w-5 h-5 text-primary border-slate-300 focus:ring-primary" name="payment_method" type="radio"/>
+</div>
+<input class="w-full text-sm rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary" placeholder="username@bank" type="text"/>
+</div>
+</div>
+</section>
+<!-- Card Section -->
+<section>
+<div class="flex items-center justify-between mb-3">
+<h3 class="text-slate-900 dark:text-white text-base font-bold">Credit / Debit Cards</h3>
+<div class="flex gap-1">
+<div class="w-8 h-5 bg-slate-200 dark:bg-slate-800 rounded-sm"></div>
+<div class="w-8 h-5 bg-slate-200 dark:bg-slate-800 rounded-sm"></div>
+<div class="w-8 h-5 bg-slate-200 dark:bg-slate-800 rounded-sm"></div>
+</div>
+</div>
+<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-4 rounded-lg space-y-4">
+<div>
+<label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Card Number</label>
+<div class="relative">
+<input class="w-full text-sm rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary pl-3 pr-10" placeholder="0000 0000 0000 0000" type="text"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">credit_card</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div>
+<label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">Expiry Date</label>
+<input class="w-full text-sm rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary" placeholder="MM/YY" type="text"/>
+</div>
+<div>
+<label class="block text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1 uppercase tracking-wider">CVV</label>
+<input class="w-full text-sm rounded-lg border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary" placeholder="***" type="password"/>
+</div>
+</div>
+<div class="flex items-center justify-between pt-2">
+<span class="text-sm text-slate-600 dark:text-slate-400">Save card for future payments</span>
+<label class="relative flex h-[24px] w-[44px] cursor-pointer items-center rounded-full border-none bg-slate-200 dark:bg-slate-800 p-0.5 has-[:checked]:justify-end has-[:checked]:bg-primary transition-all duration-200">
+<div class="h-full w-[20px] rounded-full bg-white shadow-sm"></div>
+<input checked="" class="invisible absolute" type="checkbox"/>
+</label>
+</div>
+</div>
+</section>
+<!-- Net Banking -->
+<section class="pb-32">
+<h3 class="text-slate-900 dark:text-white text-base font-bold mb-3">Net Banking</h3>
+<div class="grid grid-cols-3 gap-3 mb-4">
+<div class="flex flex-col items-center gap-2 p-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-lg cursor-pointer hover:border-primary">
+<div class="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-xl">account_balance</span>
+</div>
+<span class="text-[10px] font-semibold text-slate-600 dark:text-slate-400 text-center uppercase">SBI</span>
+</div>
+<div class="flex flex-col items-center gap-2 p-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-lg cursor-pointer hover:border-primary">
+<div class="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-xl">account_balance</span>
+</div>
+<span class="text-[10px] font-semibold text-slate-600 dark:text-slate-400 text-center uppercase">HDFC</span>
+</div>
+<div class="flex flex-col items-center gap-2 p-3 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-lg cursor-pointer hover:border-primary">
+<div class="w-10 h-10 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-xl">account_balance</span>
+</div>
+<span class="text-[10px] font-semibold text-slate-600 dark:text-slate-400 text-center uppercase">ICICI</span>
+</div>
+</div>
+<div class="relative">
+<select class="w-full text-sm rounded-lg border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary p-3 appearance-none">
+<option>Search for other banks</option>
+<option>Axis Bank</option>
+<option>Kotak Mahindra Bank</option>
+<option>Bank of Baroda</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">expand_more</span>
+</div>
+</section>
+</div>
+<!-- Sticky Footer Action -->
+<div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white dark:bg-background-dark p-4 border-t border-slate-100 dark:border-slate-800 flex flex-col items-center gap-3">
+<div class="flex items-center gap-2 text-[10px] text-slate-400 uppercase font-semibold tracking-widest">
+<span class="material-symbols-outlined text-sm">lock</span>
+                Secure 256-bit SSL Encrypted Payment
+            </div>
+<button class="w-full bg-primary hover:bg-primary/90 text-white font-bold py-4 rounded-xl shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
+                Pay ₹2,948.82
+            </button>
+</div>
+</div>
+</body></html>

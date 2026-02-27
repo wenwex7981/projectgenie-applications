@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Genie - Courses &amp; Quizzes</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4169e1",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen pb-24">
+<!-- Top Navigation -->
+<header class="sticky top-0 z-30 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 py-4">
+<div class="max-w-md mx-auto flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-3xl">magic_button</span>
+<h1 class="text-xl font-bold tracking-tight">Project Genie</h1>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex flex-col items-end">
+<span class="text-[10px] font-bold uppercase tracking-wider text-slate-500">Global Rank</span>
+<span class="text-sm font-bold text-primary">#42</span>
+</div>
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+<span class="material-symbols-outlined text-primary">person</span>
+</div>
+</div>
+</div>
+</header>
+<main class="max-w-md mx-auto p-4 space-y-6">
+<!-- Segmented Control -->
+<div class="flex p-1 bg-slate-200/50 dark:bg-slate-800/50 rounded-xl">
+<button class="flex-1 py-2 text-sm font-semibold rounded-lg bg-white dark:bg-slate-700 shadow-sm text-primary">
+                All Courses
+            </button>
+<button class="flex-1 py-2 text-sm font-semibold text-slate-500 dark:text-slate-400">
+                Quizzes &amp; Games
+            </button>
+</div>
+<!-- Quiz of the Day Section -->
+<section class="space-y-3">
+<div class="flex items-center justify-between">
+<h2 class="text-lg font-bold">Quiz of the Day</h2>
+<span class="text-xs font-medium text-slate-500 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">Daily Challenge</span>
+</div>
+<div class="relative overflow-hidden rounded-xl bg-primary p-6 text-white shadow-lg shadow-primary/20">
+<div class="relative z-10 space-y-4">
+<div>
+<h3 class="text-xl font-bold">Project Management Basics</h3>
+<p class="text-primary-100/80 text-sm mt-1">Test your knowledge on core PM methodologies.</p>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">
+<span class="material-symbols-outlined text-sm">timer</span>
+<span class="text-sm font-mono font-bold tracking-widest">04:59</span>
+</div>
+<div class="flex items-center gap-2 bg-white/20 backdrop-blur-md px-3 py-1.5 rounded-lg border border-white/10">
+<span class="material-symbols-outlined text-sm">stars</span>
+<span class="text-sm font-bold">1,200 XP</span>
+</div>
+</div>
+<button class="w-full bg-white text-primary font-bold py-3 rounded-lg hover:bg-slate-50 transition-colors">
+                        Start Quiz Now
+                    </button>
+</div>
+<!-- Abstract Background Pattern -->
+<div class="absolute top-0 right-0 -translate-y-1/2 translate-x-1/4 opacity-20">
+<span class="material-symbols-outlined text-[160px]">quiz</span>
+</div>
+</div>
+</section>
+<!-- Leaderboard Widget -->
+<section class="bg-white dark:bg-slate-900 rounded-xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm">
+<h3 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-lg">leaderboard</span>
+                Weekly Leaderboard
+            </h3>
+<div class="space-y-3">
+<div class="flex items-center justify-between p-2 rounded-lg bg-yellow-50/50 dark:bg-yellow-900/10 border border-yellow-100 dark:border-yellow-900/20">
+<div class="flex items-center gap-3">
+<span class="font-bold text-yellow-600 w-4">1</span>
+<div class="w-8 h-8 rounded-full bg-slate-200">
+<img alt="User avatar" class="w-full h-full rounded-full" data-alt="Professional user profile avatar of a man" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBvgTxXZ1qdxLRDllB_L6bv80_xNVXPb-1VflHuiw8_mYf3yv0QMlsZaXAfYXR1cTzyEIesz3yeuddPrfwADk9GXZlXG-r0O5iQ34d13-oJAcu4Dbo7TYvJgk67vGEbC1744MeL7FTIEMWEBlRFtPJcYzn5ybV2Uf_pxlL0_2gn5_8_eN0tvkpVeAo8BPKFeSLgUbXnyObtWByr3bgV5aQXYYqQCfBrio6YVpD3la0omKgoWo61_xcf37VkHG-cooXU70ozW-V2Hoc"/>
+</div>
+<span class="font-semibold text-sm">Alex S.</span>
+</div>
+<span class="font-bold text-sm">980 pts</span>
+</div>
+<div class="flex items-center justify-between p-2">
+<div class="flex items-center gap-3">
+<span class="font-bold text-slate-400 w-4">2</span>
+<div class="w-8 h-8 rounded-full bg-slate-200">
+<img alt="User avatar" class="w-full h-full rounded-full" data-alt="Professional user profile avatar of a woman" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiFTp--q5om_zIAepLt9LE4hP-iy_bjnVyaKhymJM9nplsylqnM1cJ2TFXKaDZuBOVbzA9yFwcN13Cfd1nrKIlKGziyGyTCEkrMRv14x5_VMeBeGm3JrlUO74N_WQb_YbMhvLyZImWKm2FQEa2Gk3HyEWD653VX32s3lWBqEOVt86T8RY1Sy_1_j-0BBP8G77FeEGHws3tq08Lb7yMOwqBQ1U_ofcJFHHq6uRxXInp6BPsNnj0A7Wr6o4CPT4avQ-yeou_BkUEU3s"/>
+</div>
+<span class="font-semibold text-sm">Jordan K.</span>
+</div>
+<span class="font-bold text-sm">950 pts</span>
+</div>
+<div class="mt-4 pt-4 border-t border-dashed border-slate-200 dark:border-slate-800 flex justify-between items-center px-2">
+<span class="text-xs text-slate-500">Your Rank: <strong class="text-primary font-bold">#42</strong></span>
+<button class="text-xs font-bold text-primary flex items-center">View All <span class="material-symbols-outlined text-xs">chevron_right</span></button>
+</div>
+</div>
+</section>
+<!-- Course Cards -->
+<section class="space-y-4">
+<h2 class="text-lg font-bold">Short Courses</h2>
+<!-- Card 1 -->
+<div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm flex">
+<div class="w-32 h-auto shrink-0 bg-cover bg-center relative" data-alt="Abstract futuristic blue AI brain network" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBEU64LFrjHeXIIFsTeioJ9h4QczdkhOeD4yVKW66oJFkUNgN0ivhYyf1WvMP7AxZaWJqKsrmLbxXPr6BnTytSUVfRHcmQA4UjQztS4O7yBV3tv54XBDXqEDQlqFwRz_-6gJ1i3jH5983t6uzdjrCcRWWMQHVZgK9Y8SMoNOzuEwtkfsm4ZmtAx2JaW53dhM81QUYCqv94L3yWsePHnqdX14u1T-654GoN6fxgFTwhWipCSMV9NVAiH6qv3OFwrnNhaHTROrzhN8CY');">
+<div class="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
+</div>
+<div class="p-4 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[10px] fill-1">verified</span>
+                                CERTIFIED
+                            </span>
+<span class="text-[10px] font-medium text-slate-400 uppercase">10 MINS</span>
+</div>
+<h3 class="font-bold text-sm leading-tight">Mastering Generative AI for Project Managers</h3>
+</div>
+<button class="mt-3 w-full bg-primary text-white text-xs font-bold py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                        Enroll Now
+                    </button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm flex">
+<div class="w-32 h-auto shrink-0 bg-cover bg-center relative" data-alt="Clean UI design interface sketches on a table" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDFxGNRjUKR_LP7zntHRTwqedGQadERMto0RhN3yhb5S1W6udJ2UVozkjl8Ga-Zi8YIRIyzZRrzAC9sBRxs909vHWOqzfSJ3Er41mX4AUzB8sNGwDg0AoTyqGKwgZXtISRQD-wYLao0PZHvLhg8QFBalZMEoUgt1PmwPL2WhbAm3zqcQTnJucrj4QjhZnJCXJlT-z6GBHeDpb1ZfM5ug9cMHdZdr1-8u9jQdsU2hGgvoHr1BhbEfPGgI8JbnsIsSVRI1jUUZOdgVrQ');">
+<div class="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent"></div>
+</div>
+<div class="p-4 flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between mb-1">
+<span class="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[10px] fill-1">verified</span>
+                                CERTIFIED
+                            </span>
+<span class="text-[10px] font-medium text-slate-400 uppercase">25 MINS</span>
+</div>
+<h3 class="font-bold text-sm leading-tight">UI Foundations &amp; Design Systems</h3>
+</div>
+<div class="mt-3 flex items-center gap-2">
+<div class="flex-1 h-1 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+<div class="w-[40%] h-full bg-primary"></div>
+</div>
+<span class="text-[10px] font-bold text-slate-500">40%</span>
+</div>
+<button class="mt-2 w-full border border-primary text-primary text-xs font-bold py-2 rounded-lg hover:bg-primary/5 transition-colors">
+                        Continue Learning
+                    </button>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white dark:bg-background-dark border-t border-slate-200 dark:border-slate-800 pb-6 pt-2 px-6">
+<div class="max-w-md mx-auto flex justify-between items-center">
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined fill-1">school</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Learning</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">trophy</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Quizzes</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Quiz Results - Project Genie</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4169e1",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "1rem",
+                        "xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-[#0e111a] dark:text-white min-h-screen font-display">
+<div class="relative flex h-auto min-h-screen w-full max-w-md mx-auto flex-col bg-background-light dark:bg-background-dark overflow-x-hidden">
+<!-- Header Navigation -->
+<div class="flex items-center p-4 justify-between sticky top-0 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md z-10">
+<button class="text-[#0e111a] dark:text-white flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h2 class="text-lg font-bold leading-tight tracking-tight flex-1 text-center">Quiz Results</h2>
+<button class="text-[#0e111a] dark:text-white flex size-10 items-center justify-center rounded-full hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<!-- Celebration Section -->
+<div class="flex flex-col items-center px-4 pt-8 pb-4 text-center">
+<div class="relative mb-6">
+<!-- Circular Progress Ring Background -->
+<svg class="w-48 h-48 transform -rotate-90">
+<circle class="text-primary/10 dark:text-primary/5" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-width="12"></circle>
+<circle class="text-primary" cx="96" cy="96" fill="transparent" r="88" stroke="currentColor" stroke-dasharray="552.92" stroke-dashoffset="110.58" stroke-linecap="round" stroke-width="12"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center transform rotate-0">
+<span class="text-5xl font-extrabold text-[#0e111a] dark:text-white">8/10</span>
+<span class="text-sm font-medium text-primary uppercase tracking-widest mt-1">Correct</span>
+</div>
+<!-- Floating Icon -->
+<div class="absolute -top-2 -right-2 bg-yellow-400 text-white p-3 rounded-full shadow-lg">
+<span class="material-symbols-outlined material-symbols-fill">emoji_events</span>
+</div>
+</div>
+<h1 class="text-3xl font-extrabold tracking-tight text-[#0e111a] dark:text-white mb-2">Great Job, Alex!</h1>
+<p class="text-slate-500 dark:text-slate-400 text-base">You've mastered 80% of this topic. You're leveling up!</p>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-2 gap-4 p-4">
+<div class="flex flex-col gap-2 rounded-xl p-5 bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-xl">stars</span>
+<p class="text-sm font-semibold uppercase tracking-wider">XP Earned</p>
+</div>
+<p class="text-2xl font-bold leading-tight">+150 XP</p>
+<div class="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 text-xs font-bold">
+<span class="material-symbols-outlined text-sm">trending_up</span>
+<span>15% vs last quiz</span>
+</div>
+</div>
+<div class="flex flex-col gap-2 rounded-xl p-5 bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700">
+<div class="flex items-center gap-2 text-primary">
+<span class="material-symbols-outlined text-xl">timer</span>
+<p class="text-sm font-semibold uppercase tracking-wider">Time Taken</p>
+</div>
+<p class="text-2xl font-bold leading-tight">04:25</p>
+<div class="flex items-center gap-1 text-orange-600 dark:text-orange-400 text-xs font-bold">
+<span class="material-symbols-outlined text-sm">speed</span>
+<span>-0:30 faster</span>
+</div>
+</div>
+</div>
+<!-- Leaderboard Snapshot -->
+<div class="px-4 py-2">
+<div class="bg-white dark:bg-slate-800 rounded-xl p-5 shadow-sm border border-slate-100 dark:border-slate-700">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-bold text-lg">Weekly Ranking</h3>
+<span class="text-primary text-sm font-bold">View Full</span>
+</div>
+<div class="space-y-3">
+<!-- Leaderboard Item -->
+<div class="flex items-center gap-3">
+<span class="text-slate-400 font-bold w-4 text-center">3</span>
+<div class="size-10 rounded-full bg-slate-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User avatar 3rd place" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAEV7aaHk8ZhTXH63HdtIBDzLUMUnQozlgT0YLiyW7x9pz-sLZb1-OCAvbMOl30dPsNBIgYSskTAWagCWXFL6WzWzn34D-N4PXdRBsu_1Fix5MjQnmsU9tzohRlVajzcvknnhfqcefD38zt5_O3ggcJhwPW-c14hHfkWcdmwn2YH55g4ntK887DW15tug3qUmWRO6em5nJov-Gi4f76m51BOPCFLov87y4BSU4f3NHxwEOWqTkLKGaSyKm6Kpv2v45cOvhc4z0v5Kw"/>
+</div>
+<span class="flex-1 font-medium text-slate-700 dark:text-slate-300">Jordan S.</span>
+<span class="font-bold">2,450</span>
+</div>
+<!-- Current User Highlight -->
+<div class="flex items-center gap-3 bg-primary/10 dark:bg-primary/20 -mx-3 px-3 py-2 rounded-lg border-l-4 border-primary">
+<span class="text-primary font-bold w-4 text-center">4</span>
+<div class="size-10 rounded-full bg-primary/20 ring-2 ring-primary overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="Alex profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnYlM51wXdquGhRuDVSd0i5nnjAk6TC9LgTob74pqbgvWcMPxmFOOXy_I9xN7X33L6oecCFrboAKklOqcWr9qb3dOO-3TsxGq0XLrca3LSsXHhAV40iz19MWaQCh645ptf-r-q1rzEbXh8-I-SjAofFWi1seCppMHPYn-JJnYqqn6RgXMmts3wzED_RD5AT4oil0wNLsnAj-8akKa-CAI--qNvTlWubZPllprChu4yWuFaWmUROxcASnoLgkjf1CHra1u7hKDYEmM"/>
+</div>
+<span class="flex-1 font-bold text-primary">Alex (You)</span>
+<span class="font-bold text-primary">2,150</span>
+</div>
+<!-- Leaderboard Item -->
+<div class="flex items-center gap-3">
+<span class="text-slate-400 font-bold w-4 text-center">5</span>
+<div class="size-10 rounded-full bg-slate-200 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="User avatar 5th place" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBriKYJp0DT0zgSD5NQebL3XrnT6LhorIzHMkU6eCcWiREaCeZKwkLSyzwezSN6df48msCcRh0XMAIYNgZWY1WB3RnMXc21QPnmoFbj4lgFiilTC1Pl4ahAnczI7B2-AI8ciFth7JdvwM4YOlaDzr9S4NfL6kKMKLbayLSc-fIraLCLy4YesjLgscWS5m5bmfO6fRd4Xlv5GMm4O72lmSgH0JDP3vV-cyXNku9aD3MoBI1sKCP8B_22NtcYwFBu85zJ6u9L5ZvhS-8"/>
+</div>
+<span class="flex-1 font-medium text-slate-700 dark:text-slate-300">Maya R.</span>
+<span class="font-bold">1,980</span>
+</div>
+</div>
+<p class="mt-4 text-center text-xs text-slate-500 font-medium">You're only 300 XP away from 3rd place!</p>
+</div>
+</div>
+<!-- Bottom Action Buttons -->
+<div class="mt-auto p-4 flex flex-col gap-3 pb-8">
+<button class="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 text-white font-bold text-lg shadow-lg shadow-primary/20 hover:opacity-90 transition-all">
+<span class="material-symbols-outlined">share</span>
+                Share Results
+            </button>
+<button class="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-primary/20 bg-transparent py-4 text-primary font-bold text-lg hover:bg-primary/5 transition-all">
+<span class="material-symbols-outlined">refresh</span>
+                Retake Quiz
+            </button>
+</div>
+<!-- Bottom Navigation Bar -->
+<div class="flex gap-2 border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 pb-4 pt-2">
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-slate-500" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">home</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wider">Home</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-primary" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined material-symbols-fill">quiz</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wider">Quizzes</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-slate-500" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">leaderboard</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wider">Rank</p>
+</a>
+<a class="flex flex-1 flex-col items-center justify-end gap-1 text-slate-400 dark:text-slate-500" href="#">
+<div class="flex h-8 items-center justify-center">
+<span class="material-symbols-outlined">person</span>
+</div>
+<p class="text-[10px] font-bold uppercase tracking-wider">Profile</p>
+</a>
+</div>
+</div>
+</body></html>

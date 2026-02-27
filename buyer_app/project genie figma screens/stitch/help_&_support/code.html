@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Project Genie - Help &amp; Support</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4169e1",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md px-4 py-4 flex items-center justify-between border-b border-slate-200 dark:border-slate-800">
+<div class="flex items-center gap-3">
+<button class="flex h-10 w-10 items-center justify-center rounded-full hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="text-xl font-bold tracking-tight">Help &amp; Support</h1>
+</div>
+<button class="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+<span class="material-symbols-outlined text-2xl">notifications</span>
+</button>
+</header>
+<main class="flex-1 overflow-y-auto pb-24">
+<!-- Hero Section -->
+<div class="px-6 pt-8 pb-6">
+<h2 class="text-3xl font-bold leading-tight mb-2">How can we help you?</h2>
+<p class="text-slate-500 dark:text-slate-400">Search our knowledge base or contact us directly.</p>
+</div>
+<!-- Search Bar -->
+<div class="px-4 mb-8">
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-slate-400 group-focus-within:text-primary transition-colors">search</span>
+</div>
+<input class="block w-full pl-12 pr-4 py-4 bg-white dark:bg-slate-900 border-none rounded-xl shadow-sm ring-1 ring-slate-200 dark:ring-slate-800 focus:ring-2 focus:ring-primary focus:outline-none placeholder:text-slate-400 transition-all" placeholder="Search for articles, guides..." type="text"/>
+</div>
+</div>
+<!-- Quick Help Cards -->
+<div class="px-4 mb-10">
+<div class="bg-primary rounded-xl p-6 text-white shadow-lg shadow-primary/20 flex items-center justify-between">
+<div>
+<h3 class="text-lg font-bold mb-1">Live Support</h3>
+<p class="text-primary-100 text-sm opacity-90">Instant help from our experts</p>
+</div>
+<button class="bg-white text-primary px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-primary-50 transition-colors">
+                    Start Chat
+                </button>
+</div>
+</div>
+<!-- FAQ Categories -->
+<section class="px-4 mb-8">
+<h3 class="text-lg font-bold mb-4 px-2">FAQ Categories</h3>
+<div class="grid grid-cols-2 gap-4">
+<!-- Category Card 1 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow cursor-pointer">
+<div class="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-primary text-2xl">auto_awesome</span>
+</div>
+<h4 class="font-semibold text-sm mb-1">Genie AI Tools</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400">Prompts, drafting, &amp; citations</p>
+</div>
+<!-- Category Card 2 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow cursor-pointer">
+<div class="w-12 h-12 bg-orange-100 dark:bg-orange-900/30 rounded-lg flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-orange-600 text-2xl">credit_card</span>
+</div>
+<h4 class="font-semibold text-sm mb-1">Billing</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400">Subscription &amp; payments</p>
+</div>
+<!-- Category Card 3 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow cursor-pointer">
+<div class="w-12 h-12 bg-green-100 dark:bg-green-900/30 rounded-lg flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-green-600 text-2xl">security</span>
+</div>
+<h4 class="font-semibold text-sm mb-1">Account</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400">Privacy &amp; data security</p>
+</div>
+<!-- Category Card 4 -->
+<div class="bg-white dark:bg-slate-900 p-5 rounded-xl border border-slate-100 dark:border-slate-800 hover:shadow-md transition-shadow cursor-pointer">
+<div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4">
+<span class="material-symbols-outlined text-purple-600 text-2xl">construction</span>
+</div>
+<h4 class="font-semibold text-sm mb-1">Technical</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400">Syncing &amp; app issues</p>
+</div>
+</div>
+</section>
+<!-- Popular Topics Accordion -->
+<section class="px-4 mb-10">
+<h3 class="text-lg font-bold mb-4 px-2">Popular Articles</h3>
+<div class="space-y-3">
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+<button class="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<span class="font-medium text-sm">How to cite sources with Genie AI?</span>
+<span class="material-symbols-outlined text-slate-400">expand_more</span>
+</button>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+<button class="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<span class="font-medium text-sm">Managing your academic group subscription</span>
+<span class="material-symbols-outlined text-slate-400">expand_more</span>
+</button>
+</div>
+<div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden">
+<button class="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<span class="font-medium text-sm">Offline mode capabilities</span>
+<span class="material-symbols-outlined text-slate-400">expand_more</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Other Support Options -->
+<section class="px-4 mb-8">
+<div class="flex flex-col gap-3">
+<button class="w-full flex items-center justify-between p-4 rounded-xl border-2 border-primary/20 text-primary font-semibold hover:bg-primary/5 transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">mail</span>
+<span>Email Support</span>
+</div>
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400 font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined">description</span>
+<span>Visit Help Center Website</span>
+</div>
+<span class="material-symbols-outlined">open_in_new</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 px-6 py-3">
+<div class="flex items-center justify-between max-w-lg mx-auto">
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">work</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Tools</span>
+</a>
+<a class="flex flex-col items-center gap-1" href="#">
+<div class="bg-primary text-white h-12 w-12 rounded-full flex items-center justify-center -mt-8 shadow-lg shadow-primary/40 ring-4 ring-background-light dark:ring-background-dark">
+<span class="material-symbols-outlined text-2xl">magic_button</span>
+</div>
+<span class="text-[10px] font-medium text-primary uppercase tracking-wider">Genie</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Social</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined">help_center</span>
+<span class="text-[10px] font-medium uppercase tracking-wider">Support</span>
+</a>
+</div>
+</nav>
+</body></html>

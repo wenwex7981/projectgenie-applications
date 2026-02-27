@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order Tracking - Project Genie</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4169e1",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#121520",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .step-active .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark font-display text-slate-900 dark:text-slate-100 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-50 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10">
+<div class="flex items-center p-4 justify-between max-w-2xl mx-auto w-full">
+<div class="flex items-center gap-3">
+<div class="text-primary cursor-pointer hover:bg-primary/10 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</div>
+<div>
+<h2 class="text-lg font-bold leading-tight tracking-tight">Track Project</h2>
+<p class="text-xs text-slate-500 font-medium uppercase tracking-wider">ID: #G-98234</p>
+</div>
+</div>
+<button class="flex h-10 w-10 items-center justify-center rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+</header>
+<main class="flex-1 w-full max-w-2xl mx-auto p-4 space-y-4">
+<!-- Status Header Card -->
+<div class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-primary/5">
+<div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+<div class="space-y-1">
+<p class="text-primary font-semibold text-sm uppercase tracking-wide">In Progress</p>
+<h1 class="text-2xl font-bold">Oct 24, 05:30 PM</h1>
+<p class="text-slate-500 text-sm">Estimated Completion Time</p>
+</div>
+<div class="flex -space-x-2">
+<div class="h-12 w-12 rounded-full border-2 border-white dark:border-slate-900 bg-primary/10 flex items-center justify-center overflow-hidden">
+<img class="h-full w-full object-cover" data-alt="Professional specialist profile picture" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCC18a9cOKpEI0iZ_xMrc2Z1iBdvUdH6l87QYPVU5Po7tblFgGanfjfQSMD7Iqtyqkh-FiaMSpIORshrUo-BAnBUOtviECa2UDFj5zSaEogrJ4CZzoVRxfmWRXSQVOJIs3tuoJfppF4s5DKjOLBG_Q-4WWFOM2IKW5ytqydDq6MxguZgf2drtKEuFet9U2xICUT3eFs7bJNj-Cwls6hZKShVBf_iaGjQWga_meJqav3QTITnbeKvs8DEBuCXW7UiN-ENWzMutcRMsI"/>
+</div>
+<div class="h-12 w-12 rounded-full border-2 border-white dark:border-slate-900 bg-primary flex items-center justify-center text-white">
+<span class="material-symbols-outlined">bolt</span>
+</div>
+</div>
+</div>
+<div class="mt-6 p-4 bg-primary/5 rounded-lg border border-primary/10 flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5">info</span>
+<p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+<span class="font-semibold text-primary">Genie Update:</span> Your expert Sarah J. is currently refining the final draft and conducting a quality check.
+                </p>
+</div>
+</div>
+<!-- Progress Stepper (Swiggy Style) -->
+<div class="bg-white dark:bg-slate-900 rounded-xl p-6 shadow-sm border border-primary/5">
+<h3 class="text-base font-bold mb-6">Project Timeline</h3>
+<div class="relative">
+<!-- Vertical Line -->
+<div class="absolute left-[11px] top-2 bottom-2 w-0.5 bg-slate-100 dark:bg-slate-800"></div>
+<div class="space-y-8 relative">
+<!-- Step 1: Completed -->
+<div class="flex gap-4 group">
+<div class="relative z-10 flex h-6 w-6 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100">Order Placed</p>
+<span class="text-[10px] font-medium text-slate-400 uppercase">Oct 23, 10:00 AM</span>
+</div>
+<p class="text-xs text-slate-500 mt-0.5">We've received your request and payment.</p>
+</div>
+</div>
+<!-- Step 2: Completed -->
+<div class="flex gap-4 group">
+<div class="relative z-10 flex h-6 w-6 items-center justify-center rounded-full bg-green-500 text-white shadow-sm">
+<span class="material-symbols-outlined text-sm">check</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<p class="text-sm font-bold text-slate-900 dark:text-slate-100">Assigned</p>
+<span class="text-[10px] font-medium text-slate-400 uppercase">Oct 23, 11:30 AM</span>
+</div>
+<p class="text-xs text-slate-500 mt-0.5">Specialist Sarah J. has been assigned to your project.</p>
+</div>
+</div>
+<!-- Step 3: Active -->
+<div class="flex gap-4 group">
+<div class="relative z-10 flex h-6 w-6 items-center justify-center rounded-full bg-primary text-white shadow-[0_0_0_4px_rgba(65,105,225,0.2)] animate-pulse">
+<span class="material-symbols-outlined text-sm">pending</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<p class="text-sm font-bold text-primary">In Progress</p>
+<span class="text-[10px] font-bold text-primary uppercase">Active Now</span>
+</div>
+<p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5">Work is currently underway. Research phase completed.</p>
+</div>
+</div>
+<!-- Step 4: Pending -->
+<div class="flex gap-4 group">
+<div class="relative z-10 flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500">
+<span class="material-symbols-outlined text-sm">rate_review</span>
+</div>
+<div class="flex-1 opacity-60">
+<div class="flex justify-between items-start">
+<p class="text-sm font-bold">Review</p>
+<span class="text-[10px] font-medium uppercase italic">Waiting</span>
+</div>
+<p class="text-xs text-slate-500 mt-0.5">Your project will be ready for feedback shortly.</p>
+</div>
+</div>
+<!-- Step 5: Pending -->
+<div class="flex gap-4 group">
+<div class="relative z-10 flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 text-slate-400 dark:text-slate-500">
+<span class="material-symbols-outlined text-sm">package_2</span>
+</div>
+<div class="flex-1 opacity-60">
+<div class="flex justify-between items-start">
+<p class="text-sm font-bold">Delivered</p>
+<span class="text-[10px] font-medium uppercase italic">Waiting</span>
+</div>
+<p class="text-xs text-slate-500 mt-0.5">Final files will be ready for secure download.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Project Details Card -->
+<div class="bg-white dark:bg-slate-900 rounded-xl overflow-hidden shadow-sm border border-primary/5">
+<div class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-800/50">
+<span class="text-sm font-bold">Order Summary</span>
+<span class="material-symbols-outlined text-slate-400">expand_more</span>
+</div>
+<div class="p-4 flex gap-4">
+<div class="h-16 w-16 rounded-lg bg-slate-100 dark:bg-slate-800 overflow-hidden shrink-0">
+<img class="h-full w-full object-cover" data-alt="Project analytics dashboard thumbnail" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNgJ-ui07635cyIYApd03GuIKsUgLgBzZgxjGr5QTpy69FOqSZxbx25BhDRa1u0krA1UGlOh8t0Qy--5JJr3LcrEs_dM9V7PrV9X0uYEW1KJg-52PPA7NPSr2phzMtSdpPzoMgmJS75CNOJbXxZ3LCREwJlg4iTHJQmwGRlMG0YeEcQTgh82y4JEJAVtHoS9CkKmwCIu23xfW3uYd4wSC2OGccEM7D-olKIm_Jzf7VCv6ZE-AtkOsFWojhgpM4Au-utrDtbKIaEJ0"/>
+</div>
+<div class="flex-1 space-y-1">
+<p class="font-semibold text-sm">Market Research &amp; Analysis</p>
+<p class="text-xs text-slate-500">Premium Package • 2 Revisions</p>
+<div class="flex items-center gap-2 pt-1">
+<span class="text-xs font-bold text-primary bg-primary/10 px-2 py-0.5 rounded">Paid</span>
+<span class="text-xs text-slate-400 font-medium">Invoice #INV-2023-99</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Buttons Section -->
+<div class="grid grid-cols-2 gap-3 pt-2">
+<button class="flex items-center justify-center gap-2 h-12 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 font-semibold text-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-lg">support_agent</span>
+                Help Center
+            </button>
+<button class="flex items-center justify-center gap-2 h-12 rounded-xl bg-primary text-white font-semibold text-sm hover:bg-primary/90 transition-colors shadow-md shadow-primary/20">
+<span class="material-symbols-outlined text-lg">chat</span>
+                Message Expert
+            </button>
+</div>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="sticky bottom-0 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800 pb-safe shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+<div class="max-w-2xl mx-auto flex justify-around items-center px-4 py-3">
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Home</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1">receipt_long</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">My Orders</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">forum</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Inbox</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-slate-400 dark:text-slate-500" href="#">
+<span class="material-symbols-outlined">account_circle</span>
+<span class="text-[10px] font-bold uppercase tracking-tighter">Profile</span>
+</a>
+</div>
+</nav>
+</body></html>
