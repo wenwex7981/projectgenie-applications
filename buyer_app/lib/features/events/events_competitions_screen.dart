@@ -22,14 +22,43 @@ class _EventData {
   });
 }
 
-class EventsCompetitionsScreen extends StatelessWidget {
+class EventsCompetitionsScreen extends StatefulWidget {
   const EventsCompetitionsScreen({super.key});
 
-  static const List<_EventData> _events = [
-    _EventData(title: 'National Hackathon 2026', date: '15 Mar 2026', location: 'Online', tag: 'HACKATHON', prize: '₹2,00,000', image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=800', isFree: true),
-    _EventData(title: 'AI/ML Workshop Series', date: '22 Mar 2026', location: 'Hyderabad', tag: 'WORKSHOP', prize: 'Certificate', image: 'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=800', isFree: false),
-    _EventData(title: 'Flutter Bootcamp 2026', date: '01 Apr 2026', location: 'Bangalore', tag: 'BOOTCAMP', prize: '₹50,000', image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800', isFree: true),
-  ];
+  @override
+  State<EventsCompetitionsScreen> createState() => _EventsCompetitionsScreenState();
+}
+
+class _EventsCompetitionsScreenState extends State<EventsCompetitionsScreen> {
+  List<dynamic> _events = [];
+  bool _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadEvents();
+  }
+
+  Future<void> _loadEvents() async {
+    try {
+      final data = await ApiService.getHackathons();
+      if (mounted) {
+        setState(() {
+          _events = data;
+          _loading = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _loading = false;
+          _events = [
+            {'title': 'National Hackathon 2026', 'date': '15 Mar 2026', 'location': 'Online', 'tag': 'HACKATHON', 'prizePool': '₹2,00,000', 'imageUrl': 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=800', 'isFree': true},
+          ];
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +74,9 @@ class EventsCompetitionsScreen extends StatelessWidget {
         elevation: 0,
         centerTitle: true,
       ),
-      body: CustomScrollView(
+      body: _loading 
+        ? const Center(child: CircularProgressIndicator()) 
+        : CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
             child: Padding(
@@ -128,7 +159,15 @@ class EventsCompetitionsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildEventCard(_EventData event) {
+  Widget _buildEventCard(dynamic event) {
+    final title = event['title'] ?? 'Hackathon';
+    final tag = event['tag'] ?? 'HACKATHON';
+    final isFree = event['isFree'] ?? true;
+    final date = event['date'] ?? 'TBA';
+    final location = event['location'] ?? 'Online';
+    final prize = event['prizePool'] ?? 'TBA';
+    final image = event['imageUrl'] ?? 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&q=80&w=800';
+
     return Container(
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
@@ -148,7 +187,8 @@ class EventsCompetitionsScreen extends StatelessWidget {
               height: 160,
               width: double.infinity,
               decoration: BoxDecoration(
-                image: DecorationImage(image: NetworkImage(event.image), fit: BoxFit.cover),
+                color: Colors.grey[200],
+                image: DecorationImage(image: NetworkImage(image), fit: BoxFit.cover),
               ),
               child: Container(
                 decoration: BoxDecoration(
@@ -172,23 +212,23 @@ class EventsCompetitionsScreen extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(color: AppColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(8)),
-                      child: Text(event.tag, style: GoogleFonts.inter(color: AppColors.primary, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 0.5)),
+                      child: Text(tag, style: GoogleFonts.inter(color: AppColors.primary, fontSize: 10, fontWeight: FontWeight.w900, letterSpacing: 0.5)),
                     ),
-                    Text(event.isFree ? 'Free Entry' : 'Paid', style: GoogleFonts.inter(color: event.isFree ? Colors.green : Colors.orange, fontSize: 12, fontWeight: FontWeight.w800)),
+                    Text(isFree ? 'Free Entry' : 'Paid', style: GoogleFonts.inter(color: isFree ? Colors.green : Colors.orange, fontSize: 12, fontWeight: FontWeight.w800)),
                   ],
                 ),
                 const SizedBox(height: 12),
-                Text(event.title, style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
+                Text(title, style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
                 const SizedBox(height: 8),
                 Row(
                   children: [
                     const Icon(Icons.calendar_today_rounded, size: 14, color: AppColors.textTertiary),
                     const SizedBox(width: 8),
-                    Text(event.date, style: GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.w500)),
+                    Text(date, style: GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.w500)),
                     const SizedBox(width: 16),
                     const Icon(Icons.location_on_rounded, size: 14, color: AppColors.textTertiary),
                     const SizedBox(width: 8),
-                    Text(event.location, style: GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.w500)),
+                    Text(location, style: GoogleFonts.inter(color: AppColors.textSecondary, fontSize: 12, fontWeight: FontWeight.w500)),
                   ],
                 ),
                 const SizedBox(height: 20),
@@ -201,7 +241,7 @@ class EventsCompetitionsScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text('Reward', style: GoogleFonts.inter(color: AppColors.textTertiary, fontSize: 10, fontWeight: FontWeight.w700, letterSpacing: 0.5)),
-                          Text(event.prize, style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w900)),
+                          Text(prize, style: GoogleFonts.inter(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w900)),
                         ],
                       ),
                     ),

@@ -3,7 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/services/api_service.dart';
 import 'add_service_screen.dart';
-
+import 'add_project_screen.dart';
+import 'add_hackathon_screen.dart';
 class VendorServicesScreen extends StatefulWidget {
   final String vendorId;
   const VendorServicesScreen({super.key, required this.vendorId});
@@ -16,12 +17,13 @@ class _VendorServicesScreenState extends State<VendorServicesScreen> with Single
   late TabController _tabCtrl;
   List<dynamic> _services = [];
   List<dynamic> _projects = [];
+  List<dynamic> _hackathons = [];
   bool _loading = true;
 
   @override
   void initState() {
     super.initState();
-    _tabCtrl = TabController(length: 2, vsync: this);
+    _tabCtrl = TabController(length: 3, vsync: this);
     _loadData();
   }
 
@@ -30,7 +32,8 @@ class _VendorServicesScreenState extends State<VendorServicesScreen> with Single
     try {
       final services = await ApiService.getVendorServices(widget.vendorId);
       final projects = await ApiService.getVendorProjects(widget.vendorId);
-      if (mounted) setState(() { _services = services; _projects = projects; _loading = false; });
+      final hackathons = await ApiService.getVendorHackathons(widget.vendorId);
+      if (mounted) setState(() { _services = services; _projects = projects; _hackathons = hackathons; _loading = false; });
     } catch (e) {
       // Offline fallback
       if (mounted) setState(() {
@@ -42,6 +45,9 @@ class _VendorServicesScreenState extends State<VendorServicesScreen> with Single
         _projects = [
           {'id': '1', 'title': 'AI Plant Disease Detection', 'domain': 'AI/ML', 'price': '₹4,999', 'rating': 4.9, 'enrollees': 1250, 'isActive': true},
           {'id': '2', 'title': 'Sentiment Analysis on Twitter', 'domain': 'Data Science', 'price': '₹2,999', 'rating': 4.4, 'enrollees': 680, 'isActive': true},
+        ];
+        _hackathons = [
+          {'id': '1', 'title': 'Global AI Hackathon 2026', 'organizer': 'TechVision', 'prizePool': '₹5,00,000', 'teamSize': '2-4 Members', 'isActive': true},
         ];
         _loading = false;
       });
@@ -64,7 +70,13 @@ class _VendorServicesScreenState extends State<VendorServicesScreen> with Single
                   Text('My Listings', style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w900, color: VC.text)),
                   const Spacer(),
                   ElevatedButton.icon(
-                    onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => AddServiceScreen(vendorId: widget.vendorId))).then((_) => _loadData()),
+                    onPressed: () {
+                      Widget target;
+                      if (_tabCtrl.index == 0) target = AddServiceScreen(vendorId: widget.vendorId);
+                      else if (_tabCtrl.index == 1) target = AddProjectScreen(vendorId: widget.vendorId);
+                      else target = AddHackathonScreen(vendorId: widget.vendorId);
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => target)).then((_) => _loadData());
+                    },
                     icon: const Icon(Icons.add_rounded, size: 18),
                     label: Text('Add New', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w700)),
                     style: ElevatedButton.styleFrom(
@@ -83,6 +95,7 @@ class _VendorServicesScreenState extends State<VendorServicesScreen> with Single
                   tabs: [
                     Tab(text: 'Services (${_services.length})'),
                     Tab(text: 'Projects (${_projects.length})'),
+                    Tab(text: 'Hackathons (${_hackathons.length})'),
                   ],
                 ),
               ]),
@@ -93,6 +106,7 @@ class _VendorServicesScreenState extends State<VendorServicesScreen> with Single
                   : TabBarView(controller: _tabCtrl, children: [
                       _buildServicesList(),
                       _buildProjectsList(),
+                      _buildHackathonsList(),
                     ]),
             ),
           ],
@@ -213,6 +227,61 @@ class _VendorServicesScreenState extends State<VendorServicesScreen> with Single
     );
   }
 
+  Widget _buildHackathonsList() {
+    if (_hackathons.isEmpty) return _empty('No hackathons yet', 'Host your first hackathon');
+    return RefreshIndicator(
+      onRefresh: _loadData,
+      child: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: _hackathons.length,
+        itemBuilder: (context, index) {
+          final h = _hackathons[index];
+          return Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: VC.border), boxShadow: VC.softShadow),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Row(children: [
+                Expanded(child: Text(h['title'] ?? '', style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w700, color: VC.text))),
+                PopupMenuButton<String>(
+                  onSelected: (v) => _handleHackathonAction(v, h),
+                  itemBuilder: (_) => [
+                    const PopupMenuItem(value: 'edit', child: Text('Edit')),
+                    const PopupMenuItem(value: 'delete', child: Text('Delete')),
+                  ],
+                  child: const Icon(Icons.more_vert_rounded, color: VC.textTer),
+                ),
+              ]),
+              const SizedBox(height: 8),
+              Row(children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(color: const Color(0xFFFEF3C7), borderRadius: BorderRadius.circular(6)),
+                  child: Text(h['organizer'] ?? 'Unknown', style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w600, color: const Color(0xFFD97706))),
+                ),
+                const SizedBox(width: 8),
+                Icon(Icons.emoji_events_rounded, size: 14, color: VC.accent),
+                Text(' Pool: ${h['prizePool'] ?? 'TBA'}', style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: VC.accent)),
+              ]),
+              const SizedBox(height: 12),
+              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                Row(children: [
+                   Icon(Icons.group_rounded, size: 14, color: VC.textTer),
+                   Text(' ${h['teamSize'] ?? '1-4'}', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w700, color: VC.textSec)),
+                ]),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(color: (h['isActive'] ?? true) ? VC.successBg : VC.errorBg, borderRadius: BorderRadius.circular(6)),
+                  child: Text((h['isActive'] ?? true) ? 'Active' : 'Inactive', style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w700, color: (h['isActive'] ?? true) ? VC.success : VC.error)),
+                ),
+              ]),
+            ]),
+          );
+        },
+      ),
+    );
+  }
+
   Widget _miniStat(IconData icon, String val, String label) {
     return Row(children: [
       Icon(icon, size: 14, color: VC.textTer),
@@ -240,6 +309,12 @@ class _VendorServicesScreenState extends State<VendorServicesScreen> with Single
   void _handleProjectAction(String action, dynamic project) async {
     if (action == 'delete') {
       try { await ApiService.deleteProject(project['id']); _loadData(); } catch (_) {}
+    }
+  }
+
+  void _handleHackathonAction(String action, dynamic hackathon) async {
+    if (action == 'delete') {
+      try { await ApiService.deleteHackathon(hackathon['id']); _loadData(); } catch (_) {}
     }
   }
 }

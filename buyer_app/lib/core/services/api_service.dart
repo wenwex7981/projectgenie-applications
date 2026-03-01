@@ -403,6 +403,40 @@ class ApiService {
   }
 
   // ═══════════════════════════════════════════════════════════════════
+  //  HACKATHONS
+  // ═══════════════════════════════════════════════════════════════════
+
+  static Future<List<Map<String, dynamic>>> getHackathons() async {
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/hackathons'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data is List) {
+          return List<Map<String, dynamic>>.from(data);
+        }
+      }
+    } catch (e) {
+      print('API Error: $e');
+    }
+    return [];
+  }
+
+  static Future<List<Map<String, dynamic>>> getFeaturedHackathons() async {
+    try {
+      final response = await http.get(Uri.parse('$baseUrl/hackathons/featured'));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data is List) {
+          return List<Map<String, dynamic>>.from(data);
+        }
+      }
+    } catch (e) {
+      print('API Error: $e');
+    }
+    return [];
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
   //  BUNDLES
   // ═══════════════════════════════════════════════════════════════════
 

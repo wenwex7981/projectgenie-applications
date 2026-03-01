@@ -376,6 +376,76 @@ class ApiService {
   }
 
   // ═══════════════════════════════════════════════════════════════════
+  //  HACKATHONS CRUD
+  // ═══════════════════════════════════════════════════════════════════
+
+  static Future<List<dynamic>> getVendorHackathons(String vendorId) async {
+    try {
+      final res = await http.get(
+        Uri.parse('$baseUrl/hackathons?vendorId=$vendorId'),
+        headers: _authHeaders,
+      );
+      if (res.statusCode == 200) return jsonDecode(res.body);
+    } catch (e) {
+      print('API Error: $e');
+    }
+    return [];
+  }
+
+  static Future<Map<String, dynamic>> createHackathon(
+    Map<String, dynamic> data,
+  ) async {
+    try {
+      if (_vendorId == null)
+        throw Exception('Vendor Session Expired. Please login again.');
+      data['vendorId'] = _vendorId;
+      final res = await http.post(
+        Uri.parse('$baseUrl/hackathons'),
+        headers: _authHeaders,
+        body: jsonEncode(data),
+      );
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        return jsonDecode(res.body);
+      } else {
+        throw Exception(res.body);
+      }
+    } catch (e) {
+      print('API Error (createHackathon): ${e.toString()}');
+      rethrow;
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateHackathon(
+    String id,
+    Map<String, dynamic> data,
+  ) async {
+    try {
+      final res = await http.put(
+        Uri.parse('$baseUrl/hackathons/$id'),
+        headers: _authHeaders,
+        body: jsonEncode(data),
+      );
+      if (res.statusCode == 200) return jsonDecode(res.body);
+    } catch (e) {
+      print('API Error: $e');
+    }
+    throw Exception('Failed to update hackathon');
+  }
+
+  static Future<void> deleteHackathon(String id) async {
+    try {
+      final res = await http.delete(
+        Uri.parse('$baseUrl/hackathons/$id'),
+        headers: _authHeaders,
+      );
+      if (res.statusCode != 200) throw Exception('Failed to delete hackathon');
+    } catch (e) {
+      print('API Error: $e');
+      rethrow;
+    }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
   //  ORDERS
   // ═══════════════════════════════════════════════════════════════════
 
