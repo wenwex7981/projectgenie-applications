@@ -28,6 +28,7 @@ model Vendor {
   updatedAt     DateTime  @updatedAt
   services      Service[]
   projects      Project[]
+  hackathons    Hackathon[]
   orders        Order[]
   customOrders  CustomOrder[]
   transactions  Transaction[]
@@ -126,6 +127,25 @@ model Project {
   category      Category? @relation(fields: [categoryId], references: [id])
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+}
+
+// ─── HACKATHON ──────────────────────────────────────────────────────
+model Hackathon {
+  id              String    @id @default(uuid())
+  title           String
+  description     String
+  organizer       String
+  date            String
+  teamSize        String
+  prizePool       String
+  registrationFee String?
+  imageUrl        String?
+  vendorId        String?
+  vendor          Vendor?   @relation(fields: [vendorId], references: [id])
+  isFeatured      Boolean   @default(false)
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 // ─── REVIEW ─────────────────────────────────────────────────────────

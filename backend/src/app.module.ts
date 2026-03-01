@@ -15,6 +15,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { ChatsModule } from './chats/chats.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { SearchModule } from './search/search.module';
+import { HackathonsModule } from './hackathons/hackathons.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { SearchModule } from './search/search.module';
     ChatsModule,
     ReviewsModule,
     SearchModule,
+    HackathonsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
