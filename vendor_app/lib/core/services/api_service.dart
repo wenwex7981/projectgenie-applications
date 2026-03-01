@@ -24,7 +24,10 @@ class ApiService {
   //  AUTH
   // ═══════════════════════════════════════════════════════════════════
 
-  static Future<Map<String, dynamic>> vendorLogin(String email, String password) async {
+  static Future<Map<String, dynamic>> vendorLogin(
+    String email,
+    String password,
+  ) async {
     try {
       final res = await http.post(
         Uri.parse('$baseUrl/auth/vendor/login'),
@@ -48,18 +51,24 @@ class ApiService {
   }
 
   static Future<Map<String, dynamic>> vendorRegister({
-    required String email, required String password,
-    required String name, required String businessName,
-    String? phone, String? bio,
+    required String email,
+    required String password,
+    required String name,
+    required String businessName,
+    String? phone,
+    String? bio,
   }) async {
     try {
       final res = await http.post(
         Uri.parse('$baseUrl/auth/vendor/register'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'email': email, 'password': password,
-          'name': name, 'businessName': businessName,
-          'phone': phone, 'bio': bio,
+          'email': email,
+          'password': password,
+          'name': name,
+          'businessName': businessName,
+          'phone': phone,
+          'bio': bio,
         }),
       );
       if (res.statusCode == 200 || res.statusCode == 201) {
@@ -78,7 +87,10 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> verifyOtp(String email, String code) async {
+  static Future<Map<String, dynamic>> verifyOtp(
+    String email,
+    String code,
+  ) async {
     try {
       final res = await http.post(
         Uri.parse('$baseUrl/auth/verify-otp'),
@@ -101,7 +113,10 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> verifyLoginOtp(String email, String code) async {
+  static Future<Map<String, dynamic>> verifyLoginOtp(
+    String email,
+    String code,
+  ) async {
     try {
       final res = await http.post(
         Uri.parse('$baseUrl/auth/verify-login-otp'),
@@ -124,7 +139,10 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> resendOtp(String email, {String type = 'login'}) async {
+  static Future<Map<String, dynamic>> resendOtp(
+    String email, {
+    String type = 'login',
+  }) async {
     try {
       final res = await http.post(
         Uri.parse('$baseUrl/auth/resend-otp'),
@@ -174,8 +192,12 @@ class ApiService {
     // Fallback mock
     return {
       'stats': {
-        'totalOrders': 0, 'activeOrders': 0, 'completedOrders': 0,
-        'totalServices': 0, 'totalProjects': 0, 'pendingCustomOrders': 0,
+        'totalOrders': 0,
+        'activeOrders': 0,
+        'completedOrders': 0,
+        'totalServices': 0,
+        'totalProjects': 0,
+        'pendingCustomOrders': 0,
         'totalEarnings': 0,
       },
       'recentOrders': [],
@@ -196,7 +218,10 @@ class ApiService {
     throw Exception('Failed to load profile');
   }
 
-  static Future<Map<String, dynamic>> updateProfile(String vendorId, Map<String, dynamic> data) async {
+  static Future<Map<String, dynamic>> updateProfile(
+    String vendorId,
+    Map<String, dynamic> data,
+  ) async {
     try {
       final res = await http.put(
         Uri.parse('$baseUrl/vendors/$vendorId'),
@@ -227,9 +252,12 @@ class ApiService {
     return [];
   }
 
-  static Future<Map<String, dynamic>> createService(Map<String, dynamic> data) async {
+  static Future<Map<String, dynamic>> createService(
+    Map<String, dynamic> data,
+  ) async {
     try {
-      if (_vendorId == null) throw Exception('Vendor Session Expired. Please login again.');
+      if (_vendorId == null)
+        throw Exception('Vendor Session Expired. Please login again.');
       data['vendorId'] = _vendorId;
       final res = await http.post(
         Uri.parse('$baseUrl/services'),
@@ -247,7 +275,10 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> updateService(String id, Map<String, dynamic> data) async {
+  static Future<Map<String, dynamic>> updateService(
+    String id,
+    Map<String, dynamic> data,
+  ) async {
     try {
       final res = await http.put(
         Uri.parse('$baseUrl/services/$id'),
@@ -291,9 +322,12 @@ class ApiService {
     return [];
   }
 
-  static Future<Map<String, dynamic>> createProject(Map<String, dynamic> data) async {
+  static Future<Map<String, dynamic>> createProject(
+    Map<String, dynamic> data,
+  ) async {
     try {
-      if (_vendorId == null) throw Exception('Vendor Session Expired. Please login again.');
+      if (_vendorId == null)
+        throw Exception('Vendor Session Expired. Please login again.');
       data['vendorId'] = _vendorId;
       final res = await http.post(
         Uri.parse('$baseUrl/projects'),
@@ -311,7 +345,10 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> updateProject(String id, Map<String, dynamic> data) async {
+  static Future<Map<String, dynamic>> updateProject(
+    String id,
+    Map<String, dynamic> data,
+  ) async {
     try {
       final res = await http.put(
         Uri.parse('$baseUrl/projects/$id'),
@@ -342,14 +379,14 @@ class ApiService {
   //  ORDERS
   // ═══════════════════════════════════════════════════════════════════
 
-  static Future<List<dynamic>> getVendorOrders(String vendorId, {String? status}) async {
+  static Future<List<dynamic>> getVendorOrders(
+    String vendorId, {
+    String? status,
+  }) async {
     try {
       var url = '$baseUrl/vendors/$vendorId/orders';
       if (status != null) url += '?status=$status';
-      final res = await http.get(
-        Uri.parse(url),
-        headers: _authHeaders,
-      );
+      final res = await http.get(Uri.parse(url), headers: _authHeaders);
       if (res.statusCode == 200) return jsonDecode(res.body);
     } catch (e) {
       print('API Error: $e');
@@ -357,7 +394,10 @@ class ApiService {
     return [];
   }
 
-  static Future<Map<String, dynamic>> updateOrderStatus(String orderId, String status) async {
+  static Future<Map<String, dynamic>> updateOrderStatus(
+    String orderId,
+    String status,
+  ) async {
     try {
       final res = await http.put(
         Uri.parse('$baseUrl/orders/$orderId/status'),
@@ -388,7 +428,11 @@ class ApiService {
     return [];
   }
 
-  static Future<Map<String, dynamic>> acceptCustomOrder(String orderId, {String? notes, double? price}) async {
+  static Future<Map<String, dynamic>> acceptCustomOrder(
+    String orderId, {
+    String? notes,
+    double? price,
+  }) async {
     try {
       final res = await http.put(
         Uri.parse('$baseUrl/custom-orders/$orderId/accept'),
@@ -402,7 +446,10 @@ class ApiService {
     throw Exception('Failed to accept custom order');
   }
 
-  static Future<Map<String, dynamic>> rejectCustomOrder(String orderId, {String? notes}) async {
+  static Future<Map<String, dynamic>> rejectCustomOrder(
+    String orderId, {
+    String? notes,
+  }) async {
     try {
       final res = await http.put(
         Uri.parse('$baseUrl/custom-orders/$orderId/reject'),
@@ -464,7 +511,9 @@ class ApiService {
   //  CHAT
   // ═══════════════════════════════════════════════════════════════════
 
-  static Future<List<Map<String, dynamic>>> getChatThreads(String vendorId) async {
+  static Future<List<Map<String, dynamic>>> getChatThreads(
+    String vendorId,
+  ) async {
     try {
       final res = await http.get(
         Uri.parse('$baseUrl/chats/threads/vendor/$vendorId'),
@@ -479,7 +528,9 @@ class ApiService {
     return [];
   }
 
-  static Future<List<Map<String, dynamic>>> getChatMessages(String userId) async {
+  static Future<List<Map<String, dynamic>>> getChatMessages(
+    String userId,
+  ) async {
     try {
       final vid = _vendorId ?? '';
       final res = await http.get(
@@ -495,7 +546,10 @@ class ApiService {
     return [];
   }
 
-  static Future<Map<String, dynamic>?> sendMessage(String userId, String text) async {
+  static Future<Map<String, dynamic>?> sendMessage(
+    String userId,
+    String text,
+  ) async {
     try {
       final vid = _vendorId ?? '';
       final res = await http.post(
@@ -543,9 +597,9 @@ class ApiService {
 
   static Future<bool> isServerReachable() async {
     try {
-      final res = await http.get(Uri.parse('$baseUrl/health')).timeout(
-        const Duration(seconds: 3),
-      );
+      final res = await http
+          .get(Uri.parse('$baseUrl/health'))
+          .timeout(const Duration(seconds: 60));
       return res.statusCode == 200;
     } catch (_) {
       return false;

@@ -10,7 +10,7 @@ class ApiService {
   }
 
   // ─── Connection Config ────────────────────────────────────────────
-  static const Duration _timeout = Duration(seconds: 8);
+  static const Duration _timeout = Duration(seconds: 60);
 
   // ─── Stored JWT Token ──────────────────────────────────────────────
   static String? _token;
@@ -33,7 +33,9 @@ class ApiService {
   static dynamic _unwrap(String body) {
     try {
       final decoded = json.decode(body);
-      if (decoded is Map && decoded.containsKey('success') && decoded.containsKey('data')) {
+      if (decoded is Map &&
+          decoded.containsKey('success') &&
+          decoded.containsKey('data')) {
         return decoded['data'];
       }
       return decoded;
@@ -48,10 +50,9 @@ class ApiService {
 
   static Future<List<Map<String, dynamic>>> getVendors() async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/vendors'),
-        headers: _headers,
-      ).timeout(_timeout);
+      final response = await http
+          .get(Uri.parse('$baseUrl/vendors'), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
         final data = _unwrap(response.body);
         if (data is List) return List<Map<String, dynamic>>.from(data);
@@ -64,10 +65,9 @@ class ApiService {
 
   static Future<Map<String, dynamic>?> getVendorProfile(String vendorId) async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/vendors/$vendorId'),
-        headers: _headers,
-      ).timeout(_timeout);
+      final response = await http
+          .get(Uri.parse('$baseUrl/vendors/$vendorId'), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
         final data = _unwrap(response.body);
         if (data is Map) return Map<String, dynamic>.from(data);
@@ -83,16 +83,24 @@ class ApiService {
   // ═══════════════════════════════════════════════════════════════════
 
   static Future<Map<String, dynamic>> register({
-    required String email, required String password, required String name,
-    String? phone, String? college, String? branch,
+    required String email,
+    required String password,
+    required String name,
+    String? phone,
+    String? college,
+    String? branch,
   }) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/auth/buyer/register'),
         headers: {'Content-Type': 'application/json'},
         body: json.encode({
-          'email': email, 'password': password, 'name': name,
-          'phone': phone, 'college': college, 'branch': branch,
+          'email': email,
+          'password': password,
+          'name': name,
+          'phone': phone,
+          'college': college,
+          'branch': branch,
         }),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -106,7 +114,10 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> login(String email, String password) async {
+  static Future<Map<String, dynamic>> login(
+    String email,
+    String password,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/auth/buyer/login'),
@@ -127,13 +138,20 @@ class ApiService {
       if (e is Exception) rethrow;
       print('API Error: $e. Simulating success for demo.');
       if (email.isNotEmpty && password.length >= 6) {
-        return {'token': 'mock-jwt-token', 'user': {'id': 'user-001', 'name': 'Demo User'}};
+        return {
+          'token': 'mock-jwt-token',
+          'user': {'id': 'user-001', 'name': 'Demo User'},
+        };
       }
       throw Exception('Failed to login');
     }
   }
 
-  static Future<Map<String, dynamic>> verifyOtp(String email, String code, String role) async {
+  static Future<Map<String, dynamic>> verifyOtp(
+    String email,
+    String code,
+    String role,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/auth/verify-otp'),
@@ -156,7 +174,11 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> verifyLoginOtp(String email, String code, String role) async {
+  static Future<Map<String, dynamic>> verifyLoginOtp(
+    String email,
+    String code,
+    String role,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/auth/verify-login-otp'),
@@ -179,7 +201,11 @@ class ApiService {
     }
   }
 
-  static Future<Map<String, dynamic>> resendOtp(String email, String role, {String type = 'login'}) async {
+  static Future<Map<String, dynamic>> resendOtp(
+    String email,
+    String role, {
+    String type = 'login',
+  }) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/auth/resend-otp'),
@@ -228,12 +254,16 @@ class ApiService {
     } catch (e) {
       print('API Error: $e. Using Mock Data.');
     }
-    return AppCategories.main.map((cat) => {
-      'id': cat.id,
-      'title': cat.title,
-      'subtitle': cat.subtitle,
-      'count': cat.count,
-    }).toList();
+    return AppCategories.main
+        .map(
+          (cat) => {
+            'id': cat.id,
+            'title': cat.title,
+            'subtitle': cat.subtitle,
+            'count': cat.count,
+          },
+        )
+        .toList();
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -246,7 +276,7 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data is List && data.isNotEmpty) {
-           return data.map((json) => ServiceModel.fromJson(json)).toList();
+          return data.map((json) => ServiceModel.fromJson(json)).toList();
         }
       }
     } catch (e) {
@@ -272,7 +302,9 @@ class ApiService {
 
   static Future<List<ServiceModel>> getMiniProjects() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/services?category=Mini+Project'));
+      final response = await http.get(
+        Uri.parse('$baseUrl/services?category=Mini+Project'),
+      );
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data is List && data.isNotEmpty) {
@@ -301,10 +333,18 @@ class ApiService {
     } catch (e) {
       print('API Error: $e. Using Mock Data.');
     }
-    
-    List<ServiceModel> all = [...MockData.trendingServices, ...MockData.generalProjects, ...MockData.resumeTemplates];
+
+    List<ServiceModel> all = [
+      ...MockData.trendingServices,
+      ...MockData.generalProjects,
+      ...MockData.resumeTemplates,
+    ];
     if (category == null) return all;
-    return all.where((s) => s.category.contains(category) || category.contains(s.category)).toList();
+    return all
+        .where(
+          (s) => s.category.contains(category) || category.contains(s.category),
+        )
+        .toList();
   }
 
   static Future<Map<String, dynamic>?> getServiceById(String id) async {
@@ -323,7 +363,10 @@ class ApiService {
   //  PROJECTS
   // ═══════════════════════════════════════════════════════════════════
 
-  static Future<List<Map<String, dynamic>>> getProjects({String? domain, bool? featured}) async {
+  static Future<List<Map<String, dynamic>>> getProjects({
+    String? domain,
+    bool? featured,
+  }) async {
     try {
       String url = '$baseUrl/projects';
       List<String> params = [];
@@ -376,7 +419,12 @@ class ApiService {
       print('API Error: $e. Using Mock Data.');
     }
     return [
-      {'title': 'Final Year Complete Bundle', 'items': 'Project + Report + PPT + Video', 'price': '9,999', 'original_price': '15,999'},
+      {
+        'title': 'Final Year Complete Bundle',
+        'items': 'Project + Report + PPT + Video',
+        'price': '9,999',
+        'original_price': '15,999',
+      },
     ];
   }
 
@@ -403,7 +451,10 @@ class ApiService {
     return MockData.orders;
   }
 
-  static Future<Map<String, dynamic>> createOrder(String serviceId, double totalPrice) async {
+  static Future<Map<String, dynamic>> createOrder(
+    String serviceId,
+    double totalPrice,
+  ) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/orders'),
@@ -418,9 +469,12 @@ class ApiService {
         return json.decode(response.body);
       }
     } catch (e) {
-       print('API Error: $e. Simulating success.');
-       await Future.delayed(const Duration(seconds: 1));
-       return {'id': 'ORDER-${DateTime.now().millisecondsSinceEpoch}', 'status': 'success'};
+      print('API Error: $e. Simulating success.');
+      await Future.delayed(const Duration(seconds: 1));
+      return {
+        'id': 'ORDER-${DateTime.now().millisecondsSinceEpoch}',
+        'status': 'success',
+      };
     }
     throw Exception('Failed to create order');
   }
@@ -429,7 +483,9 @@ class ApiService {
   //  CUSTOM ORDERS
   // ═══════════════════════════════════════════════════════════════════
 
-  static Future<Map<String, dynamic>> createCustomOrder(Map<String, dynamic> data) async {
+  static Future<Map<String, dynamic>> createCustomOrder(
+    Map<String, dynamic> data,
+  ) async {
     try {
       data['userId'] = _userId ?? 'user-001';
       final response = await http.post(
@@ -446,7 +502,9 @@ class ApiService {
     throw Exception('Failed to create custom order');
   }
 
-  static Future<List<Map<String, dynamic>>> getCustomOrders({String? userId}) async {
+  static Future<List<Map<String, dynamic>>> getCustomOrders({
+    String? userId,
+  }) async {
     try {
       final uid = userId ?? _userId ?? 'user-001';
       final response = await http.get(
@@ -469,10 +527,9 @@ class ApiService {
   static Future<Map<String, dynamic>?> getUserProfile({String? userId}) async {
     try {
       final uid = userId ?? _userId ?? 'user-001';
-      final response = await http.get(
-        Uri.parse('$baseUrl/users/$uid'),
-        headers: _headers,
-      ).timeout(_timeout);
+      final response = await http
+          .get(Uri.parse('$baseUrl/users/$uid'), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
         final data = _unwrap(response.body);
         if (data is Map) {
@@ -486,7 +543,9 @@ class ApiService {
     return _cachedUser;
   }
 
-  static Future<Map<String, dynamic>?> updateUserProfile(Map<String, dynamic> data) async {
+  static Future<Map<String, dynamic>?> updateUserProfile(
+    Map<String, dynamic> data,
+  ) async {
     try {
       final uid = _userId ?? 'user-001';
       final response = await http.put(
@@ -510,10 +569,9 @@ class ApiService {
   static Future<Map<String, dynamic>?> getWallet() async {
     try {
       final uid = _userId ?? 'user-001';
-      final response = await http.get(
-        Uri.parse('$baseUrl/users/$uid/wallet'),
-        headers: _headers,
-      ).timeout(_timeout);
+      final response = await http
+          .get(Uri.parse('$baseUrl/users/$uid/wallet'), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
         final data = _unwrap(response.body);
         if (data is Map) return Map<String, dynamic>.from(data);
@@ -545,7 +603,10 @@ class ApiService {
   //  SEARCH
   // ═══════════════════════════════════════════════════════════════════
 
-  static Future<Map<String, dynamic>> search(String query, {String? type}) async {
+  static Future<Map<String, dynamic>> search(
+    String query, {
+    String? type,
+  }) async {
     try {
       String url = '$baseUrl/search?q=${Uri.encodeComponent(query)}';
       if (type != null) url += '&type=$type';
@@ -566,7 +627,9 @@ class ApiService {
   static Future<List<Map<String, dynamic>>> getChatThreads() async {
     try {
       final uid = _userId ?? 'user-001';
-      final response = await http.get(Uri.parse('$baseUrl/chats/threads/user/$uid')).timeout(_timeout);
+      final response = await http
+          .get(Uri.parse('$baseUrl/chats/threads/user/$uid'))
+          .timeout(_timeout);
       if (response.statusCode == 200) {
         final data = _unwrap(response.body);
         if (data is List) return List<Map<String, dynamic>>.from(data);
@@ -577,7 +640,9 @@ class ApiService {
     return [];
   }
 
-  static Future<List<Map<String, dynamic>>> getChatMessages(String vendorId) async {
+  static Future<List<Map<String, dynamic>>> getChatMessages(
+    String vendorId,
+  ) async {
     try {
       final uid = _userId ?? 'user-001';
       final response = await http.get(
@@ -592,7 +657,10 @@ class ApiService {
     return [];
   }
 
-  static Future<Map<String, dynamic>?> sendMessage(String vendorId, String text) async {
+  static Future<Map<String, dynamic>?> sendMessage(
+    String vendorId,
+    String text,
+  ) async {
     try {
       final uid = _userId ?? 'user-001';
       final response = await http.post(
@@ -621,7 +689,9 @@ class ApiService {
   static Future<List<Map<String, dynamic>>> getNotifications() async {
     try {
       final uid = _userId ?? 'user-001';
-      final response = await http.get(Uri.parse('$baseUrl/notifications?targetId=$uid')).timeout(_timeout);
+      final response = await http
+          .get(Uri.parse('$baseUrl/notifications?targetId=$uid'))
+          .timeout(_timeout);
       if (response.statusCode == 200) {
         final data = _unwrap(response.body);
         if (data is List) return List<Map<String, dynamic>>.from(data);
@@ -638,7 +708,9 @@ class ApiService {
 
   static Future<List<Map<String, dynamic>>> getReviews(String serviceId) async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/reviews/service/$serviceId'));
+      final response = await http.get(
+        Uri.parse('$baseUrl/reviews/service/$serviceId'),
+      );
       if (response.statusCode == 200) {
         return List<Map<String, dynamic>>.from(json.decode(response.body));
       }
@@ -681,9 +753,9 @@ class ApiService {
 
   static Future<bool> isServerReachable() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/health')).timeout(
-        const Duration(seconds: 3),
-      );
+      final response = await http
+          .get(Uri.parse('$baseUrl/health'))
+          .timeout(const Duration(seconds: 3));
       return response.statusCode == 200;
     } catch (_) {
       return false;

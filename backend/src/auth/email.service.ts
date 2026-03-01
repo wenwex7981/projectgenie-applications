@@ -21,11 +21,22 @@ class EmailService {
           secure: process.env.SMTP_SECURE === 'true',
           auth: { user: smtpUser, pass: smtpPass },
         });
-        console.log('📧 Email: Connected to SMTP server');
+        console.log('📧 Email: Connected to Production SMTP server');
         this.isReady = true;
       } else {
-        console.log('⚠️  Email: No SMTP provided. OTPs will be logged to console only.');
-        this.isReady = false;
+        console.log('⚠️  Email: No SMTP provided. Generating free Ethereal Test Account...');
+        const testAccount = await nodemailer.createTestAccount();
+        this.transporter = nodemailer.createTransport({
+          host: 'smtp.ethereal.email',
+          port: 587,
+          secure: false, // true for 465, false for other ports
+          auth: {
+            user: testAccount.user, // generated ethereal user
+            pass: testAccount.pass, // generated ethereal password
+          },
+        });
+        console.log('📧 Email: Connected to Ethereal Test Server (Preview URLs will be logged)');
+        this.isReady = true;
       }
     } catch (e) {
       console.log('⚠️  Email: Failed to initialize, OTP will be logged to console');

@@ -8,15 +8,19 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin _localNotifications = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin _localNotifications =
+      FlutterLocalNotificationsPlugin();
   RealtimeChannel? _subscription;
 
   Future<void> initialize() async {
-    const AndroidInitializationSettings androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const InitializationSettings initSettings = InitializationSettings(android: androidInit);
-    
+    const AndroidInitializationSettings androidInit =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const InitializationSettings initSettings = InitializationSettings(
+      android: androidInit,
+    );
+
     await _localNotifications.initialize(
-      initSettings,
+      settings: initSettings,
       onDidReceiveNotificationResponse: (response) {
         debugPrint('Notification clicked: ${response.payload}');
       },
@@ -24,26 +28,36 @@ class NotificationService {
 
     // Request permissions for Android 13+
     await _localNotifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.requestNotificationsPermission();
   }
 
-  Future<void> showNotification({required String title, required String body, String? payload}) async {
-    const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
-      'projectgenie_vendor_channel',
-      'Vendor Alerts',
-      channelDescription: 'Important updates and alerts from ProjectGenie Vendor',
-      importance: Importance.max,
-      priority: Priority.high,
-      icon: '@mipmap/ic_launcher',
+  Future<void> showNotification({
+    required String title,
+    required String body,
+    String? payload,
+  }) async {
+    const AndroidNotificationDetails androidDetails =
+        AndroidNotificationDetails(
+          'projectgenie_vendor_channel',
+          'Vendor Alerts',
+          channelDescription:
+              'Important updates and alerts from ProjectGenie Vendor',
+          importance: Importance.max,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        );
+    const NotificationDetails details = NotificationDetails(
+      android: androidDetails,
     );
-    const NotificationDetails details = NotificationDetails(android: androidDetails);
 
     await _localNotifications.show(
-      DateTime.now().millisecondsSinceEpoch ~/ 1000, // unique id safely
-      title,
-      body,
-      details,
+      id: DateTime.now().millisecondsSinceEpoch ~/ 1000, // unique id safely
+      title: title,
+      body: body,
+      notificationDetails: details,
       payload: payload,
     );
   }
@@ -61,9 +75,15 @@ class NotificationService {
           event: PostgresChangeEvent.insert,
           schema: 'public',
           table: 'Notification',
-          filter: PostgresChangeFilter(type: PostgresChangeFilterType.eq, column: 'targetId', value: targetId),
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'targetId',
+            value: targetId,
+          ),
           callback: (payload) {
-            debugPrint('🔔 Realtime push notification received: ${payload.newRecord}');
+            debugPrint(
+              '🔔 Realtime push notification received: ${payload.newRecord}',
+            );
             final data = payload.newRecord;
             showNotification(
               title: data['title'] ?? 'New Notification',
