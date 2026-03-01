@@ -82,6 +82,7 @@ async function main() {
         prisma.category.create({ data: { id: 'cat-blockchain', title: 'Blockchain', icon: 'link', count: 67, sortOrder: 10 } }),
         prisma.category.create({ data: { id: 'cat-cyber', title: 'Cyber Security', icon: 'security', count: 89, sortOrder: 11 } }),
         prisma.category.create({ data: { id: 'cat-resume', title: 'Resume', icon: 'description', count: 350, sortOrder: 12 } }),
+        prisma.category.create({ data: { id: 'cat-research', title: 'Research Paper', icon: 'science', count: 180, sortOrder: 13 } }),
     ]);
 
     // ─── 3. SERVICES ────────────────────────────────────────────────
@@ -184,6 +185,26 @@ async function main() {
             imageUrl: 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800', // Professional document layout
             categoryId: 'cat-resume', vendorId: 'vendor-002',
             features: JSON.stringify(['LaTeX Scripts', 'ATS-Scored', 'Figma Files', 'Cover Letter templates']),
+        },
+        {
+            title: 'IEEE Premium Research Paper Writing & Publishing',
+            description: 'Get your IEEE/Springer paper written and published by our PhD experts. We handle the entire lifecycle from topic selection to literature review, drafting, formatting, and submission negotiations.',
+            vendorName: 'AI Research Lab', price: 14999, originalPrice: 25000,
+            rating: 4.9, reviewCount: 42, deliveryDays: '14 Days',
+            isFeatured: true, isTrending: true,
+            imageUrl: 'https://images.unsplash.com/photo-1456324504439-367cee3b3c32?w=800',
+            categoryId: 'cat-research', vendorId: 'vendor-001',
+            features: JSON.stringify(['IEEE Format', 'Zero Plagiarism', 'Guaranteed Publication', 'Dataset Included']),
+        },
+        {
+            title: 'Professional Resume Writing & LinkedIn Optimization',
+            description: 'Get a professional, ATS-friendly resume tailored to the exact role you are applying to. Our Fortune 500 recruiters will also revitalize your LinkedIn profile for inbound leads.',
+            vendorName: 'CodeMasters', price: 999, originalPrice: 2500,
+            rating: 4.8, reviewCount: 305, deliveryDays: '3 Days',
+            isFeatured: true, isTrending: false,
+            imageUrl: 'https://images.unsplash.com/photo-1586281380117-5a60ae2050cc?w=800',
+            categoryId: 'cat-resume', vendorId: 'vendor-002',
+            features: JSON.stringify(['ATS Optimization', 'LinkedIn Guide', '1-on-1 Strategy session', 'Unlimited Revisions']),
         },
     ];
 
