@@ -7,6 +7,22 @@ class ApiService {
     return 'https://projectgenie-api.onrender.com';
   }
 
+  // ─── Connection Config ────────────────────────────────────────────
+  static const Duration _timeout = Duration(seconds: 60);
+
+  /// Unwrap the enterprise response envelope { success, data, timestamp }
+  static dynamic _unwrap(String body) {
+    try {
+      final decoded = json.decode(body);
+      if (decoded is Map && decoded.containsKey('success') && decoded.containsKey('data')) {
+        return decoded['data'];
+      }
+      return decoded;
+    } catch (_) {
+      return body;
+    }
+  }
+
   // ─── Stored JWT Token & Vendor ID ──────────────────────────────────
   static String? _token;
   static String? _vendorId;
@@ -35,14 +51,14 @@ class ApiService {
         body: jsonEncode({'email': email, 'password': password}),
       );
       if (res.statusCode == 200 || res.statusCode == 201) {
-        final data = jsonDecode(res.body);
+        final data = _unwrap(res.body);
         if (data['token'] != null) {
           _token = data['token'];
           _vendorId = data['vendor']?['id'];
         }
         return data;
       }
-      final err = jsonDecode(res.body);
+      final err = _unwrap(res.body);
       throw Exception(err['message'] ?? 'Login failed');
     } catch (e) {
       if (e is Exception) rethrow;
@@ -72,14 +88,14 @@ class ApiService {
         }),
       );
       if (res.statusCode == 200 || res.statusCode == 201) {
-        final data = jsonDecode(res.body);
+        final data = _unwrap(res.body);
         if (data['token'] != null) {
           _token = data['token'];
           _vendorId = data['vendor']?['id'];
         }
         return data;
       }
-      final err = jsonDecode(res.body);
+      final err = _unwrap(res.body);
       throw Exception(err['message'] ?? 'Registration failed');
     } catch (e) {
       if (e is Exception) rethrow;
@@ -98,14 +114,14 @@ class ApiService {
         body: jsonEncode({'email': email, 'code': code, 'role': 'vendor'}),
       );
       if (res.statusCode == 200 || res.statusCode == 201) {
-        final data = jsonDecode(res.body);
+        final data = _unwrap(res.body);
         if (data['token'] != null) {
           _token = data['token'];
           _vendorId = data['vendor']?['id'];
         }
         return data;
       }
-      final err = jsonDecode(res.body);
+      final err = _unwrap(res.body);
       throw Exception(err['message'] ?? 'OTP verification failed');
     } catch (e) {
       if (e is Exception) rethrow;
@@ -124,14 +140,14 @@ class ApiService {
         body: jsonEncode({'email': email, 'code': code, 'role': 'vendor'}),
       );
       if (res.statusCode == 200 || res.statusCode == 201) {
-        final data = jsonDecode(res.body);
+        final data = _unwrap(res.body);
         if (data['token'] != null) {
           _token = data['token'];
           _vendorId = data['vendor']?['id'];
         }
         return data;
       }
-      final err = jsonDecode(res.body);
+      final err = _unwrap(res.body);
       throw Exception(err['message'] ?? 'OTP verification failed');
     } catch (e) {
       if (e is Exception) rethrow;
@@ -150,7 +166,7 @@ class ApiService {
         body: jsonEncode({'email': email, 'role': 'vendor', 'type': type}),
       );
       if (res.statusCode == 200 || res.statusCode == 201) {
-        return jsonDecode(res.body);
+        return _unwrap(res.body);
       }
       throw Exception('Failed to resend OTP');
     } catch (e) {
@@ -167,7 +183,7 @@ class ApiService {
         body: jsonEncode({'token': token}),
       );
       if (res.statusCode == 200 || res.statusCode == 201) {
-        return jsonDecode(res.body);
+        return _unwrap(res.body);
       }
       throw Exception('Invalid token');
     } catch (e) {
@@ -185,7 +201,7 @@ class ApiService {
         Uri.parse('$baseUrl/vendors/$vendorId/dashboard'),
         headers: _authHeaders,
       );
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -211,7 +227,7 @@ class ApiService {
         Uri.parse('$baseUrl/vendors/$vendorId'),
         headers: _authHeaders,
       );
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -228,7 +244,7 @@ class ApiService {
         headers: _authHeaders,
         body: jsonEncode(data),
       );
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -245,7 +261,7 @@ class ApiService {
         Uri.parse('$baseUrl/vendors/$vendorId/services'),
         headers: _authHeaders,
       );
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -265,7 +281,7 @@ class ApiService {
         body: jsonEncode(data),
       );
       if (res.statusCode == 200 || res.statusCode == 201) {
-        return jsonDecode(res.body);
+        return _unwrap(res.body);
       } else {
         throw Exception(res.body);
       }
@@ -285,7 +301,7 @@ class ApiService {
         headers: _authHeaders,
         body: jsonEncode(data),
       );
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -315,7 +331,7 @@ class ApiService {
         Uri.parse('$baseUrl/vendors/$vendorId/projects'),
         headers: _authHeaders,
       );
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -335,7 +351,7 @@ class ApiService {
         body: jsonEncode(data),
       );
       if (res.statusCode == 200 || res.statusCode == 201) {
-        return jsonDecode(res.body);
+        return _unwrap(res.body);
       } else {
         throw Exception(res.body);
       }
@@ -355,7 +371,7 @@ class ApiService {
         headers: _authHeaders,
         body: jsonEncode(data),
       );
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -385,7 +401,7 @@ class ApiService {
         Uri.parse('$baseUrl/hackathons?vendorId=$vendorId'),
         headers: _authHeaders,
       );
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -405,7 +421,7 @@ class ApiService {
         body: jsonEncode(data),
       );
       if (res.statusCode == 200 || res.statusCode == 201) {
-        return jsonDecode(res.body);
+        return _unwrap(res.body);
       } else {
         throw Exception(res.body);
       }
@@ -425,7 +441,7 @@ class ApiService {
         headers: _authHeaders,
         body: jsonEncode(data),
       );
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -457,7 +473,7 @@ class ApiService {
       var url = '$baseUrl/vendors/$vendorId/orders';
       if (status != null) url += '?status=$status';
       final res = await http.get(Uri.parse(url), headers: _authHeaders);
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -474,7 +490,7 @@ class ApiService {
         headers: _authHeaders,
         body: jsonEncode({'status': status}),
       );
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -491,7 +507,7 @@ class ApiService {
         Uri.parse('$baseUrl/vendors/$vendorId/custom-orders'),
         headers: _authHeaders,
       );
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -509,7 +525,7 @@ class ApiService {
         headers: _authHeaders,
         body: jsonEncode({'vendorNotes': notes, 'quotedPrice': price}),
       );
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -526,7 +542,7 @@ class ApiService {
         headers: _authHeaders,
         body: jsonEncode({'vendorNotes': notes}),
       );
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -543,7 +559,7 @@ class ApiService {
         Uri.parse('$baseUrl/vendors/$vendorId/earnings'),
         headers: _authHeaders,
       );
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -556,7 +572,7 @@ class ApiService {
         Uri.parse('$baseUrl/vendors/$vendorId/transactions'),
         headers: _authHeaders,
       );
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -570,7 +586,7 @@ class ApiService {
   static Future<List<dynamic>> getCategories() async {
     try {
       final res = await http.get(Uri.parse('$baseUrl/categories'));
-      if (res.statusCode == 200) return jsonDecode(res.body);
+      if (res.statusCode == 200) return _unwrap(res.body);
     } catch (e) {
       print('API Error: $e');
     }
@@ -590,7 +606,7 @@ class ApiService {
         headers: _authHeaders,
       );
       if (res.statusCode == 200) {
-        return List<Map<String, dynamic>>.from(jsonDecode(res.body));
+        return List<Map<String, dynamic>>.from(_unwrap(res.body));
       }
     } catch (e) {
       print('API Error: $e');
@@ -608,7 +624,7 @@ class ApiService {
         headers: _authHeaders,
       );
       if (res.statusCode == 200) {
-        return List<Map<String, dynamic>>.from(jsonDecode(res.body));
+        return List<Map<String, dynamic>>.from(_unwrap(res.body));
       }
     } catch (e) {
       print('API Error: $e');
@@ -633,7 +649,7 @@ class ApiService {
         }),
       );
       if (res.statusCode == 200 || res.statusCode == 201) {
-        return jsonDecode(res.body);
+        return _unwrap(res.body);
       }
     } catch (e) {
       print('API Error: $e');
@@ -653,7 +669,7 @@ class ApiService {
         headers: _authHeaders,
       );
       if (res.statusCode == 200) {
-        return List<Map<String, dynamic>>.from(jsonDecode(res.body));
+        return List<Map<String, dynamic>>.from(_unwrap(res.body));
       }
     } catch (e) {
       print('API Error: $e');
@@ -683,7 +699,7 @@ class ApiService {
         }),
       );
       if (res.statusCode == 200 || res.statusCode == 201) {
-        return jsonDecode(res.body);
+        return _unwrap(res.body);
       }
     } catch (e) {
       print('API Error (uploadBase64): $e');

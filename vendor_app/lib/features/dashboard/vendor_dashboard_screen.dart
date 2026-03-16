@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/services/api_service.dart';
+import '../services/vendor_services_screen.dart' as vendor_services_screen;
+import '../orders/vendor_orders_screen.dart' as vendor_orders_screen;
+import '../earnings/vendor_earnings_screen.dart' as vendor_earnings_screen;
 
 class VendorDashboardScreen extends StatefulWidget {
   final String vendorId;
@@ -290,35 +293,46 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> with Sing
   Widget _buildQuickActionsRow() {
     return Row(
       children: [
-        _quickAction('Add\nService', Icons.add_box_rounded, VC.accent, VC.accentLight),
+        _quickAction('Add\nListing', Icons.add_box_rounded, VC.accent, VC.accentLight, () {
+          // Add a new project/service
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const vendor_services_screen.VendorServicesScreen(vendorId: 'vendor-001')));
+        }),
         const SizedBox(width: 10),
-        _quickAction('View\nOrders', Icons.assignment_rounded, VC.purple, VC.purpleBg),
+        _quickAction('View\nOrders', Icons.assignment_rounded, VC.purple, VC.purpleBg, () {
+           // Navigate to orders (requires calling tab change or pushing screen)
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const vendor_orders_screen.VendorOrdersScreen(vendorId: 'vendor-001')));
+        }),
         const SizedBox(width: 10),
-        _quickAction('Earnings\nReport', Icons.account_balance_wallet_rounded, VC.success, VC.successBg),
+        _quickAction('Earnings\nReport', Icons.account_balance_wallet_rounded, VC.success, VC.successBg, () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const vendor_earnings_screen.VendorEarningsScreen(vendorId: 'vendor-001')));
+        }),
       ],
     );
   }
 
-  Widget _quickAction(String label, IconData icon, Color color, Color bg) {
+  Widget _quickAction(String label, IconData icon, Color color, Color bg, VoidCallback onTap) {
     return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: VC.border),
-          boxShadow: VC.softShadow,
-        ),
-        child: Column(
-          children: [
-            Container(
-              width: 42, height: 42,
-              decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(12)),
-              child: Icon(icon, size: 20, color: color),
-            ),
-            const SizedBox(height: 8),
-            Text(label, textAlign: TextAlign.center, style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w700, color: VC.text, height: 1.3)),
-          ],
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: VC.border),
+            boxShadow: VC.softShadow,
+          ),
+          child: Column(
+            children: [
+              Container(
+                width: 42, height: 42,
+                decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(12)),
+                child: Icon(icon, size: 20, color: color),
+              ),
+              const SizedBox(height: 8),
+              Text(label, textAlign: TextAlign.center, style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w700, color: VC.text, height: 1.3)),
+            ],
+          ),
         ),
       ),
     );
