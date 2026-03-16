@@ -662,6 +662,36 @@ class ApiService {
   }
 
   // ═══════════════════════════════════════════════════════════════════
+  //  FILE UPLOAD
+  // ═══════════════════════════════════════════════════════════════════
+
+  static Future<Map<String, dynamic>?> uploadBase64({
+    required String bucket,
+    required String path,
+    required String base64Data,
+    required String contentType,
+  }) async {
+    try {
+      final res = await http.post(
+        Uri.parse('$baseUrl/upload/base64'),
+        headers: _authHeaders,
+        body: jsonEncode({
+          'bucket': bucket,
+          'path': path,
+          'base64Data': base64Data,
+          'contentType': contentType,
+        }),
+      );
+      if (res.statusCode == 200 || res.statusCode == 201) {
+        return jsonDecode(res.body);
+      }
+    } catch (e) {
+      print('API Error (uploadBase64): $e');
+    }
+    return null;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
   //  HEALTH CHECK
   // ═══════════════════════════════════════════════════════════════════
 

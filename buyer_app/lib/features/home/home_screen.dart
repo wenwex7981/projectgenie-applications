@@ -734,8 +734,8 @@ class _TrendingServiceCard extends StatelessWidget {
             height: 100,
             decoration: BoxDecoration(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-              image: service.imageUrl.isNotEmpty
-                  ? DecorationImage(image: NetworkImage(service.imageUrl), fit: BoxFit.cover, onError: (_, __) {})
+              image: (service.imageUrl != null && service.imageUrl!.isNotEmpty)
+                  ? DecorationImage(image: NetworkImage(service.imageUrl!), fit: BoxFit.cover, onError: (_, __) {})
                   : null,
               color: AppColors.primarySurface,
             ),

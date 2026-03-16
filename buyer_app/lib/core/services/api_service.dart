@@ -136,14 +136,7 @@ class ApiService {
       throw Exception(err['message'] ?? 'Login failed');
     } catch (e) {
       if (e is Exception) rethrow;
-      print('API Error: $e. Simulating success for demo.');
-      if (email.isNotEmpty && password.length >= 6) {
-        return {
-          'token': 'mock-jwt-token',
-          'user': {'id': 'user-001', 'name': 'Demo User'},
-        };
-      }
-      throw Exception('Failed to login');
+      throw Exception('Failed to login: $e');
     }
   }
 
@@ -244,16 +237,19 @@ class ApiService {
 
   static Future<List<Map<String, dynamic>>> getCategories() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/categories'));
+      final response = await http
+          .get(Uri.parse('$baseUrl/categories'), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = _unwrap(response.body);
         if (data is List) {
           return List<Map<String, dynamic>>.from(data);
         }
       }
     } catch (e) {
-      print('API Error: $e. Using Mock Data.');
+      print('API Error (getCategories): $e');
     }
+    // Fallback to local categories only if backend is truly unreachable
     return AppCategories.main
         .map(
           (cat) => {
@@ -267,52 +263,56 @@ class ApiService {
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  //  SERVICES
+  //  SERVICES — Always fetch from API first, fallback only on error
   // ═══════════════════════════════════════════════════════════════════
 
   static Future<List<ServiceModel>> getFeaturedServices() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/services/featured'));
+      final response = await http
+          .get(Uri.parse('$baseUrl/services/featured'), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data is List && data.isNotEmpty) {
+        final data = _unwrap(response.body);
+        if (data is List) {
           return data.map((json) => ServiceModel.fromJson(json)).toList();
         }
       }
     } catch (e) {
-      print('API Error: $e. Using Mock Data.');
+      print('API Error (getFeaturedServices): $e');
     }
     return MockData.trendingServices;
   }
 
   static Future<List<ServiceModel>> getTrendingServices() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/services/trending'));
+      final response = await http
+          .get(Uri.parse('$baseUrl/services/trending'), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data is List && data.isNotEmpty) {
+        final data = _unwrap(response.body);
+        if (data is List) {
           return data.map((json) => ServiceModel.fromJson(json)).toList();
         }
       }
     } catch (e) {
-      print('API Error: $e. Using Mock Data.');
+      print('API Error (getTrendingServices): $e');
     }
     return MockData.trendingServices;
   }
 
   static Future<List<ServiceModel>> getMiniProjects() async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/services?category=Mini+Project'),
-      );
+      final response = await http
+          .get(Uri.parse('$baseUrl/services?category=Mini+Project'), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data is List && data.isNotEmpty) {
+        final data = _unwrap(response.body);
+        if (data is List) {
           return data.map((json) => ServiceModel.fromJson(json)).toList();
         }
       }
     } catch (e) {
-      print('API Error: $e. Using Mock Data.');
+      print('API Error (getMiniProjects): $e');
     }
     return MockData.generalProjects;
   }
@@ -323,7 +323,9 @@ class ApiService {
       if (category != null) {
         url += '?category=${Uri.encodeComponent(category)}';
       }
-      final response = await http.get(Uri.parse(url)).timeout(_timeout);
+      final response = await http
+          .get(Uri.parse(url), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
         final data = _unwrap(response.body);
         if (data is List) {
@@ -331,9 +333,10 @@ class ApiService {
         }
       }
     } catch (e) {
-      print('API Error: $e. Using Mock Data.');
+      print('API Error (getServices): $e');
     }
 
+    // Fallback to mock data only on error
     List<ServiceModel> all = [
       ...MockData.trendingServices,
       ...MockData.generalProjects,
@@ -349,18 +352,21 @@ class ApiService {
 
   static Future<Map<String, dynamic>?> getServiceById(String id) async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/services/$id'));
+      final response = await http
+          .get(Uri.parse('$baseUrl/services/$id'), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
-        return json.decode(response.body);
+        final data = _unwrap(response.body);
+        if (data is Map) return Map<String, dynamic>.from(data);
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (getServiceById): $e');
     }
     return null;
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  //  PROJECTS
+  //  PROJECTS  — Always fetch from API first
   // ═══════════════════════════════════════════════════════════════════
 
   static Future<List<Map<String, dynamic>>> getProjects({
@@ -374,32 +380,51 @@ class ApiService {
       if (featured == true) params.add('featured=true');
       if (params.isNotEmpty) url += '?${params.join('&')}';
 
-      final response = await http.get(Uri.parse(url));
+      final response = await http
+          .get(Uri.parse(url), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = _unwrap(response.body);
         if (data is List) {
           return List<Map<String, dynamic>>.from(data);
         }
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (getProjects): $e');
     }
     return [];
   }
 
   static Future<List<Map<String, dynamic>>> getFeaturedProjects() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/projects/featured'));
+      final response = await http
+          .get(Uri.parse('$baseUrl/projects/featured'), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = _unwrap(response.body);
         if (data is List) {
           return List<Map<String, dynamic>>.from(data);
         }
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (getFeaturedProjects): $e');
     }
     return [];
+  }
+
+  static Future<Map<String, dynamic>?> getProjectById(String id) async {
+    try {
+      final response = await http
+          .get(Uri.parse('$baseUrl/projects/$id'), headers: _headers)
+          .timeout(_timeout);
+      if (response.statusCode == 200) {
+        final data = _unwrap(response.body);
+        if (data is Map) return Map<String, dynamic>.from(data);
+      }
+    } catch (e) {
+      print('API Error (getProjectById): $e');
+    }
+    return null;
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -408,32 +433,51 @@ class ApiService {
 
   static Future<List<Map<String, dynamic>>> getHackathons() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/hackathons'));
+      final response = await http
+          .get(Uri.parse('$baseUrl/hackathons'), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = _unwrap(response.body);
         if (data is List) {
           return List<Map<String, dynamic>>.from(data);
         }
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (getHackathons): $e');
     }
     return [];
   }
 
   static Future<List<Map<String, dynamic>>> getFeaturedHackathons() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/hackathons/featured'));
+      final response = await http
+          .get(Uri.parse('$baseUrl/hackathons/featured'), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = _unwrap(response.body);
         if (data is List) {
           return List<Map<String, dynamic>>.from(data);
         }
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (getFeaturedHackathons): $e');
     }
     return [];
+  }
+
+  static Future<Map<String, dynamic>?> getHackathonById(String id) async {
+    try {
+      final response = await http
+          .get(Uri.parse('$baseUrl/hackathons/$id'), headers: _headers)
+          .timeout(_timeout);
+      if (response.statusCode == 200) {
+        final data = _unwrap(response.body);
+        if (data is Map) return Map<String, dynamic>.from(data);
+      }
+    } catch (e) {
+      print('API Error (getHackathonById): $e');
+    }
+    return null;
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -442,15 +486,17 @@ class ApiService {
 
   static Future<List<Map<String, dynamic>>> getBundles() async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/bundles'));
+      final response = await http
+          .get(Uri.parse('$baseUrl/bundles'), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = _unwrap(response.body);
         if (data is List) {
           return List<Map<String, dynamic>>.from(data);
         }
       }
     } catch (e) {
-      print('API Error: $e. Using Mock Data.');
+      print('API Error (getBundles): $e');
     }
     return [
       {
@@ -472,15 +518,15 @@ class ApiService {
       final response = await http.get(
         Uri.parse('$baseUrl/users/$uid/orders'),
         headers: _headers,
-      );
+      ).timeout(_timeout);
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
+        final data = _unwrap(response.body);
         if (data is List) {
           return data.map((json) => OrderModel.fromJson(json)).toList();
         }
       }
     } catch (e) {
-      print('API Error: $e. Using Mock Data.');
+      print('API Error (getOrders): $e');
     }
     return MockData.orders;
   }
@@ -498,17 +544,12 @@ class ApiService {
           'userId': _userId ?? 'user-001',
           'totalPrice': totalPrice,
         }),
-      );
+      ).timeout(_timeout);
       if (response.statusCode == 201 || response.statusCode == 200) {
         return json.decode(response.body);
       }
     } catch (e) {
-      print('API Error: $e. Simulating success.');
-      await Future.delayed(const Duration(seconds: 1));
-      return {
-        'id': 'ORDER-${DateTime.now().millisecondsSinceEpoch}',
-        'status': 'success',
-      };
+      print('API Error (createOrder): $e');
     }
     throw Exception('Failed to create order');
   }
@@ -526,12 +567,12 @@ class ApiService {
         Uri.parse('$baseUrl/custom-orders'),
         headers: _headers,
         body: json.encode(data),
-      );
+      ).timeout(_timeout);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body);
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (createCustomOrder): $e');
     }
     throw Exception('Failed to create custom order');
   }
@@ -544,12 +585,13 @@ class ApiService {
       final response = await http.get(
         Uri.parse('$baseUrl/users/$uid/custom-orders'),
         headers: _headers,
-      );
+      ).timeout(_timeout);
       if (response.statusCode == 200) {
-        return List<Map<String, dynamic>>.from(json.decode(response.body));
+        final data = _unwrap(response.body);
+        if (data is List) return List<Map<String, dynamic>>.from(data);
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (getCustomOrders): $e');
     }
     return [];
   }
@@ -572,7 +614,7 @@ class ApiService {
         }
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (getUserProfile): $e');
     }
     return _cachedUser;
   }
@@ -586,12 +628,13 @@ class ApiService {
         Uri.parse('$baseUrl/users/$uid'),
         headers: _headers,
         body: json.encode(data),
-      );
+      ).timeout(_timeout);
       if (response.statusCode == 200) {
-        return json.decode(response.body);
+        final resp = _unwrap(response.body);
+        if (resp is Map) return Map<String, dynamic>.from(resp);
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (updateUserProfile): $e');
     }
     return null;
   }
@@ -611,7 +654,7 @@ class ApiService {
         if (data is Map) return Map<String, dynamic>.from(data);
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (getWallet): $e');
     }
     return {'balance': 0};
   }
@@ -623,12 +666,13 @@ class ApiService {
         Uri.parse('$baseUrl/users/$uid/wallet/topup'),
         headers: _headers,
         body: json.encode({'amount': amount}),
-      );
+      ).timeout(_timeout);
       if (response.statusCode == 200) {
-        return json.decode(response.body);
+        final data = _unwrap(response.body);
+        if (data is Map) return Map<String, dynamic>.from(data);
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (topupWallet): $e');
     }
     return null;
   }
@@ -644,12 +688,15 @@ class ApiService {
     try {
       String url = '$baseUrl/search?q=${Uri.encodeComponent(query)}';
       if (type != null) url += '&type=$type';
-      final response = await http.get(Uri.parse(url));
+      final response = await http
+          .get(Uri.parse(url), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
-        return json.decode(response.body);
+        final data = _unwrap(response.body);
+        if (data is Map) return Map<String, dynamic>.from(data);
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (search): $e');
     }
     return {'services': [], 'projects': []};
   }
@@ -662,14 +709,14 @@ class ApiService {
     try {
       final uid = _userId ?? 'user-001';
       final response = await http
-          .get(Uri.parse('$baseUrl/chats/threads/user/$uid'))
+          .get(Uri.parse('$baseUrl/chats/threads/user/$uid'), headers: _headers)
           .timeout(_timeout);
       if (response.statusCode == 200) {
         final data = _unwrap(response.body);
         if (data is List) return List<Map<String, dynamic>>.from(data);
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (getChatThreads): $e');
     }
     return [];
   }
@@ -679,14 +726,15 @@ class ApiService {
   ) async {
     try {
       final uid = _userId ?? 'user-001';
-      final response = await http.get(
-        Uri.parse('$baseUrl/chats?userId=$uid&vendorId=$vendorId'),
-      );
+      final response = await http
+          .get(Uri.parse('$baseUrl/chats?userId=$uid&vendorId=$vendorId'), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
-        return List<Map<String, dynamic>>.from(json.decode(response.body));
+        final data = _unwrap(response.body);
+        if (data is List) return List<Map<String, dynamic>>.from(data);
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (getChatMessages): $e');
     }
     return [];
   }
@@ -706,12 +754,12 @@ class ApiService {
           'text': text,
           'isSender': true,
         }),
-      );
+      ).timeout(_timeout);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body);
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (sendMessage): $e');
     }
     return null;
   }
@@ -724,16 +772,40 @@ class ApiService {
     try {
       final uid = _userId ?? 'user-001';
       final response = await http
-          .get(Uri.parse('$baseUrl/notifications?targetId=$uid'))
+          .get(Uri.parse('$baseUrl/notifications?targetId=$uid'), headers: _headers)
           .timeout(_timeout);
       if (response.statusCode == 200) {
         final data = _unwrap(response.body);
         if (data is List) return List<Map<String, dynamic>>.from(data);
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (getNotifications): $e');
     }
     return [];
+  }
+
+  static Future<void> markNotificationRead(String notifId) async {
+    try {
+      await http.put(
+        Uri.parse('$baseUrl/notifications/$notifId/read'),
+        headers: _headers,
+      ).timeout(_timeout);
+    } catch (e) {
+      print('API Error (markNotificationRead): $e');
+    }
+  }
+
+  static Future<void> markAllNotificationsRead() async {
+    try {
+      final uid = _userId ?? 'user-001';
+      await http.put(
+        Uri.parse('$baseUrl/notifications/read-all'),
+        headers: _headers,
+        body: json.encode({'targetId': uid}),
+      ).timeout(_timeout);
+    } catch (e) {
+      print('API Error (markAllNotificationsRead): $e');
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -742,14 +814,15 @@ class ApiService {
 
   static Future<List<Map<String, dynamic>>> getReviews(String serviceId) async {
     try {
-      final response = await http.get(
-        Uri.parse('$baseUrl/reviews/service/$serviceId'),
-      );
+      final response = await http
+          .get(Uri.parse('$baseUrl/reviews/service/$serviceId'), headers: _headers)
+          .timeout(_timeout);
       if (response.statusCode == 200) {
-        return List<Map<String, dynamic>>.from(json.decode(response.body));
+        final data = _unwrap(response.body);
+        if (data is List) return List<Map<String, dynamic>>.from(data);
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (getReviews): $e');
     }
     return [];
   }
@@ -771,12 +844,42 @@ class ApiService {
           'rating': rating,
           'comment': comment,
         }),
-      );
+      ).timeout(_timeout);
       if (response.statusCode == 200 || response.statusCode == 201) {
         return json.decode(response.body);
       }
     } catch (e) {
-      print('API Error: $e');
+      print('API Error (createReview): $e');
+    }
+    return null;
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  //  FILE UPLOAD (for buyer attachments in custom orders)
+  // ═══════════════════════════════════════════════════════════════════
+
+  static Future<Map<String, dynamic>?> uploadBase64({
+    required String bucket,
+    required String path,
+    required String base64Data,
+    required String contentType,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/upload/base64'),
+        headers: _headers,
+        body: json.encode({
+          'bucket': bucket,
+          'path': path,
+          'base64Data': base64Data,
+          'contentType': contentType,
+        }),
+      ).timeout(_timeout);
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return json.decode(response.body);
+      }
+    } catch (e) {
+      print('API Error (uploadBase64): $e');
     }
     return null;
   }

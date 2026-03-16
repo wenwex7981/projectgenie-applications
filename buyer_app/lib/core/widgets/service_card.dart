@@ -63,7 +63,7 @@ class ServiceCard extends StatelessWidget {
               child: Stack(
                 children: [
                   AppNetworkImage(
-                    imageUrl: getProjectImage(_title),
+                    imageUrl: (service?.imageUrl != null && service!.imageUrl!.isNotEmpty) ? service!.imageUrl! : getProjectImage(_title),
                     width: double.infinity,
                     height: 160,
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(AppConstants.radiusLG)),
@@ -166,7 +166,7 @@ class ServiceCardHorizontal extends StatelessWidget {
               child: Stack(
                 children: [
                    AppNetworkImage(
-                      imageUrl: getProjectImage(title),
+                      imageUrl: imageUrl.isNotEmpty ? imageUrl : getProjectImage(title),
                       width: double.infinity,
                       height: 120,
                       borderRadius: const BorderRadius.vertical(top: Radius.circular(AppConstants.radiusLG)),

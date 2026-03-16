@@ -229,23 +229,27 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
   }
 
   Future<void> _login() async {
-    if (_emailCtrl.text.isEmpty || _passwordCtrl.text.isEmpty) { setState(() => _error = 'Please enter email and password'); return; }
+    // DEV BYPASS: Skip API and OTP, directly log in as Vendor-001
     setState(() { _loading = true; _error = null; });
-    try {
-      final res = await http.post(Uri.parse('$baseUrl/auth/vendor/login'), headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': _emailCtrl.text, 'password': _passwordCtrl.text}));
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        final raw = jsonDecode(res.body);
-        final data = raw['data'] ?? raw;
-        if (data['requiresVerification'] == true) {
-          _navigateToOtp(_emailCtrl.text, 'login', data['vendorName']);
-        }
-      } else {
-        final body = jsonDecode(res.body);
-        final msg = body['message'];
-        setState(() => _error = (msg is List ? msg.join(', ') : msg?.toString()) ?? 'Invalid email or password');
-      }
-    } catch (e) { setState(() => _error = 'Connection error. Check if backend is running.'); }
+    
+    await Future.delayed(const Duration(milliseconds: 500)); // Fake loading
+    
+    final dummyVendorId = 'vendor-001';
+    ApiService.setToken('mock_token_for_dev');
+    ApiService.setVendorId(dummyVendorId);
+    
+    NotificationService().listenToRealtimeNotifications(dummyVendorId);
+
+    if (mounted) {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => VendorMainNavigation(
+          vendorId: dummyVendorId,
+          vendorName: 'Developer Mode Vendor',
+        )),
+        (_) => false,
+      );
+    }
     if (mounted) setState(() => _loading = false);
   }
 

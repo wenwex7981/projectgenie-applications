@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 // ─── Enterprise Data Models ────────────────────────────────────────
 // All models for ProjectGenie platform
 
@@ -15,9 +17,13 @@ class ProjectModel {
   final int reviewCount;
   final int enrollees;
   final String videoUrl;
+  final String? documentUrl;
+  final List<String> galleryImages;
+  final List<String> features;
   final String difficulty;
   final bool isFeatured;
   final String createdAt;
+  final Map<String, dynamic>? vendor;
 
   const ProjectModel({
     required this.id,
@@ -33,31 +39,80 @@ class ProjectModel {
     this.reviewCount = 0,
     this.enrollees = 0,
     this.videoUrl = '',
+    this.documentUrl,
+    this.galleryImages = const [],
+    this.features = const [],
     this.difficulty = 'Intermediate',
     this.isFeatured = false,
     this.createdAt = '',
+    this.vendor,
   });
 
   factory ProjectModel.fromJson(Map<String, dynamic> json) {
+    // Parse techStack - could be a JSON string or a list
+    List<String> parseTechStack() {
+      final raw = json['techStack'] ?? json['tech_stack'];
+      if (raw is List) return List<String>.from(raw);
+      if (raw is String) {
+        try {
+          final decoded = jsonDecode(raw);
+          if (decoded is List) return List<String>.from(decoded);
+        } catch (_) {}
+        return raw.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+      }
+      return [];
+    }
+
+    // Parse features
+    List<String> parseFeatures() {
+      final raw = json['features'];
+      if (raw is List) return List<String>.from(raw);
+      if (raw is String) {
+        try {
+          final decoded = jsonDecode(raw);
+          if (decoded is List) return List<String>.from(decoded);
+        } catch (_) {}
+        return raw.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+      }
+      return [];
+    }
+
+    // Parse gallery images
+    List<String> parseGallery() {
+      final raw = json['galleryImages'] ?? json['gallery_images'];
+      if (raw is List) return List<String>.from(raw);
+      if (raw is String) {
+        try {
+          final decoded = jsonDecode(raw);
+          if (decoded is List) return List<String>.from(decoded);
+        } catch (_) {}
+      }
+      return [];
+    }
+
     return ProjectModel(
       id: json['id']?.toString() ?? '',
       title: json['title']?.toString() ?? '',
       domain: json['domain']?.toString() ?? '',
       branch: json['branch']?.toString() ?? '',
       price: json['price']?.toString() ?? '₹0',
-      originalPrice: json['original_price']?.toString() ?? '',
+      originalPrice: json['originalPrice']?.toString() ?? json['original_price']?.toString() ?? '',
       description: json['description']?.toString() ?? '',
-      imageUrl: json['image_url']?.toString() ?? '',
-      techStack: List<String>.from(json['tech_stack'] ?? []),
+      imageUrl: json['imageUrl']?.toString() ?? json['image_url']?.toString() ?? '',
+      techStack: parseTechStack(),
       rating: (json['rating'] is int)
           ? (json['rating'] as int).toDouble()
           : (json['rating']?.toDouble() ?? 0.0),
-      reviewCount: json['review_count'] ?? 0,
+      reviewCount: json['reviewCount'] ?? json['review_count'] ?? 0,
       enrollees: json['enrollees'] ?? 0,
-      videoUrl: json['video_url']?.toString() ?? '',
+      videoUrl: json['videoUrl']?.toString() ?? json['video_url']?.toString() ?? '',
+      documentUrl: json['documentUrl']?.toString() ?? json['document_url']?.toString(),
+      galleryImages: parseGallery(),
+      features: parseFeatures(),
       difficulty: json['difficulty']?.toString() ?? 'Intermediate',
-      isFeatured: json['is_featured'] ?? false,
-      createdAt: json['created_at']?.toString() ?? '',
+      isFeatured: json['isFeatured'] ?? json['is_featured'] ?? false,
+      createdAt: json['createdAt']?.toString() ?? json['created_at']?.toString() ?? '',
+      vendor: json['vendor'] is Map ? Map<String, dynamic>.from(json['vendor']) : null,
     );
   }
 }
@@ -68,17 +123,22 @@ class ServiceModel {
   final String description;
   final String vendorName;
   final String vendorAvatar;
+  final String? vendorId;
   final String category;
   final String price;
   final String originalPrice;
   final double rating;
   final int reviewCount;
   final String deliveryDays;
-  final String imageUrl;
+  final String? imageUrl;
+  final String? videoUrl;
+  final String? documentUrl;
+  final List<String> galleryImages;
   final List<String> features;
   final List<ReviewModel> reviews;
   final bool isFeatured;
   final bool isTrending;
+  final Map<String, dynamic>? vendor;
 
   const ServiceModel({
     required this.id,
@@ -86,44 +146,95 @@ class ServiceModel {
     required this.description,
     required this.vendorName,
     this.vendorAvatar = '',
+    this.vendorId,
     required this.category,
     required this.price,
     this.originalPrice = '',
     required this.rating,
     required this.reviewCount,
     required this.deliveryDays,
-    this.imageUrl = '',
+    this.imageUrl,
+    this.videoUrl,
+    this.documentUrl,
+    this.galleryImages = const [],
     this.features = const [],
     this.reviews = const [],
     this.isFeatured = false,
     this.isTrending = false,
+    this.vendor,
   });
 
   factory ServiceModel.fromJson(Map<String, dynamic> json) {
+    // Parse features - could be a JSON string or a list
+    List<String> parseFeatures() {
+      final raw = json['features'];
+      if (raw is List) return List<String>.from(raw);
+      if (raw is String) {
+        try {
+          final decoded = jsonDecode(raw);
+          if (decoded is List) return List<String>.from(decoded);
+        } catch (_) {}
+        return raw.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+      }
+      return [];
+    }
+
+    // Parse gallery images
+    List<String> parseGallery() {
+      final raw = json['galleryImages'] ?? json['gallery_images'];
+      if (raw is List) return List<String>.from(raw);
+      if (raw is String) {
+        try {
+          final decoded = jsonDecode(raw);
+          if (decoded is List) return List<String>.from(decoded);
+        } catch (_) {}
+      }
+      return [];
+    }
+
+    // Get vendor avatar from vendor object if available
+    String vendorAvatar = '';
+    if (json['vendor'] is Map) {
+      vendorAvatar = json['vendor']['profileImage']?.toString() ?? '';
+    }
+    vendorAvatar = vendorAvatar.isNotEmpty ? vendorAvatar : (json['vendorAvatar'] ?? json['vendor_avatar'] ?? '');
+
+    // Get vendorName - prefer vendor object, then direct field
+    String vendorName = '';
+    if (json['vendor'] is Map) {
+      vendorName = json['vendor']['businessName']?.toString() ?? json['vendor']['name']?.toString() ?? '';
+    }
+    vendorName = vendorName.isNotEmpty ? vendorName : (json['vendorName'] ?? json['vendor_name'] ?? '');
+
     return ServiceModel(
       id: json['id']?.toString() ?? '',
       title: json['title'] ?? '',
       description: json['description'] ?? '',
-      vendorName: json['vendor_name'] ?? json['vendorName'] ?? '',
-      vendorAvatar: json['vendor_avatar'] ?? json['vendorAvatar'] ?? '',
+      vendorName: vendorName,
+      vendorAvatar: vendorAvatar,
+      vendorId: json['vendorId']?.toString() ?? json['vendor_id']?.toString(),
       category: json['category'] is Map
           ? (json['category']['title']?.toString() ?? '')
           : (json['category']?.toString() ?? ''),
       price: json['price']?.toString() ?? '0',
-      originalPrice: json['original_price']?.toString() ?? json['originalPrice']?.toString() ?? '',
+      originalPrice: json['originalPrice']?.toString() ?? json['original_price']?.toString() ?? '',
       rating: (json['rating'] is int)
           ? (json['rating'] as int).toDouble()
           : (json['rating']?.toDouble() ?? 0.0),
-      reviewCount: json['review_count'] ?? json['reviewCount'] ?? 0,
-      deliveryDays: json['delivery_days']?.toString() ?? json['deliveryDays']?.toString() ?? '',
-      imageUrl: json['image_url'] ?? json['imageUrl'] ?? '',
-      features: List<String>.from(json['features'] ?? []),
+      reviewCount: json['reviewCount'] ?? json['review_count'] ?? 0,
+      deliveryDays: json['deliveryDays']?.toString() ?? json['delivery_days']?.toString() ?? '',
+      imageUrl: json['imageUrl']?.toString() ?? json['image_url']?.toString(),
+      videoUrl: json['videoUrl']?.toString() ?? json['video_url']?.toString(),
+      documentUrl: json['documentUrl']?.toString() ?? json['document_url']?.toString(),
+      galleryImages: parseGallery(),
+      features: parseFeatures(),
       reviews: (json['reviews'] as List?)
               ?.map((r) => ReviewModel.fromJson(r))
               .toList() ??
           [],
-      isFeatured: json['is_featured'] ?? json['isFeatured'] ?? false,
-      isTrending: json['is_trending'] ?? json['isTrending'] ?? false,
+      isFeatured: json['isFeatured'] ?? json['is_featured'] ?? false,
+      isTrending: json['isTrending'] ?? json['is_trending'] ?? false,
+      vendor: json['vendor'] is Map ? Map<String, dynamic>.from(json['vendor']) : null,
     );
   }
 }
@@ -143,7 +254,7 @@ class ReviewModel {
 
   factory ReviewModel.fromJson(Map<String, dynamic> json) {
     return ReviewModel(
-      userName: json['user_name']?.toString() ?? json['userName']?.toString() ?? '',
+      userName: json['userName']?.toString() ?? json['user_name']?.toString() ?? '',
       rating: (json['rating'] is int)
           ? (json['rating'] as int).toDouble()
           : (json['rating']?.toDouble() ?? 0.0),
@@ -178,7 +289,9 @@ class CategoryModel {
       subtitle: json['subtitle']?.toString() ?? '',
       serviceCount: (json['service_count'] is int)
           ? (json['service_count'] as int)
-          : (int.tryParse(json['service_count']?.toString() ?? '0') ?? 0),
+          : (json['count'] is int)
+              ? (json['count'] as int)
+              : (int.tryParse(json['service_count']?.toString() ?? json['count']?.toString() ?? '0') ?? 0),
       color: json['color']?.toString() ?? '',
     );
   }
@@ -200,7 +313,9 @@ class DomainFilter {
 
 class OrderModel {
   final String id;
+  final String orderNumber;
   final String serviceName;
+  final String serviceImage;
   final String vendorName;
   final String price;
   final String status;
@@ -209,7 +324,9 @@ class OrderModel {
 
   const OrderModel({
     required this.id,
+    this.orderNumber = '',
     required this.serviceName,
+    this.serviceImage = '',
     required this.vendorName,
     required this.price,
     required this.status,
@@ -218,17 +335,33 @@ class OrderModel {
   });
 
   factory OrderModel.fromJson(Map<String, dynamic> json) {
+    // Parse timeline from JSON string if needed
+    List<OrderTimelineStep> parseTimeline() {
+      final raw = json['timeline'];
+      if (raw is List) {
+        return raw.map((t) => OrderTimelineStep.fromJson(t)).toList();
+      }
+      if (raw is String) {
+        try {
+          final decoded = jsonDecode(raw);
+          if (decoded is List) {
+            return decoded.map((t) => OrderTimelineStep.fromJson(t)).toList();
+          }
+        } catch (_) {}
+      }
+      return [];
+    }
+
     return OrderModel(
       id: json['id'] ?? '',
+      orderNumber: json['orderNumber']?.toString() ?? '',
       serviceName: json['service']?['title'] ?? json['serviceName'] ?? '',
-      vendorName: json['service']?['vendorName'] ?? json['vendorName'] ?? '',
+      serviceImage: json['service']?['imageUrl'] ?? json['serviceImage'] ?? '',
+      vendorName: json['vendor']?['businessName'] ?? json['vendor']?['name'] ?? json['service']?['vendorName'] ?? json['vendorName'] ?? '',
       price: json['totalPrice']?.toString() ?? json['price']?.toString() ?? '0',
       status: json['status']?.toString() ?? 'Pending',
       date: json['date']?.toString() ?? '',
-      timeline: (json['timeline'] as List?)
-              ?.map((t) => OrderTimelineStep.fromJson(t))
-              .toList() ??
-          [],
+      timeline: parseTimeline(),
     );
   }
 }
@@ -286,6 +419,7 @@ enum MessageType { text, image, file }
 class ChatThread {
   final String id;
   final String vendorName;
+  final String vendorImage;
   final String lastMessage;
   final String time;
   final int unreadCount;
@@ -294,11 +428,24 @@ class ChatThread {
   const ChatThread({
     required this.id,
     required this.vendorName,
+    this.vendorImage = '',
     required this.lastMessage,
     required this.time,
     this.unreadCount = 0,
     this.isOnline = false,
   });
+
+  factory ChatThread.fromJson(Map<String, dynamic> json) {
+    return ChatThread(
+      id: json['vendorId']?.toString() ?? json['id']?.toString() ?? '',
+      vendorName: json['vendor']?['businessName']?.toString() ?? json['vendor']?['name']?.toString() ?? json['vendorName']?.toString() ?? '',
+      vendorImage: json['vendor']?['profileImage']?.toString() ?? '',
+      lastMessage: json['lastMessage']?.toString() ?? '',
+      time: json['lastTime']?.toString() ?? json['time']?.toString() ?? '',
+      unreadCount: json['unreadCount'] ?? 0,
+      isOnline: json['isOnline'] ?? false,
+    );
+  }
 }
 
 class UserProfile {
@@ -307,6 +454,8 @@ class UserProfile {
   final String phone;
   final String avatar;
   final String walletBalance;
+  final String college;
+  final String branch;
 
   const UserProfile({
     required this.name,
@@ -314,6 +463,8 @@ class UserProfile {
     required this.phone,
     this.avatar = '',
     this.walletBalance = '0',
+    this.college = '',
+    this.branch = '',
   });
 
   factory UserProfile.fromJson(Map<String, dynamic> json) {
@@ -321,8 +472,10 @@ class UserProfile {
       name: json['name'] ?? '',
       email: json['email'] ?? '',
       phone: json['phone'] ?? '',
-      avatar: json['profileImage'] ?? '',
+      avatar: json['profileImage'] ?? json['avatar'] ?? '',
       walletBalance: json['walletBalance']?.toString() ?? '0',
+      college: json['college'] ?? '',
+      branch: json['branch'] ?? '',
     );
   }
 }
