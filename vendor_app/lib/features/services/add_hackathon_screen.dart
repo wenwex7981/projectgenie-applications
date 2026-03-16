@@ -33,6 +33,7 @@ class _AddHackathonScreenState extends State<AddHackathonScreen> {
         'description': _descCtrl.text,
         'date': _dateCtrl.text,
         'teamSize': _teamCtrl.text,
+        'vendorId': widget.vendorId,
       });
       if (mounted) Navigator.pop(context);
     } catch (e) {

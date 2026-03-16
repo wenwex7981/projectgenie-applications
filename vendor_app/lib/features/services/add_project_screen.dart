@@ -29,6 +29,7 @@ class _AddProjectScreenState extends State<AddProjectScreen> {
         'domain': _domainCtrl.text,
         'price': '₹${_priceCtrl.text}',
         'description': _descCtrl.text,
+        'vendorId': widget.vendorId,
       });
       if (mounted) Navigator.pop(context);
     } catch (e) {

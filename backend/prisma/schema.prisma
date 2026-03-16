@@ -92,6 +92,10 @@ model Service {
   isTrending    Boolean   @default(false)
   isActive      Boolean   @default(true)
   imageUrl      String?
+  videoUrl      String?
+  documentUrl   String?
+  galleryImages String?   // JSON array of image URLs
+  subtitle      String?
   categoryId    String
   category      Category  @relation(fields: [categoryId], references: [id])
   vendorId      String?
@@ -118,6 +122,9 @@ model Project {
   reviewCount   Int       @default(0)
   enrollees     Int       @default(0)
   videoUrl      String?
+  documentUrl   String?
+  galleryImages String?   // JSON array of image URLs
+  features      String?   // JSON array string
   difficulty    String    @default("Intermediate")
   isFeatured    Boolean   @default(false)
   isActive      Boolean   @default(true)

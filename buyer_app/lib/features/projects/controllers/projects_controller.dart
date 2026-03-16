@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import '../../../core/services/supabase_service.dart';
+import '../../../core/services/api_service.dart';
 import '../../../core/data/mock_data.dart';
 import '../../../core/models/models.dart';
 
@@ -11,23 +10,15 @@ final selectedDomainProvider = StateProvider<String>((ref) => 'All');
 // ─── Search Query ──────────────────────────────────────────────────
 final projectSearchQueryProvider = StateProvider<String>((ref) => '');
 
-// ─── Projects Provider (Supabase + Fallback) ───────────────────────
+// ─── Projects Provider (REST API + Fallback) ───────────────────────
 final projectsProvider = FutureProvider.family<List<ProjectModel>, String>((ref, domain) async {
-  final supabase = ref.read(supabaseProvider);
   try {
-    var query = supabase.from('Project').select();
-    
-    if (domain.isNotEmpty && domain != 'All') {
-      query = query.ilike('domain', '%$domain%');
-    }
-    
-    final response = await query.order('createdAt', ascending: false);
-    
-    if ((response as List).isNotEmpty) {
+    final response = await ApiService.getProjects(domain: domain.isNotEmpty && domain != 'All' ? domain : null);
+    if (response.isNotEmpty) {
       return response.map((data) => ProjectModel.fromJson(data)).toList();
     }
   } catch (e) {
-    debugPrint('Supabase projects fetch error: $e');
+    debugPrint('API projects fetch error: $e');
   }
   
   // Fallback to local data
@@ -41,57 +32,39 @@ final projectsProvider = FutureProvider.family<List<ProjectModel>, String>((ref,
 
 // ─── All Projects (no filter) ──────────────────────────────────────
 final allProjectsProvider = FutureProvider<List<ProjectModel>>((ref) async {
-  final supabase = ref.read(supabaseProvider);
   try {
-    final response = await supabase
-        .from('Project')
-        .select()
-        .order('createdAt', ascending: false);
-    
-    if ((response as List).isNotEmpty) {
+    final response = await ApiService.getProjects();
+    if (response.isNotEmpty) {
       return response.map((data) => ProjectModel.fromJson(data)).toList();
     }
   } catch (e) {
-    debugPrint('Supabase all projects fetch error: $e');
+    debugPrint('API all projects fetch error: $e');
   }
   return MockData.finalYearProjects;
 });
 
 // ─── Featured Projects ─────────────────────────────────────────────
 final featuredProjectsProvider = FutureProvider<List<ProjectModel>>((ref) async {
-  final supabase = ref.read(supabaseProvider);
   try {
-    final response = await supabase
-        .from('Project')
-        .select()
-        .eq('isFeatured', true)
-        .order('rating', ascending: false)
-        .limit(5);
-    
-    if ((response as List).isNotEmpty) {
+    final response = await ApiService.getFeaturedProjects();
+    if (response.isNotEmpty) {
       return response.map((data) => ProjectModel.fromJson(data)).toList();
     }
   } catch (e) {
-    debugPrint('Supabase featured projects error: $e');
+    debugPrint('API featured projects error: $e');
   }
   return MockData.finalYearProjects.where((p) => p.isFeatured).toList();
 });
 
 // ─── Services Provider ─────────────────────────────────────────────
 final servicesProvider = FutureProvider.family<List<ServiceModel>, String>((ref, category) async {
-  final supabase = ref.read(supabaseProvider);
   try {
-    var query = supabase.from('Service').select();
-    if (category.isNotEmpty) {
-      query = query.eq('categoryId', category); // category relation usually requires ID directly from DB if un-joined
-    }
-    final response = await query.order('createdAt', ascending: false);
-    
-    if ((response as List).isNotEmpty) {
-      return response.map((data) => ServiceModel.fromJson(data)).toList();
+    final services = await ApiService.getServices(category: category.isNotEmpty ? category : null);
+    if (services.isNotEmpty) {
+      return services;
     }
   } catch (e) {
-    debugPrint('Supabase services fetch error: $e');
+    debugPrint('API services fetch error: $e');
   }
   
   // Fallback based on category
@@ -111,20 +84,13 @@ final servicesProvider = FutureProvider.family<List<ServiceModel>, String>((ref,
 
 // ─── Trending Services ─────────────────────────────────────────────
 final trendingServicesProvider = FutureProvider<List<ServiceModel>>((ref) async {
-  final supabase = ref.read(supabaseProvider);
   try {
-    final response = await supabase
-        .from('Service')
-        .select()
-        .eq('isTrending', true)
-        .order('rating', ascending: false)
-        .limit(5);
-    
-    if ((response as List).isNotEmpty) {
-      return response.map((data) => ServiceModel.fromJson(data)).toList();
+    final services = await ApiService.getTrendingServices();
+    if (services.isNotEmpty) {
+      return services;
     }
   } catch (e) {
-    debugPrint('Supabase trending services error: $e');
+    debugPrint('API trending services error: $e');
   }
   return MockData.trendingServices;
 });

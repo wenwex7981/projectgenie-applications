@@ -7,6 +7,23 @@ import { PrismaService } from '../prisma/prisma.service';
 export class VendorsController {
     constructor(private prisma: PrismaService) { }
 
+    // ─── List All Vendors (for buyer's agency listing) ────────────────
+    @Get()
+    @ApiOperation({ summary: 'List all active vendors/agencies' })
+    async findAll() {
+        const vendors = await this.prisma.vendor.findMany({
+            where: { status: 'active' },
+            select: {
+                id: true, name: true, businessName: true, profileImage: true,
+                bio: true, rating: true, totalEarnings: true, totalOrders: true,
+                isVerified: true, createdAt: true,
+                _count: { select: { services: true, projects: true, orders: true } },
+            },
+            orderBy: { rating: 'desc' },
+        });
+        return vendors;
+    }
+
     // ─── Auth ─────────────────────────────────────────────────────────
     @Post('login')
     async login(@Body() body: { email: string; password: string }) {

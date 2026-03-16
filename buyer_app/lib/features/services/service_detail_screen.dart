@@ -79,25 +79,50 @@ class ServiceDetailScreen extends StatelessWidget {
             flexibleSpace: FlexibleSpaceBar(
               background: Hero(
                 tag: heroTag.isNotEmpty ? heroTag : 'service_${service.title}',
-                child: Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        AppColors.accent.withOpacity(0.15),
-                        AppColors.secondary.withOpacity(0.15),
-                      ],
-                    ),
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.description_outlined,
-                      size: 80,
-                      color: AppColors.accent.withOpacity(0.3),
-                    ),
-                  ),
-                ),
+                child: service.imageUrl != null && service.imageUrl!.isNotEmpty
+                    ? Image.network(
+                        service.imageUrl!,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                AppColors.accent.withOpacity(0.15),
+                                AppColors.secondary.withOpacity(0.15),
+                              ],
+                            ),
+                          ),
+                          child: Center(
+                            child: Icon(
+                              Icons.description_outlined,
+                              size: 80,
+                              color: AppColors.accent.withOpacity(0.3),
+                            ),
+                          ),
+                        ),
+                      )
+                    : Container(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              AppColors.accent.withOpacity(0.15),
+                              AppColors.secondary.withOpacity(0.15),
+                            ],
+                          ),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.description_outlined,
+                            size: 80,
+                            color: AppColors.accent.withOpacity(0.3),
+                          ),
+                        ),
+                      ),
               ),
             ),
           ),
