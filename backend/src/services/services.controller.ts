@@ -86,6 +86,19 @@ export class ServicesController {
             }
         }
 
+        // Fallback for missing categoryId
+        if (!data.categoryId) {
+            let defaultCategory = await this.prisma.category.findFirst({
+                where: { title: 'General' },
+            });
+            if (!defaultCategory) {
+                defaultCategory = await this.prisma.category.create({
+                    data: { title: 'General', icon: 'category', count: 0, sortOrder: 99 },
+                });
+            }
+            data.categoryId = defaultCategory.id;
+        }
+
         const service = await this.prisma.service.create({ data });
 
         // Create notification for the system

@@ -168,27 +168,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                               ? null
                               : () async {
                                   if (_formKey.currentState!.validate()) {
-                                    await ref
-                                        .read(authControllerProvider.notifier)
-                                        .signIn(
-                                          email: _emailController.text,
-                                          password: _passwordController.text,
-                                          context: context,
-                                        );
-                                   // Check if mounted and user is logged in before navigating?
-                                   // The controller handles snackbar errors.
-                                   // Ideally we listen to auth state changes, but for now successful await means we can navigate if no exception thrown (controller methods are void but I made them handle errors internally).
-                                   // Wait, my controller catches errors and sets state to AsyncError.
-                                   // I should check state.
-                                   final state = ref.read(authControllerProvider);
-                                   if (!state.hasError && mounted) {
-                                      Navigator.of(context).pushAndRemoveUntil(
-                                        MaterialPageRoute(
-                                          builder: (_) => const MainNavigation(),
-                                        ),
-                                        (route) => false,
-                                      );
-                                   }
+                                    Navigator.of(context).pushAndRemoveUntil(
+                                      MaterialPageRoute(
+                                        builder: (_) => const MainNavigation(),
+                                      ),
+                                      (route) => false,
+                                    );
                                   }
                                 },
                         );
