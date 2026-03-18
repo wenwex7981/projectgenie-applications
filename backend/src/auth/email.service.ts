@@ -1,4 +1,8 @@
 import * as nodemailer from 'nodemailer';
+import * as dns from 'dns';
+
+// Aggressively force IPv4 first to block Render.com's broken IPv6 outbound routing
+dns.setDefaultResultOrder('ipv4first');
 
 // Enterprise email service using SMTP
 // Uses Ethereal for development, replace with Gmail/SendGrid/AWS SES for production
