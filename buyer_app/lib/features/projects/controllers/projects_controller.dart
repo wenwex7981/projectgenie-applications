@@ -112,3 +112,15 @@ final trendingServicesProvider = FutureProvider<List<ServiceModel>>((ref) async 
   return MockData.trendingServices;
 });
 
+// ─── Hackathons Provider ───────────────────────────────────────────
+final hackathonsProvider = FutureProvider<List<Map<String, dynamic>>>((ref) async {
+  try {
+    final response = await ApiService.getHackathons();
+    if (response.isNotEmpty) return response;
+  } catch (e) {
+    debugPrint('API hackathons error: $e');
+  }
+  return [];
+});
+
+

@@ -17,12 +17,71 @@ import '../notifications/notifications_screen.dart';
 import '../cart/cart_screen.dart';
 import '../services/service_details_screen.dart';
 import '../projects/presentation/pages/project_detail_screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  RealtimeChannel? _serviceChannel;
+  RealtimeChannel? _projectChannel;
+
+  @override
+  void initState() {
+    super.initState();
+    _setupRealtimeSync();
+  }
+
+  void _setupRealtimeSync() {
+    // Listen for any new inserts/updates on Services table
+    _serviceChannel = Supabase.instance.client
+        .channel('public:Service')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'Service',
+          callback: (payload) {
+            debugPrint(
+              '🔔 Realtime Service Update Received: ${payload.commitTimestamp}',
+            );
+            ref.invalidate(trendingServicesProvider);
+            ref.invalidate(servicesProvider);
+          },
+        )
+        .subscribe();
+
+    // Listen for any new inserts/updates on Projects table
+    _projectChannel = Supabase.instance.client
+        .channel('public:Project')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'Project',
+          callback: (payload) {
+            debugPrint(
+              '🔔 Realtime Project Update Received: ${payload.commitTimestamp}',
+            );
+            ref.invalidate(featuredProjectsProvider);
+            ref.invalidate(allProjectsProvider);
+            ref.invalidate(projectsProvider);
+          },
+        )
+        .subscribe();
+  }
+
+  @override
+  void dispose() {
+    _serviceChannel?.unsubscribe();
+    _projectChannel?.unsubscribe();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
       body: SafeArea(
@@ -30,41 +89,88 @@ class HomeScreen extends ConsumerWidget {
           children: [
             _buildHeader(context),
             Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.only(bottom: 100),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 20),
-                    _buildHeroCarousel(),
-                    const SizedBox(height: 24),
-                    _buildStatsBar(),
-                    const SizedBox(height: 28),
-                    _buildSectionHeader(context, 'CATEGORIES', onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const CategoriesScreen()));
-                    }),
-                    const SizedBox(height: 14),
-                    _buildCategoryGrid(context),
-                    const SizedBox(height: 32),
-                    _buildSectionHeader(context, 'FEATURED PROJECTS', onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const FinalYearProjectsScreen()));
-                    }),
-                    const SizedBox(height: 14),
-                    _FeaturedProjectsList(),
-                    const SizedBox(height: 32),
-                    _buildPromoBanner(context),
-                    const SizedBox(height: 24),
-                    _buildCustomOrderCTA(context),
-                    const SizedBox(height: 32),
-                    _buildSectionHeader(context, 'TRENDING SERVICES', onTap: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => const CategoriesScreen()));
-                    }),
-                    const SizedBox(height: 14),
-                    _TrendingServicesList(),
-                    const SizedBox(height: 32),
-                    _buildQuickActions(context),
-                  ],
+              child: RefreshIndicator(
+                color: AppColors.primary,
+                onRefresh: () async {
+                  // Invalidate providers to force a fresh fetch from the backend
+                  ref.invalidate(featuredProjectsProvider);
+                  ref.invalidate(trendingServicesProvider);
+                  ref.invalidate(allProjectsProvider);
+                  // await the next frame to show spinner correctly
+                  await Future.delayed(const Duration(milliseconds: 500));
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(
+                    parent: BouncingScrollPhysics(),
+                  ),
+                  padding: const EdgeInsets.only(bottom: 100),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 20),
+                      _buildHeroCarousel(),
+                      const SizedBox(height: 24),
+                      _buildStatsBar(),
+                      const SizedBox(height: 28),
+                      _buildSectionHeader(
+                        context,
+                        'CATEGORIES',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const CategoriesScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 14),
+                      _buildCategoryGrid(context),
+                      const SizedBox(height: 32),
+                      _buildSectionHeader(
+                        context,
+                        'FEATURED PROJECTS',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const FinalYearProjectsScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 14),
+                      _FeaturedProjectsList(),
+                      const SizedBox(height: 32),
+                      _buildPromoBanner(context),
+                      const SizedBox(height: 24),
+                      _buildCustomOrderCTA(context),
+                      const SizedBox(height: 32),
+                      _buildSectionHeader(
+                        context,
+                        'TRENDING SERVICES',
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const CategoriesScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 14),
+                      _TrendingServicesList(),
+                      const SizedBox(height: 32),
+                      _buildSectionHeader(
+                        context,
+                        'LATEST HACKATHONS',
+                      ),
+                      const SizedBox(height: 14),
+                      _LatestHackathonsList(),
+                      const SizedBox(height: 32),
+                      _buildQuickActions(context),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -80,7 +186,11 @@ class HomeScreen extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 10, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.03),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
       child: Column(
@@ -88,32 +198,64 @@ class HomeScreen extends ConsumerWidget {
           Row(
             children: [
               Container(
-                width: 40, height: 40,
+                width: 40,
+                height: 40,
                 decoration: BoxDecoration(
                   gradient: AppColors.primaryGradient,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(Icons.auto_awesome, color: Colors.white, size: 20),
+                child: const Icon(
+                  Icons.auto_awesome,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('ProjectGenie', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w900, color: AppColors.textPrimary, letterSpacing: -0.5)),
-                  Text('Enterprise Solutions', style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.textTertiary, letterSpacing: 0.5)),
+                  Text(
+                    'ProjectGenie',
+                    style: GoogleFonts.inter(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.textPrimary,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  Text(
+                    'Enterprise Solutions',
+                    style: GoogleFonts.inter(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textTertiary,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
                 ],
               ),
               const Spacer(),
               _buildIconBtn(Icons.search_rounded, () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const ExploreScreen()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const ExploreScreen()),
+                );
               }),
               const SizedBox(width: 4),
               _buildIconBtn(Icons.notifications_none_rounded, () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationsScreen()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const NotificationsScreen(),
+                  ),
+                );
               }, badge: 3),
               const SizedBox(width: 4),
               _buildIconBtn(Icons.shopping_bag_outlined, () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const CartScreen()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CartScreen()),
+                );
               }),
             ],
           ),
@@ -126,7 +268,8 @@ class HomeScreen extends ConsumerWidget {
     return Stack(
       children: [
         Container(
-          width: 40, height: 40,
+          width: 40,
+          height: 40,
           decoration: BoxDecoration(
             color: AppColors.surfaceVariant,
             borderRadius: BorderRadius.circular(12),
@@ -139,11 +282,25 @@ class HomeScreen extends ConsumerWidget {
         ),
         if (badge > 0)
           Positioned(
-            right: 2, top: 2,
+            right: 2,
+            top: 2,
             child: Container(
-              width: 16, height: 16,
-              decoration: const BoxDecoration(color: AppColors.error, shape: BoxShape.circle),
-              child: Center(child: Text('$badge', style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.w800, color: Colors.white))),
+              width: 16,
+              height: 16,
+              decoration: const BoxDecoration(
+                color: AppColors.error,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Text(
+                  '$badge',
+                  style: GoogleFonts.inter(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ),
           ),
       ],
@@ -164,10 +321,18 @@ class HomeScreen extends ConsumerWidget {
           return Container(
             margin: const EdgeInsets.symmetric(horizontal: 4),
             decoration: BoxDecoration(
-              gradient: LinearGradient(colors: [startColor, endColor], begin: Alignment.topLeft, end: Alignment.bottomRight),
+              gradient: LinearGradient(
+                colors: [startColor, endColor],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
-                BoxShadow(color: startColor.withOpacity(0.3), blurRadius: 20, offset: const Offset(0, 8)),
+                BoxShadow(
+                  color: startColor.withOpacity(0.3),
+                  blurRadius: 20,
+                  offset: const Offset(0, 8),
+                ),
               ],
             ),
             padding: const EdgeInsets.all(24),
@@ -176,17 +341,42 @@ class HomeScreen extends ConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 4,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.2),
                     borderRadius: BorderRadius.circular(100),
                   ),
-                  child: Text(banner['tag']!, style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w700, color: Colors.white)),
+                  child: Text(
+                    banner['tag']!,
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 12),
-                Text(banner['title']!, style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w900, color: Colors.white, height: 1.1)),
+                Text(
+                  banner['title']!,
+                  style: GoogleFonts.inter(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
+                    height: 1.1,
+                  ),
+                ),
                 const SizedBox(height: 6),
-                Text(banner['subtitle']!, style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.85))),
+                Text(
+                  banner['subtitle']!,
+                  style: GoogleFonts.inter(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white.withOpacity(0.85),
+                  ),
+                ),
               ],
             ),
           );
@@ -209,23 +399,49 @@ class HomeScreen extends ConsumerWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildStatItem(Icons.people_alt_rounded, MockData.stats['students']!, 'Students', AppColors.primary),
+          _buildStatItem(
+            Icons.people_alt_rounded,
+            MockData.stats['students']!,
+            'Students',
+            AppColors.primary,
+          ),
           _divider(),
-          _buildStatItem(Icons.rocket_launch_rounded, MockData.stats['projects']!, 'Projects', AppColors.secondary),
+          _buildStatItem(
+            Icons.rocket_launch_rounded,
+            MockData.stats['projects']!,
+            'Projects',
+            AppColors.secondary,
+          ),
           _divider(),
-          _buildStatItem(Icons.workspace_premium_rounded, MockData.stats['mentors']!, 'Mentors', AppColors.success),
+          _buildStatItem(
+            Icons.workspace_premium_rounded,
+            MockData.stats['mentors']!,
+            'Mentors',
+            AppColors.success,
+          ),
           _divider(),
-          _buildStatItem(Icons.star_rounded, MockData.stats['rating']!, 'Rating', AppColors.starFilled),
+          _buildStatItem(
+            Icons.star_rounded,
+            MockData.stats['rating']!,
+            'Rating',
+            AppColors.starFilled,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildStatItem(IconData icon, String value, String label, Color color) {
+  Widget _buildStatItem(
+    IconData icon,
+    String value,
+    String label,
+    Color color,
+  ) {
     return Column(
       children: [
         Container(
-          width: 36, height: 36,
+          width: 36,
+          height: 36,
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
             borderRadius: BorderRadius.circular(10),
@@ -233,8 +449,22 @@ class HomeScreen extends ConsumerWidget {
           child: Icon(icon, size: 18, color: color),
         ),
         const SizedBox(height: 6),
-        Text(value, style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w900, color: AppColors.textPrimary)),
-        Text(label, style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w500, color: AppColors.textTertiary)),
+        Text(
+          value,
+          style: GoogleFonts.inter(
+            fontSize: 16,
+            fontWeight: FontWeight.w900,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        Text(
+          label,
+          style: GoogleFonts.inter(
+            fontSize: 10,
+            fontWeight: FontWeight.w500,
+            color: AppColors.textTertiary,
+          ),
+        ),
       ],
     );
   }
@@ -242,18 +472,33 @@ class HomeScreen extends ConsumerWidget {
   Widget _divider() => Container(width: 1, height: 40, color: AppColors.border);
 
   // ─── Section Header ──────────────────────────────────────────────
-  Widget _buildSectionHeader(BuildContext context, String title, {VoidCallback? onTap}) {
+  Widget _buildSectionHeader(
+    BuildContext context,
+    String title, {
+    VoidCallback? onTap,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(title, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w800, color: AppColors.textSecondary, letterSpacing: 1)),
+          Text(
+            title,
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textSecondary,
+              letterSpacing: 1,
+            ),
+          ),
           if (onTap != null)
             GestureDetector(
               onTap: onTap,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.primarySurface,
                   borderRadius: BorderRadius.circular(100),
@@ -261,9 +506,20 @@ class HomeScreen extends ConsumerWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text('View All', style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.primary)),
+                    Text(
+                      'View All',
+                      style: GoogleFonts.inter(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.primary,
+                      ),
+                    ),
                     const SizedBox(width: 2),
-                    const Icon(Icons.arrow_forward_rounded, size: 14, color: AppColors.primary),
+                    const Icon(
+                      Icons.arrow_forward_rounded,
+                      size: 14,
+                      color: AppColors.primary,
+                    ),
                   ],
                 ),
               ),
@@ -299,7 +555,8 @@ class HomeScreen extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    width: 48, height: 48,
+                    width: 48,
+                    height: 48,
                     decoration: BoxDecoration(
                       color: cat.bgColor,
                       borderRadius: BorderRadius.circular(14),
@@ -314,7 +571,12 @@ class HomeScreen extends ConsumerWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.textPrimary, height: 1.2),
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                        height: 1.2,
+                      ),
                     ),
                   ),
                 ],
@@ -357,16 +619,45 @@ class HomeScreen extends ConsumerWidget {
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
-          begin: Alignment.topLeft, end: Alignment.bottomRight,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
-        boxShadow: [BoxShadow(color: const Color(0xFF0F172A).withOpacity(0.3), blurRadius: 20, offset: const Offset(0, 8))],
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF0F172A).withOpacity(0.3),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
       ),
       child: Stack(
         children: [
           // Decorative circles
-          Positioned(right: -30, top: -30, child: Container(width: 120, height: 120, decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withOpacity(0.03)))),
-          Positioned(left: -20, bottom: -20, child: Container(width: 80, height: 80, decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withOpacity(0.03)))),
+          Positioned(
+            right: -30,
+            top: -30,
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.03),
+              ),
+            ),
+          ),
+          Positioned(
+            left: -20,
+            bottom: -20,
+            child: Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white.withOpacity(0.03),
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(24),
             child: Row(
@@ -376,37 +667,84 @@ class HomeScreen extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.starFilled.withOpacity(0.2),
                           borderRadius: BorderRadius.circular(100),
                         ),
-                        child: Text('🎯 BUNDLE DEAL', style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w800, color: AppColors.starFilled, letterSpacing: 0.5)),
+                        child: Text(
+                          '🎯 BUNDLE DEAL',
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w800,
+                            color: AppColors.starFilled,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 12),
-                      Text('Final Year\nComplete Package', style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white, height: 1.2)),
+                      Text(
+                        'Final Year\nComplete Package',
+                        style: GoogleFonts.inter(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                          height: 1.2,
+                        ),
+                      ),
                       const SizedBox(height: 8),
-                      Text('Project + Report + PPT + Video', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w500, color: Colors.white.withOpacity(0.7))),
+                      Text(
+                        'Project + Report + PPT + Video',
+                        style: GoogleFonts.inter(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.white.withOpacity(0.7),
+                        ),
+                      ),
                       const SizedBox(height: 16),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 10,
+                        ),
                         decoration: BoxDecoration(
                           gradient: AppColors.primaryGradient,
                           borderRadius: BorderRadius.circular(10),
-                          boxShadow: [BoxShadow(color: AppColors.primary.withOpacity(0.4), blurRadius: 12, offset: const Offset(0, 4))],
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withOpacity(0.4),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                        child: Text('Explore Bundles →', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.white)),
+                        child: Text(
+                          'Explore Bundles →',
+                          style: GoogleFonts.inter(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  width: 80, height: 80,
+                  width: 80,
+                  height: 80,
                   decoration: BoxDecoration(
                     color: Colors.white.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Icon(Icons.inventory_2_rounded, size: 40, color: Colors.white),
+                  child: const Icon(
+                    Icons.inventory_2_rounded,
+                    size: 40,
+                    color: Colors.white,
+                  ),
                 ),
               ],
             ),
@@ -419,24 +757,53 @@ class HomeScreen extends ConsumerWidget {
   // ─── Quick Actions ───────────────────────────────────────────────
   Widget _buildQuickActions(BuildContext context) {
     final actions = [
-      {'icon': Icons.school_rounded, 'label': 'Final Year\nProjects', 'color': const Color(0xFFF59E0B), 'id': 'final_year'},
-      {'icon': Icons.description_rounded, 'label': 'Resume\nTemplates', 'color': const Color(0xFF059669), 'id': 'resume'},
-      {'icon': Icons.edit_document, 'label': 'Resume\nWriting', 'color': const Color(0xFF7C3AED), 'id': 'resume_writing'},
-      {'icon': Icons.science_rounded, 'label': 'Research\nPapers', 'color': const Color(0xFFDC2626), 'id': 'research_paper'},
+      {
+        'icon': Icons.school_rounded,
+        'label': 'Final Year\nProjects',
+        'color': const Color(0xFFF59E0B),
+        'id': 'final_year',
+      },
+      {
+        'icon': Icons.description_rounded,
+        'label': 'Resume\nTemplates',
+        'color': const Color(0xFF059669),
+        'id': 'resume',
+      },
+      {
+        'icon': Icons.edit_document,
+        'label': 'Resume\nWriting',
+        'color': const Color(0xFF7C3AED),
+        'id': 'resume_writing',
+      },
+      {
+        'icon': Icons.science_rounded,
+        'label': 'Research\nPapers',
+        'color': const Color(0xFFDC2626),
+        'id': 'research_paper',
+      },
     ];
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('QUICK ACTIONS', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w800, color: AppColors.textSecondary, letterSpacing: 1)),
+          Text(
+            'QUICK ACTIONS',
+            style: GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textSecondary,
+              letterSpacing: 1,
+            ),
+          ),
           const SizedBox(height: 14),
           Row(
             children: actions.map((action) {
               return Expanded(
                 child: GestureDetector(
-                  onTap: () => _navigateToCategory(context, action['id'] as String),
+                  onTap: () =>
+                      _navigateToCategory(context, action['id'] as String),
                   child: Container(
                     margin: const EdgeInsets.symmetric(horizontal: 4),
                     padding: const EdgeInsets.symmetric(vertical: 16),
@@ -449,18 +816,28 @@ class HomeScreen extends ConsumerWidget {
                     child: Column(
                       children: [
                         Container(
-                          width: 44, height: 44,
+                          width: 44,
+                          height: 44,
                           decoration: BoxDecoration(
                             color: (action['color'] as Color).withOpacity(0.1),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          child: Icon(action['icon'] as IconData, color: action['color'] as Color, size: 22),
+                          child: Icon(
+                            action['icon'] as IconData,
+                            color: action['color'] as Color,
+                            size: 22,
+                          ),
                         ),
                         const SizedBox(height: 8),
                         Text(
                           action['label'] as String,
                           textAlign: TextAlign.center,
-                          style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.textPrimary, height: 1.3),
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.textPrimary,
+                            height: 1.3,
+                          ),
                         ),
                       ],
                     ),
@@ -477,17 +854,27 @@ class HomeScreen extends ConsumerWidget {
   // ─── Custom Order CTA ─────────────────────────────────────────────
   Widget _buildCustomOrderCTA(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CustomProjectOrderScreen())),
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => const CustomProjectOrderScreen()),
+      ),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20),
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
             colors: [Color(0xFF7C3AED), Color(0xFFEC4899)],
-            begin: Alignment.topLeft, end: Alignment.bottomRight,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [BoxShadow(color: const Color(0xFF7C3AED).withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 8))],
+          boxShadow: [
+            BoxShadow(
+              color: const Color(0xFF7C3AED).withValues(alpha: 0.3),
+              blurRadius: 20,
+              offset: const Offset(0, 8),
+            ),
+          ],
         ),
         child: Row(
           children: [
@@ -496,36 +883,76 @@ class HomeScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(100),
                     ),
-                    child: Text('🚀 NEW', style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 0.5)),
+                    child: Text(
+                      '🚀 NEW',
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 10),
-                  Text('Order a Custom\nProject', style: GoogleFonts.inter(fontSize: 20, fontWeight: FontWeight.w900, color: Colors.white, height: 1.2)),
+                  Text(
+                    'Order a Custom\nProject',
+                    style: GoogleFonts.inter(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w900,
+                      color: Colors.white,
+                      height: 1.2,
+                    ),
+                  ),
                   const SizedBox(height: 6),
-                  Text('Built by expert developers, tailored for you', style: GoogleFonts.inter(fontSize: 12, color: Colors.white70)),
+                  Text(
+                    'Built by expert developers, tailored for you',
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      color: Colors.white70,
+                    ),
+                  ),
                   const SizedBox(height: 12),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Text('Get Started →', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w700, color: const Color(0xFF7C3AED))),
+                    child: Text(
+                      'Get Started →',
+                      style: GoogleFonts.inter(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: const Color(0xFF7C3AED),
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
             Container(
-              width: 72, height: 72,
+              width: 72,
+              height: 72,
               decoration: BoxDecoration(
                 color: Colors.white.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Icon(Icons.rocket_launch_rounded, size: 36, color: Colors.white),
+              child: const Icon(
+                Icons.rocket_launch_rounded,
+                size: 36,
+                color: Colors.white,
+              ),
             ),
           ],
         ),
@@ -539,7 +966,7 @@ class _FeaturedProjectsList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final projectsAsync = ref.watch(featuredProjectsProvider);
-    
+
     return projectsAsync.when(
       data: (projects) {
         if (projects.isEmpty) return const SizedBox.shrink();
@@ -553,14 +980,22 @@ class _FeaturedProjectsList extends ConsumerWidget {
             itemBuilder: (context, index) {
               final project = projects[index];
               return GestureDetector(
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProjectDetailScreen(project: project))),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ProjectDetailScreen(project: project),
+                  ),
+                ),
                 child: _FeaturedProjectCard(project: project),
               );
             },
           ),
         );
       },
-      loading: () => const SizedBox(height: 290, child: Center(child: CircularProgressIndicator())),
+      loading: () => const SizedBox(
+        height: 290,
+        child: Center(child: CircularProgressIndicator()),
+      ),
       error: (_, __) => const SizedBox.shrink(),
     );
   }
@@ -588,7 +1023,9 @@ class _FeaturedProjectCard extends StatelessWidget {
           Container(
             height: 140,
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
               image: project.imageUrl.isNotEmpty
                   ? DecorationImage(
                       image: NetworkImage(project.imageUrl),
@@ -603,32 +1040,60 @@ class _FeaturedProjectCard extends StatelessWidget {
                 // Gradient overlay
                 Container(
                   decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(20),
+                    ),
                     gradient: LinearGradient(
-                      colors: [Colors.black.withOpacity(0.5), Colors.transparent],
-                      begin: Alignment.bottomCenter, end: Alignment.topCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.5),
+                        Colors.transparent,
+                      ],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
                     ),
                   ),
                 ),
                 // Domain badge
                 Positioned(
-                  top: 12, left: 12,
+                  top: 12,
+                  left: 12,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: domainColor,
                       borderRadius: BorderRadius.circular(100),
-                      boxShadow: [BoxShadow(color: domainColor.withOpacity(0.4), blurRadius: 8, offset: const Offset(0, 2))],
+                      boxShadow: [
+                        BoxShadow(
+                          color: domainColor.withOpacity(0.4),
+                          blurRadius: 8,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
-                    child: Text(project.domain, style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w800, color: Colors.white, letterSpacing: 0.5)),
+                    child: Text(
+                      project.domain,
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
                   ),
                 ),
                 // Featured badge
                 if (project.isFeatured)
                   Positioned(
-                    top: 12, right: 12,
+                    top: 12,
+                    right: 12,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.9),
                         borderRadius: BorderRadius.circular(100),
@@ -636,9 +1101,20 @@ class _FeaturedProjectCard extends StatelessWidget {
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.star_rounded, size: 12, color: AppColors.starFilled),
+                          const Icon(
+                            Icons.star_rounded,
+                            size: 12,
+                            color: AppColors.starFilled,
+                          ),
                           const SizedBox(width: 2),
-                          Text('Featured', style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+                          Text(
+                            'Featured',
+                            style: GoogleFonts.inter(
+                              fontSize: 9,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.textPrimary,
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -657,14 +1133,22 @@ class _FeaturedProjectCard extends StatelessWidget {
                     project.title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w800, color: AppColors.textPrimary, height: 1.3),
+                    style: GoogleFonts.inter(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
+                      height: 1.3,
+                    ),
                   ),
                   const Spacer(),
                   Row(
                     children: [
                       // Rating
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.starFilled.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(6),
@@ -672,20 +1156,49 @@ class _FeaturedProjectCard extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.star_rounded, size: 12, color: AppColors.starFilled),
+                            const Icon(
+                              Icons.star_rounded,
+                              size: 12,
+                              color: AppColors.starFilled,
+                            ),
                             const SizedBox(width: 2),
-                            Text('${project.rating}', style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
+                            Text(
+                              '${project.rating}',
+                              style: GoogleFonts.inter(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w700,
+                                color: AppColors.textPrimary,
+                              ),
+                            ),
                           ],
                         ),
                       ),
                       const SizedBox(width: 8),
                       // Enrollees
-                      Icon(Icons.people_outline_rounded, size: 14, color: AppColors.textTertiary),
+                      Icon(
+                        Icons.people_outline_rounded,
+                        size: 14,
+                        color: AppColors.textTertiary,
+                      ),
                       const SizedBox(width: 4),
-                      Text('${project.enrollees}', style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textTertiary)),
+                      Text(
+                        '${project.enrollees}',
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.textTertiary,
+                        ),
+                      ),
                       const Spacer(),
                       // Price
-                      Text(project.price, style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w900, color: AppColors.primary)),
+                      Text(
+                        project.price,
+                        style: GoogleFonts.inter(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.primary,
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -717,14 +1230,22 @@ class _TrendingServicesList extends ConsumerWidget {
             itemBuilder: (context, index) {
               final service = services[index];
               return GestureDetector(
-                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ServiceDetailsScreen(service: service))),
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ServiceDetailsScreen(service: service),
+                  ),
+                ),
                 child: _TrendingServiceCard(service: service),
               );
             },
           ),
         );
       },
-      loading: () => const SizedBox(height: 220, child: Center(child: CircularProgressIndicator())),
+      loading: () => const SizedBox(
+        height: 220,
+        child: Center(child: CircularProgressIndicator()),
+      ),
       error: (_, __) => const SizedBox.shrink(),
     );
   }
@@ -750,18 +1271,27 @@ class _TrendingServiceCard extends StatelessWidget {
           Container(
             height: 100,
             decoration: BoxDecoration(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
               image: (service.imageUrl != null && service.imageUrl!.isNotEmpty)
-                  ? DecorationImage(image: NetworkImage(service.imageUrl!), fit: BoxFit.cover, onError: (_, __) {})
+                  ? DecorationImage(
+                      image: NetworkImage(service.imageUrl!),
+                      fit: BoxFit.cover,
+                      onError: (_, __) {},
+                    )
                   : null,
               color: AppColors.primarySurface,
             ),
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(20),
+                ),
                 gradient: LinearGradient(
                   colors: [Colors.black.withOpacity(0.4), Colors.transparent],
-                  begin: Alignment.bottomCenter, end: Alignment.topCenter,
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
                 ),
               ),
             ),
@@ -772,19 +1302,58 @@ class _TrendingServiceCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(service.title, maxLines: 2, overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w800, color: AppColors.textPrimary, height: 1.3)),
+                  Text(
+                    service.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.inter(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: AppColors.textPrimary,
+                      height: 1.3,
+                    ),
+                  ),
                   const SizedBox(height: 4),
-                  Text(service.vendorName, style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w500, color: AppColors.textTertiary)),
+                  Text(
+                    service.vendorName,
+                    style: GoogleFonts.inter(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w500,
+                      color: AppColors.textTertiary,
+                    ),
+                  ),
                   const Spacer(),
                   Row(
                     children: [
-                      const Icon(Icons.star_rounded, size: 14, color: AppColors.starFilled),
-                      Text(' ${service.rating}', style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w700)),
+                      const Icon(
+                        Icons.star_rounded,
+                        size: 14,
+                        color: AppColors.starFilled,
+                      ),
+                      Text(
+                        ' ${service.rating}',
+                        style: GoogleFonts.inter(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
                       const SizedBox(width: 4),
-                      Text('(${service.reviewCount})', style: GoogleFonts.inter(fontSize: 10, color: AppColors.textTertiary)),
+                      Text(
+                        '(${service.reviewCount})',
+                        style: GoogleFonts.inter(
+                          fontSize: 10,
+                          color: AppColors.textTertiary,
+                        ),
+                      ),
                       const Spacer(),
-                      Text('₹${service.price}', style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w900, color: AppColors.primary)),
+                      Text(
+                        '₹${service.price}',
+                        style: GoogleFonts.inter(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w900,
+                          color: AppColors.primary,
+                        ),
+                      ),
                     ],
                   ),
                 ],
@@ -796,3 +1365,129 @@ class _TrendingServiceCard extends StatelessWidget {
     );
   }
 }
+
+class _LatestHackathonsList extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final hackathonsAsync = ref.watch(hackathonsProvider);
+
+    return hackathonsAsync.when(
+      data: (hackathons) {
+        if (hackathons.isEmpty) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Text('No active hackathons.'),
+            ),
+          );
+        }
+
+        return SizedBox(
+          height: 240,
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            itemCount: hackathons.length,
+            separatorBuilder: (context, index) => const SizedBox(width: 16),
+            itemBuilder: (context, index) {
+              final h = hackathons[index];
+              return _HackathonCard(hackathon: h);
+            },
+          ),
+        );
+      },
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, stack) => Center(child: Text('Error: $err')),
+    );
+  }
+}
+
+class _HackathonCard extends StatelessWidget {
+  final Map<String, dynamic> hackathon;
+
+  const _HackathonCard({required this.hackathon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 280,
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4))],
+        border: Border.all(color: AppColors.border),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AspectRatio(
+              aspectRatio: 16 / 9,
+              child: hackathon['imageUrl'] != null && hackathon['imageUrl'].toString().isNotEmpty
+                  ? Image.network(
+                      hackathon['imageUrl'],
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(color: Colors.grey.shade200, child: const Icon(Icons.image_not_supported));
+                      },
+                    )
+                  : Container(
+                      color: AppColors.primaryLight,
+                      child: Center(
+                        child: Icon(Icons.code, size: 40, color: AppColors.primary),
+                      ),
+                    ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    hackathon['title'] ?? 'Hackathon',
+                    style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.bold, color: AppColors.textPrimary),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(Icons.location_on, size: 12, color: AppColors.textTertiary),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          hackathon['location'] ?? 'Virtual',
+                          style: GoogleFonts.inter(fontSize: 11, color: AppColors.textSecondary),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(Icons.person, size: 12, color: AppColors.textTertiary),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          'Posted by: ${hackathon['vendor']?['name'] ?? 'Organizer'}',
+                          style: GoogleFonts.inter(fontSize: 11, color: AppColors.textSecondary),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+

@@ -14,8 +14,13 @@ class EmailService {
       const smtpPass = process.env.SMTP_PASS;
 
       if (smtpHost && smtpUser && smtpPass) {
-        // Real SMTP configured
-        this.transporter = nodemailer.createTransport({
+        // Automatically inject robust configuration if utilizing Gmail
+        const isGmail = smtpHost.includes('gmail');
+        
+        this.transporter = nodemailer.createTransport(isGmail ? {
+          service: 'gmail',
+          auth: { user: smtpUser, pass: smtpPass },
+        } : {
           host: smtpHost,
           port: parseInt(process.env.SMTP_PORT || '587'),
           secure: process.env.SMTP_SECURE === 'true',
