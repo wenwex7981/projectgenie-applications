@@ -132,7 +132,7 @@ class EmailService {
 
     try {
       const info = await this.transporter.sendMail({
-        from: '"ProjectGenie" <noreply@projectgenie.com>',
+        from: `"ProjectGenie" <${process.env.SMTP_USER || 'noreply@projectgenie.com'}>`,
         to,
         subject,
         html,
