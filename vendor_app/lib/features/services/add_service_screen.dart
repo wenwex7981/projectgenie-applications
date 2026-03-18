@@ -9,7 +9,8 @@ import '../../core/services/api_service.dart';
 class AddServiceScreen extends StatefulWidget {
   final String vendorId;
   final bool isProject;
-  const AddServiceScreen({super.key, required this.vendorId, this.isProject = false});
+  final Map<String, dynamic>? existingItem;
+  const AddServiceScreen({super.key, required this.vendorId, this.isProject = false, this.existingItem});
 
   @override
   State<AddServiceScreen> createState() => _AddServiceScreenState();
@@ -34,6 +35,60 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
   PlatformFile? _abstractDoc;
   PlatformFile? _videoFile;
   List<PlatformFile> _galleryImages = [];
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.existingItem != null) {
+      final item = widget.existingItem!;
+      _titleCtrl.text = item['title'] ?? '';
+      _descCtrl.text = item['description'] ?? '';
+      
+      final String priceStr = item['price']?.toString() ?? '';
+      _priceCtrl.text = priceStr.replaceAll('₹', '').replaceAll(',', '');
+      
+      final String origPriceStr = item['originalPrice']?.toString() ?? '';
+      _origPriceCtrl.text = origPriceStr.replaceAll('₹', '').replaceAll(',', '');
+
+      if (!widget.isProject) {
+        _deliveryCtrl.text = item['deliveryDays']?.toString() ?? 'Instant';
+        final catTitle = item['category']?['title'];
+        if (catTitle != null && _categories.contains(catTitle)) {
+          _selectedCategory = catTitle;
+        }
+      } else {
+        final domain = item['domain'];
+        if (domain != null && _domains.contains(domain)) {
+          _selectedDomain = domain;
+        }
+        final difficulty = item['difficulty'];
+        if (difficulty != null && _difficulties.contains(difficulty)) {
+          _difficulty = difficulty;
+        }
+        if (item['techStack'] != null) {
+          try {
+            final ts = jsonDecode(item['techStack']);
+            if (ts is List) _techStackCtrl.text = ts.join(', ');
+          } catch (_) {
+            if (item['techStack'] is String) _techStackCtrl.text = item['techStack'].replaceAll(RegExp(r'[\[\]"]'), '');
+          }
+        }
+      }
+
+      if (item['features'] != null) {
+        try {
+          final feats = jsonDecode(item['features']);
+          if (feats is List) _featuresCtrl.text = feats.join(', ');
+        } catch (_) {
+          if (item['features'] is String) _featuresCtrl.text = item['features'].replaceAll(RegExp(r'[\[\]"]'), '');
+        }
+      }
+      
+      _isFeatured = item['isFeatured'] ?? false;
+      // Note: We don't pre-fill files visually as they are on server. 
+      // If user uploads new, it overrides.
+    }
+  }
 
   Future<void> _pickImage() async {
     final result = await FilePicker.platform.pickFiles(type: FileType.image, withData: true);
@@ -142,7 +197,9 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
     return Scaffold(
       backgroundColor: VC.bg,
       appBar: AppBar(
-        title: Text(widget.isProject ? 'Add Project' : 'Add Service'),
+        title: Text(widget.existingItem != null 
+            ? (widget.isProject ? 'Edit Project' : 'Edit Service') 
+            : (widget.isProject ? 'Add Project' : 'Add Service')),
         actions: [
           TextButton(
             onPressed: _loading ? null : _submit,
@@ -402,7 +459,7 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
 
       if (widget.isProject) {
         final techStack = _techStackCtrl.text.isNotEmpty ? _techStackCtrl.text.split(',').map((e) => e.trim()).toList() : <String>[];
-        await ApiService.createProject({
+        final data = {
           'title': _titleCtrl.text,
           'description': _descCtrl.text,
           'price': '₹${_priceCtrl.text}',
@@ -417,14 +474,19 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
           if (videoUrl != null) 'videoUrl': videoUrl,
           if (documentUrl != null) 'documentUrl': documentUrl,
           if (galleryUrls.isNotEmpty) 'galleryImages': jsonEncode(galleryUrls),
-        });
+        };
+        if (widget.existingItem != null) {
+          await ApiService.updateProject(widget.existingItem!['id'].toString(), data);
+        } else {
+          await ApiService.createProject(data);
+        }
       } else {
         final cats = await ApiService.getCategories();
         final catId = cats.isNotEmpty
             ? (cats.firstWhere((c) => c['title'] == _selectedCategory, orElse: () => cats.first))['id']
             : null;
 
-        await ApiService.createService({
+        final data = {
           'title': _titleCtrl.text,
           'description': _descCtrl.text,
           'vendorName': 'Vendor',
@@ -439,12 +501,17 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
           if (videoUrl != null) 'videoUrl': videoUrl,
           if (documentUrl != null) 'documentUrl': documentUrl,
           if (galleryUrls.isNotEmpty) 'galleryImages': jsonEncode(galleryUrls),
-        });
+        };
+        if (widget.existingItem != null) {
+          await ApiService.updateService(widget.existingItem!['id'].toString(), data);
+        } else {
+          await ApiService.createService(data);
+        }
       }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('${widget.isProject ? 'Project' : 'Service'} published successfully! 🎉'),
+          content: Text('${widget.isProject ? 'Project' : 'Service'} ${widget.existingItem != null ? 'updated' : 'published'} successfully! 🎉'),
           backgroundColor: VC.success,
         ));
         Navigator.pop(context, true); // Return true to signal data changed

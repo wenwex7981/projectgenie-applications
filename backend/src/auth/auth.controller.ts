@@ -69,7 +69,7 @@ export class AuthController implements OnModuleInit {
                 expiresAt: new Date(Date.now() + OTP_EXPIRY_MIN * 60 * 1000),
             },
         });
-        await EmailService.sendOTP(body.email, otp, 'register', body.name);
+        EmailService.sendOTP(body.email, otp, 'register', body.name).catch(console.error);
 
         return { message: 'OTP sent to your email', email: body.email, requiresVerification: true };
     }
@@ -111,7 +111,7 @@ export class AuthController implements OnModuleInit {
                 expiresAt: new Date(Date.now() + OTP_EXPIRY_MIN * 60 * 1000),
             },
         });
-        await EmailService.sendOTP(body.email, otp, 'register', body.name);
+        EmailService.sendOTP(body.email, otp, 'register', body.name).catch(console.error);
 
         return { message: 'OTP sent to your email', email: body.email, requiresVerification: true };
     }
@@ -190,7 +190,7 @@ export class AuthController implements OnModuleInit {
                 expiresAt: new Date(Date.now() + OTP_EXPIRY_MIN * 60 * 1000),
             },
         });
-        await EmailService.sendOTP(body.email, otp, 'login', user.name);
+        EmailService.sendOTP(body.email, otp, 'login', user.name).catch(console.error);
 
         return {
             message: 'OTP sent to your email',
@@ -220,7 +220,7 @@ export class AuthController implements OnModuleInit {
                 expiresAt: new Date(Date.now() + OTP_EXPIRY_MIN * 60 * 1000),
             },
         });
-        await EmailService.sendOTP(body.email, otp, 'login', vendor.name);
+        EmailService.sendOTP(body.email, otp, 'login', vendor.name).catch(console.error);
 
         return {
             message: 'OTP sent to your email',
@@ -302,7 +302,7 @@ export class AuthController implements OnModuleInit {
             name = vendor?.name;
         }
 
-        await EmailService.sendOTP(body.email, otp, (body.type || 'login') as any, name);
+        EmailService.sendOTP(body.email, otp, (body.type || 'login') as any, name).catch(console.error);
         return { message: 'New OTP sent to your email', email: body.email };
     }
 

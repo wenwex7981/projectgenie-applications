@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/services/api_service.dart';
 import '../auth/vendor_login_screen.dart';
+import 'edit_profile_screen.dart';
 
 class VendorProfileScreen extends StatefulWidget {
   final String vendorId;
@@ -137,7 +138,13 @@ class _VendorProfileScreenState extends State<VendorProfileScreen> {
     return Container(
       decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16), border: Border.all(color: VC.border)),
       child: Column(children: [
-        _menuItem(Icons.person_rounded, 'Edit Profile', 'Update your info', () {}),
+        _menuItem(Icons.person_rounded, 'Edit Profile', 'Update your info', () async {
+          final changed = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => EditProfileScreen(vendorId: widget.vendorId, currentData: _vendor)),
+          );
+          if (changed == true) _loadProfile();
+        }),
         _menuDivider(),
         _menuItem(Icons.account_balance_rounded, 'Bank Details', 'Manage payout accounts', () {}),
         _menuDivider(),

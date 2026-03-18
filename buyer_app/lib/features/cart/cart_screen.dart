@@ -104,7 +104,7 @@ class CartScreen extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(12),
             child: Image.network(
-              service!.imageUrl.isNotEmpty ? service!.imageUrl : "https://via.placeholder.com/100",
+               service!.imageUrl != null && service!.imageUrl!.isNotEmpty ? service!.imageUrl! : "https://via.placeholder.com/100",
               width: 100,
               height: 100,
               fit: BoxFit.cover,

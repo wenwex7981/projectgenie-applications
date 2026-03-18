@@ -294,17 +294,15 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> with Sing
     return Row(
       children: [
         _quickAction('Add\nListing', Icons.add_box_rounded, VC.accent, VC.accentLight, () {
-          // Add a new project/service
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const vendor_services_screen.VendorServicesScreen(vendorId: 'vendor-001')));
+          Navigator.push(context, MaterialPageRoute(builder: (_) => vendor_services_screen.VendorServicesScreen(vendorId: widget.vendorId)));
         }),
         const SizedBox(width: 10),
         _quickAction('View\nOrders', Icons.assignment_rounded, VC.purple, VC.purpleBg, () {
-           // Navigate to orders (requires calling tab change or pushing screen)
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const vendor_orders_screen.VendorOrdersScreen(vendorId: 'vendor-001')));
+          Navigator.push(context, MaterialPageRoute(builder: (_) => vendor_orders_screen.VendorOrdersScreen(vendorId: widget.vendorId)));
         }),
         const SizedBox(width: 10),
         _quickAction('Earnings\nReport', Icons.account_balance_wallet_rounded, VC.success, VC.successBg, () {
-          Navigator.push(context, MaterialPageRoute(builder: (_) => const vendor_earnings_screen.VendorEarningsScreen(vendorId: 'vendor-001')));
+          Navigator.push(context, MaterialPageRoute(builder: (_) => vendor_earnings_screen.VendorEarningsScreen(vendorId: widget.vendorId)));
         }),
       ],
     );

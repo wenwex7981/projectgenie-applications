@@ -5,7 +5,8 @@ import '../../core/services/api_service.dart';
 
 class AddHackathonScreen extends StatefulWidget {
   final String vendorId;
-  const AddHackathonScreen({super.key, required this.vendorId});
+  final Map<String, dynamic>? existingItem;
+  const AddHackathonScreen({super.key, required this.vendorId, this.existingItem});
 
   @override
   State<AddHackathonScreen> createState() => _AddHackathonScreenState();
@@ -21,12 +22,29 @@ class _AddHackathonScreenState extends State<AddHackathonScreen> {
   final _teamCtrl = TextEditingController();
   bool _loading = false;
 
+  @override
+  void initState() {
+    super.initState();
+    if (widget.existingItem != null) {
+      final item = widget.existingItem!;
+      _titleCtrl.text = item['title'] ?? '';
+      _orgCtrl.text = item['organizer'] ?? '';
+      
+      final String priceStr = item['prizePool']?.toString() ?? '';
+      _prizeCtrl.text = priceStr.replaceAll('₹', '').replaceAll(',', '');
+      
+      _descCtrl.text = item['description'] ?? '';
+      _dateCtrl.text = item['date'] ?? '';
+      _teamCtrl.text = item['teamSize'] ?? '';
+    }
+  }
+
   void _submit() async {
     if (!_formKey.currentState!.validate()) return;
     setState(() => _loading = true);
     
     try {
-      await ApiService.createHackathon({
+      final data = {
         'title': _titleCtrl.text,
         'organizer': _orgCtrl.text,
         'prizePool': '₹${_prizeCtrl.text}',
@@ -34,8 +52,15 @@ class _AddHackathonScreenState extends State<AddHackathonScreen> {
         'date': _dateCtrl.text,
         'teamSize': _teamCtrl.text,
         'vendorId': widget.vendorId,
-      });
-      if (mounted) Navigator.pop(context);
+      };
+      
+      if (widget.existingItem != null) {
+        await ApiService.updateHackathon(widget.existingItem!['id'].toString(), data);
+      } else {
+        await ApiService.createHackathon(data);
+      }
+      
+      if (mounted) Navigator.pop(context, true);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
@@ -50,7 +75,7 @@ class _AddHackathonScreenState extends State<AddHackathonScreen> {
     return Scaffold(
       backgroundColor: VC.bg,
       appBar: AppBar(
-        title: Text('Add Hackathon', style: GoogleFonts.inter(fontWeight: FontWeight.w800, color: VC.text)),
+        title: Text(widget.existingItem != null ? 'Edit Hackathon' : 'Add Hackathon', style: GoogleFonts.inter(fontWeight: FontWeight.w800, color: VC.text)),
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: VC.text),
@@ -84,7 +109,7 @@ class _AddHackathonScreenState extends State<AddHackathonScreen> {
                 ),
                 child: _loading 
                   ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                  : Text('Publish Hackathon', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w800, color: Colors.white)),
+                  : Text(widget.existingItem != null ? 'Update Hackathon' : 'Publish Hackathon', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w800, color: Colors.white)),
               ),
             ],
           ),

@@ -90,6 +90,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> with SingleTi
               setState(() {
                 for (var n in _notifications) { n['isRead'] = true; }
               });
+              ApiService.markAllNotificationsRead();
             },
             child: Text('Mark all read', style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.primary)),
           ),

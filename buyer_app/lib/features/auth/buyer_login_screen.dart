@@ -10,6 +10,9 @@ import 'otp_verify_screen.dart';
 class BuyerLoginScreen extends StatefulWidget {
   const BuyerLoginScreen({super.key});
 
+  static Map<String, dynamic>? loggedInUser;
+  static String? jwtToken;
+
   @override
   State<BuyerLoginScreen> createState() => _BuyerLoginScreenState();
 }
@@ -28,9 +31,6 @@ class _BuyerLoginScreenState extends State<BuyerLoginScreen> {
   final _phoneCtrl = TextEditingController();
   final _collegeCtrl = TextEditingController();
   final _branchCtrl = TextEditingController();
-
-  static Map<String, dynamic>? loggedInUser;
-  static String? jwtToken;
 
   @override
   Widget build(BuildContext context) {
@@ -214,8 +214,8 @@ class _BuyerLoginScreenState extends State<BuyerLoginScreen> {
   void _goOtp(String email, String type, String? name) {
     Navigator.push(context, MaterialPageRoute(
       builder: (_) => BuyerOtpScreen(email: email, type: type, name: name, onVerified: (result) {
-        loggedInUser = result['user'];
-        jwtToken = result['token'];
+        BuyerLoginScreen.loggedInUser = result['user'];
+        BuyerLoginScreen.jwtToken = result['token'];
         if (result['user']?['id'] != null) {
           NotificationService().listenToRealtimeNotifications(result['user']['id']);
         }

@@ -5,6 +5,8 @@ import 'package:buyer_app/core/theme/app_colors.dart';
 import 'package:buyer_app/core/data/mock_data.dart';
 import 'package:buyer_app/core/models/models.dart';
 import 'package:buyer_app/features/projects/controllers/projects_controller.dart';
+import 'package:buyer_app/features/projects/presentation/pages/project_detail_screen.dart';
+import 'package:buyer_app/features/cart/cart_screen.dart';
 
 class FinalYearProjectsScreen extends ConsumerStatefulWidget {
   final String? initialDomain;
@@ -85,7 +87,28 @@ class _FinalYearProjectsScreenState extends ConsumerState<FinalYearProjectsScree
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     physics: const BouncingScrollPhysics(),
                     itemCount: filtered.length,
-                    itemBuilder: (context, index) => _ProjectCard(project: filtered[index]),
+                    itemBuilder: (context, index) => GestureDetector(
+                      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProjectDetailScreen(project: filtered[index]))),
+                      child: _ProjectCard(
+                        project: filtered[index],
+                        onViewDetails: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProjectDetailScreen(project: filtered[index]))),
+                        onAddToCart: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('"${filtered[index].title}" added to cart! 🛒', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+                              backgroundColor: AppColors.primary,
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              action: SnackBarAction(
+                                label: 'VIEW CART',
+                                textColor: Colors.white,
+                                onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CartScreen())),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
                   );
                 },
                 loading: () => _buildLoadingState(),
@@ -291,7 +314,9 @@ class _FinalYearProjectsScreenState extends ConsumerState<FinalYearProjectsScree
 // ─── Project Card ──────────────────────────────────────────────────
 class _ProjectCard extends StatelessWidget {
   final ProjectModel project;
-  const _ProjectCard({required this.project});
+  final VoidCallback? onViewDetails;
+  final VoidCallback? onAddToCart;
+  const _ProjectCard({required this.project, this.onViewDetails, this.onAddToCart});
 
   @override
   Widget build(BuildContext context) {
@@ -428,7 +453,7 @@ class _ProjectCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: OutlinedButton(
-                        onPressed: () {},
+                        onPressed: onViewDetails,
                         style: OutlinedButton.styleFrom(
                           side: BorderSide(color: AppColors.primary.withOpacity(0.3)),
                           padding: const EdgeInsets.symmetric(vertical: 14),
@@ -440,7 +465,7 @@ class _ProjectCard extends StatelessWidget {
                     const SizedBox(width: 12),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: onAddToCart,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: AppColors.primary,
                           padding: const EdgeInsets.symmetric(vertical: 14),

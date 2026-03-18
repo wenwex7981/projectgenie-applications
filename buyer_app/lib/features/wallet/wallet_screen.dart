@@ -5,6 +5,7 @@ import 'package:buyer_app/core/data/mock_data.dart';
 import 'package:buyer_app/core/services/api_service.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'transaction_details_screen.dart';
+import '../notifications/notifications_screen.dart';
 
 class WalletScreen extends StatefulWidget {
   const WalletScreen({super.key});
@@ -125,7 +126,9 @@ class _WalletScreenState extends State<WalletScreen> with SingleTickerProviderSt
           child: IconButton(
             icon: const Icon(Icons.history_rounded, size: 20, color: AppColors.textSecondary),
             padding: EdgeInsets.zero,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationsScreen()));
+            },
           ),
         ),
         const SizedBox(width: 8),
@@ -135,7 +138,9 @@ class _WalletScreenState extends State<WalletScreen> with SingleTickerProviderSt
           child: IconButton(
             icon: const Icon(Icons.notifications_none_rounded, size: 20, color: AppColors.textSecondary),
             padding: EdgeInsets.zero,
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationsScreen()));
+            },
           ),
         ),
         const SizedBox(width: 16),
@@ -218,8 +223,26 @@ class _WalletScreenState extends State<WalletScreen> with SingleTickerProviderSt
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _buildActionItem(Icons.add_circle_outline_rounded, 'Top Up', true, () => _showTopUp()),
-        _buildActionItem(Icons.send_rounded, 'Transfer', false, () {}),
-        _buildActionItem(Icons.payments_outlined, 'Withdraw', false, () {}),
+        _buildActionItem(Icons.send_rounded, 'Transfer', false, () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Transfer feature coming soon! 🔜', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+              backgroundColor: AppColors.primary,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+          );
+        }),
+        _buildActionItem(Icons.payments_outlined, 'Withdraw', false, () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Withdraw feature coming soon! 🔜', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+              backgroundColor: AppColors.primary,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+          );
+        }),
       ],
     );
   }
@@ -253,7 +276,16 @@ class _WalletScreenState extends State<WalletScreen> with SingleTickerProviderSt
       children: [
         Text('Recent Transactions', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
         TextButton(
-          onPressed: () {},
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('All transactions shown below 👇', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+                backgroundColor: AppColors.primary,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            );
+          },
           child: Row(children: [
             Text('See All', style: GoogleFonts.inter(color: AppColors.primary, fontWeight: FontWeight.w800, fontSize: 13)),
             const Icon(Icons.chevron_right_rounded, size: 18, color: AppColors.primary),

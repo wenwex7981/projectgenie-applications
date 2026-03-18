@@ -8,6 +8,9 @@ import '../../../core/models/models.dart';
 import '../../../core/services/local_data_service.dart';
 import '../orders/order_details_screen.dart';
 import '../orders/custom_project_order_screen.dart';
+import '../chat/chat_detail_screen.dart';
+
+
 
 class OrdersScreen extends ConsumerStatefulWidget {
   const OrdersScreen({super.key});
@@ -303,7 +306,19 @@ class _OrdersScreenState extends ConsumerState<OrdersScreen> with SingleTickerPr
                 ],
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (_) => ChatDetailScreen(
+                      thread: ChatThread(
+                        id: order.id,
+                        vendorName: 'ProjectGenie Support',
+                        lastMessage: '',
+                        time: '',
+                        isOnline: true,
+                      ),
+                    ),
+                  ));
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.surfaceVariant,
                   foregroundColor: AppColors.textPrimary,

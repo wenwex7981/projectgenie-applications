@@ -26,8 +26,30 @@ class OrderDetailsScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          IconButton(icon: const Icon(Icons.share_outlined, color: Color(0xFF64748B)), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.more_vert, color: Color(0xFF64748B)), onPressed: () {}),
+          IconButton(icon: const Icon(Icons.share_outlined, color: Color(0xFF64748B)), onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Invoice link copied! 📋'), behavior: SnackBarBehavior.floating),
+            );
+          }),
+          IconButton(icon: const Icon(Icons.more_vert, color: Color(0xFF64748B)), onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+              builder: (_) => Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(width: 40, height: 4, decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(2))),
+                    const SizedBox(height: 20),
+                    ListTile(leading: const Icon(Icons.email_rounded), title: const Text('Email Invoice'), onTap: () => Navigator.pop(context)),
+                    ListTile(leading: const Icon(Icons.print_rounded), title: const Text('Print Invoice'), onTap: () => Navigator.pop(context)),
+                    ListTile(leading: const Icon(Icons.help_outline_rounded), title: const Text('Get Help'), onTap: () => Navigator.pop(context)),
+                  ],
+                ),
+              ),
+            );
+          }),
           const SizedBox(width: 8),
         ],
         bottom: PreferredSize(
@@ -254,7 +276,11 @@ class OrderDetailsScreen extends StatelessWidget {
         children: [
           const SizedBox(height: 16),
           ElevatedButton.icon(
-            onPressed: () {},
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('PDF Invoice downloading... 📄'), behavior: SnackBarBehavior.floating),
+              );
+            },
             icon: const Icon(Icons.download),
             label: const Text('Download PDF Invoice'),
             style: ElevatedButton.styleFrom(

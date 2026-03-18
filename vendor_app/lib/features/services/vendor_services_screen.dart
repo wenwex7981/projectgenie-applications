@@ -301,20 +301,67 @@ class _VendorServicesScreenState extends State<VendorServicesScreen> with Single
   }
 
   void _handleServiceAction(String action, dynamic service) async {
-    if (action == 'delete') {
-      try { await ApiService.deleteService(service['id']); _loadData(); } catch (_) {}
+    if (action == 'edit') {
+      final changed = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => AddServiceScreen(vendorId: widget.vendorId, isProject: false, existingItem: service)),
+      );
+      if (changed == true) _loadData();
+    } else if (action == 'delete') {
+      final confirm = await _showDeleteConfirm();
+      if (confirm == true) {
+        try { await ApiService.deleteService(service['id'].toString()); _loadData(); } catch (e) {
+          if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+        }
+      }
     }
   }
 
   void _handleProjectAction(String action, dynamic project) async {
-    if (action == 'delete') {
-      try { await ApiService.deleteProject(project['id']); _loadData(); } catch (_) {}
+    if (action == 'edit') {
+      final changed = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => AddProjectScreen(vendorId: widget.vendorId, existingItem: project)),
+      );
+      if (changed == true) _loadData();
+    } else if (action == 'delete') {
+      final confirm = await _showDeleteConfirm();
+      if (confirm == true) {
+        try { await ApiService.deleteProject(project['id'].toString()); _loadData(); } catch (e) {
+          if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+        }
+      }
     }
   }
 
   void _handleHackathonAction(String action, dynamic hackathon) async {
-    if (action == 'delete') {
-      try { await ApiService.deleteHackathon(hackathon['id']); _loadData(); } catch (_) {}
+    if (action == 'edit') {
+      final changed = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => AddHackathonScreen(vendorId: widget.vendorId, existingItem: hackathon)),
+      );
+      if (changed == true) _loadData();
+    } else if (action == 'delete') {
+      final confirm = await _showDeleteConfirm();
+      if (confirm == true) {
+        try { await ApiService.deleteHackathon(hackathon['id'].toString()); _loadData(); } catch (e) {
+          if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+        }
+      }
     }
+  }
+
+  Future<bool?> _showDeleteConfirm() {
+    return showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Confirm Delete'),
+        content: const Text('Are you sure you want to delete this listing?'),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(ctx, true), child: const Text('Delete', style: TextStyle(color: Colors.red))),
+        ],
+      ),
+    );
   }
 }

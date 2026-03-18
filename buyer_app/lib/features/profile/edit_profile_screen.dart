@@ -35,7 +35,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
         actions: [
           TextButton(
-            onPressed: () {},
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Profile preview coming soon! 👀'), behavior: SnackBarBehavior.floating),
+              );
+            },
             child: const Text('Preview', style: TextStyle(color: AppTheme.primaryColor, fontWeight: FontWeight.bold)),
           ),
           const SizedBox(width: 8),

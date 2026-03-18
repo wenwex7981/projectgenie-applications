@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class NotificationService {
@@ -8,30 +7,10 @@ class NotificationService {
   factory NotificationService() => _instance;
   NotificationService._internal();
 
-  final FlutterLocalNotificationsPlugin _localNotifications =
-      FlutterLocalNotificationsPlugin();
   RealtimeChannel? _subscription;
 
   Future<void> initialize() async {
-    const AndroidInitializationSettings androidInit =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    const InitializationSettings initSettings = InitializationSettings(
-      android: androidInit,
-    );
-
-    await _localNotifications.initialize(
-      settings: initSettings,
-      onDidReceiveNotificationResponse: (response) {
-        debugPrint('Notification clicked: ${response.payload}');
-      },
-    );
-
-    // Request permissions for Android 13+
-    await _localNotifications
-        .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin
-        >()
-        ?.requestNotificationsPermission();
+    debugPrint('🔔 Fake Notification Service Initialized (Windows ATL build fix)');
   }
 
   Future<void> showNotification({
@@ -39,31 +18,9 @@ class NotificationService {
     required String body,
     String? payload,
   }) async {
-    const AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails(
-          'projectgenie_vendor_channel',
-          'Vendor Alerts',
-          channelDescription:
-              'Important updates and alerts from ProjectGenie Vendor',
-          importance: Importance.max,
-          priority: Priority.high,
-          icon: '@mipmap/ic_launcher',
-        );
-    const NotificationDetails details = NotificationDetails(
-      android: androidDetails,
-    );
-
-    await _localNotifications.show(
-      id: DateTime.now().millisecondsSinceEpoch ~/ 1000, // unique id safely
-      title: title,
-      body: body,
-      notificationDetails: details,
-      payload: payload,
-    );
+    debugPrint('📢 Notification Suppressed on Windows: $title - $body');
   }
 
-  // Set up real-time listener to Supabase Notification table
-  // This executes when the user successfully logs in
   void listenToRealtimeNotifications(String targetId) {
     if (_subscription != null) return;
 
@@ -100,3 +57,4 @@ class NotificationService {
     _subscription = null;
   }
 }
+

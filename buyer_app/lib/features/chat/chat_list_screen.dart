@@ -114,7 +114,16 @@ class _ChatListScreenState extends State<ChatListScreen> {
             child: IconButton(
               icon: const Icon(Icons.search_rounded, size: 20, color: AppColors.textSecondary),
               padding: EdgeInsets.zero,
-              onPressed: () {},
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Search chats coming soon! 🔍', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+                    backgroundColor: AppColors.primary,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                );
+              },
             ),
           ),
           const SizedBox(width: 16),
@@ -161,7 +170,16 @@ class _ChatListScreenState extends State<ChatListScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('New chat — browse vendors to start a conversation! 💬', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+              backgroundColor: AppColors.primary,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+          );
+        },
         backgroundColor: AppColors.primary,
         elevation: 4,
         child: const Icon(Icons.edit_rounded, color: Colors.white),

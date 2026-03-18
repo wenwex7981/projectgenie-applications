@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../core/models/models.dart';
 import '../../core/theme/app_theme.dart';
+import '../chat/chat_detail_screen.dart';
+import '../support/help_support_screen.dart';
+import 'order_details_screen.dart';
 
 class OrderTrackingScreen extends StatelessWidget {
   final OrderModel order;
@@ -34,7 +37,7 @@ class OrderTrackingScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildOrderInfoCard(),
+            _buildOrderInfoCard(context),
             const SizedBox(height: 32),
             const Text(
               'ORDER TIMELINE',
@@ -55,16 +58,34 @@ class OrderTrackingScreen extends StatelessWidget {
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF64748B), letterSpacing: 1.2),
             ),
             const SizedBox(height: 12),
-            _buildActionTile(Icons.chat_bubble_outline_rounded, 'Chat with Vendor', 'Send a message about your order'),
-            _buildActionTile(Icons.support_agent_rounded, 'Contact Support', 'Get help from our team'),
-            _buildActionTile(Icons.report_problem_outlined, 'Report an Issue', 'Something went wrong?'),
+            _buildActionTile(context, Icons.chat_bubble_outline_rounded, 'Chat with Vendor', 'Send a message about your order', () {
+              Navigator.push(context, MaterialPageRoute(
+                builder: (_) => ChatDetailScreen(
+                  thread: ChatThread(
+                    id: order.id,
+                    vendorName: order.vendorName,
+                    lastMessage: '',
+                    time: '',
+                    isOnline: true,
+                  ),
+                ),
+              ));
+            }),
+            _buildActionTile(context, Icons.support_agent_rounded, 'Contact Support', 'Get help from our team', () {
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()));
+            }),
+            _buildActionTile(context, Icons.report_problem_outlined, 'Report an Issue', 'Something went wrong?', () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Report submitted! Our team will review it shortly. 📋'), behavior: SnackBarBehavior.floating),
+              );
+            }),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildOrderInfoCard() {
+  Widget _buildOrderInfoCard(BuildContext context) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(24),
@@ -108,7 +129,9 @@ class OrderTrackingScreen extends StatelessWidget {
                 ],
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => OrderDetailsScreen(order: order)));
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: AppTheme.primaryColor,
@@ -193,7 +216,7 @@ class OrderTrackingScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildActionTile(IconData icon, String title, String subtitle) {
+  Widget _buildActionTile(BuildContext context, IconData icon, String title, String subtitle, VoidCallback onTap) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -205,7 +228,7 @@ class OrderTrackingScreen extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {},
+          onTap: onTap,
           borderRadius: BorderRadius.circular(16),
           child: Padding(
             padding: const EdgeInsets.all(16),

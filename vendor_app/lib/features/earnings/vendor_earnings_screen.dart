@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/services/api_service.dart';
+import 'vendor_invoice_screen.dart';
+import 'vendor_analytics_screen.dart';
 
 class VendorEarningsScreen extends StatefulWidget {
   final String vendorId;
@@ -114,9 +116,13 @@ class _VendorEarningsScreenState extends State<VendorEarningsScreen> {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Withdrawal request submitted'), backgroundColor: VC.success));
         })),
         const SizedBox(width: 12),
-        Expanded(child: _quickAction(Icons.receipt_long_rounded, 'Invoice', VC.purple, () {})),
+        Expanded(child: _quickAction(Icons.receipt_long_rounded, 'Invoice', VC.purple, () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => VendorInvoiceScreen(vendorId: widget.vendorId)));
+        })),
         const SizedBox(width: 12),
-        Expanded(child: _quickAction(Icons.bar_chart_rounded, 'Analytics', VC.success, () {})),
+        Expanded(child: _quickAction(Icons.bar_chart_rounded, 'Analytics', VC.success, () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => VendorAnalyticsScreen(vendorId: widget.vendorId)));
+        })),
       ]),
     );
   }

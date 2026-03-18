@@ -25,7 +25,9 @@ class CategoriesScreen extends StatelessWidget {
         ),
         title: Text('All Categories', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w800)),
         actions: [
-          IconButton(icon: const Icon(Icons.search_rounded), onPressed: () {}),
+          IconButton(icon: const Icon(Icons.search_rounded), onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const FinalYearProjectsScreen()));
+          }),
         ],
       ),
       body: SingleChildScrollView(

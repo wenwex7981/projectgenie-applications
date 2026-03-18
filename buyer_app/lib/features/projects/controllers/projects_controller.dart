@@ -46,10 +46,22 @@ final allProjectsProvider = FutureProvider<List<ProjectModel>>((ref) async {
 // ─── Featured Projects ─────────────────────────────────────────────
 final featuredProjectsProvider = FutureProvider<List<ProjectModel>>((ref) async {
   try {
-    final response = await ApiService.getFeaturedProjects();
-    if (response.isNotEmpty) {
-      return response.map((data) => ProjectModel.fromJson(data)).toList();
+    // Try to get featured projects explicitly
+    List<ProjectModel> response = [];
+    final jsonResponse = await ApiService.getFeaturedProjects();
+    if (jsonResponse.isNotEmpty) {
+      response = jsonResponse.map((data) => ProjectModel.fromJson(data)).toList();
     }
+    
+    // If no featured projects, just get the latest projects from API
+    if (response.isEmpty) {
+      final allResponse = await ApiService.getProjects();
+      if (allResponse.isNotEmpty) {
+        response = allResponse.map((data) => ProjectModel.fromJson(data)).toList();
+      }
+    }
+    
+    if (response.isNotEmpty) return response;
   } catch (e) {
     debugPrint('API featured projects error: $e');
   }
@@ -59,7 +71,7 @@ final featuredProjectsProvider = FutureProvider<List<ProjectModel>>((ref) async 
 // ─── Services Provider ─────────────────────────────────────────────
 final servicesProvider = FutureProvider.family<List<ServiceModel>, String>((ref, category) async {
   try {
-    final services = await ApiService.getServices(category: category.isNotEmpty ? category : null);
+    final services = await ApiService.getServices(category: category.isNotEmpty && category != 'All' ? category : null);
     if (services.isNotEmpty) {
       return services;
     }
@@ -85,12 +97,18 @@ final servicesProvider = FutureProvider.family<List<ServiceModel>, String>((ref,
 // ─── Trending Services ─────────────────────────────────────────────
 final trendingServicesProvider = FutureProvider<List<ServiceModel>>((ref) async {
   try {
-    final services = await ApiService.getTrendingServices();
-    if (services.isNotEmpty) {
-      return services;
+    // Try to get trending services explicitly
+    List<ServiceModel> services = await ApiService.getTrendingServices();
+    
+    // If no trending services, just get the latest services from API
+    if (services.isEmpty) {
+       services = await ApiService.getServices();
     }
+    
+    if (services.isNotEmpty) return services;
   } catch (e) {
     debugPrint('API trending services error: $e');
   }
   return MockData.trendingServices;
 });
+

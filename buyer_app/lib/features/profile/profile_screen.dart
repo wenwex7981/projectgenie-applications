@@ -12,6 +12,10 @@ import 'package:buyer_app/features/support/help_support_screen.dart';
 import 'package:buyer_app/features/support/expert_chat_screen.dart';
 import 'manage_subscriptions_screen.dart';
 import 'refer_and_earn_screen.dart';
+import 'payment_methods_screen.dart';
+import '../auth/buyer_login_screen.dart';
+import '../dashboard/dashboard_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -76,17 +80,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
                 const SizedBox(height: 24),
                 _buildSection(context, 'ACTIVITY', [
-                  _menuItem(context, Icons.receipt_long_rounded, 'My Orders', 'Track and manage projects', AppColors.primary, () {}),
+                  _menuItem(context, Icons.receipt_long_rounded, 'My Orders', 'Track and manage projects', AppColors.primary, () {
+                    Navigator.pop(context); // Go back to dashboard
+                  }),
                   _menuItem(context, Icons.favorite_rounded, 'Saved Items', 'Your wishlisted projects', const Color(0xFFEC4899), () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SavedServicesScreen()))),
                   _menuItem(context, Icons.download_done_rounded, 'My Downloads', 'Access your files', const Color(0xFF10B981), () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MyDownloadsScreen()))),
                   _menuItem(context, Icons.card_membership_rounded, 'My Certificates', 'View earned credentials', const Color(0xFFF59E0B), () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MyCertificatesScreen()))),
-                  _menuItem(context, Icons.work_rounded, 'Applications', 'Track internship status', const Color(0xFF8B5CF6), () {}),
+                  _menuItem(context, Icons.work_rounded, 'Applications', 'Track internship status', const Color(0xFF8B5CF6), () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text('Applications feature coming soon! 🔜', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
+                        backgroundColor: AppColors.primary,
+                        behavior: SnackBarBehavior.floating,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                    );
+                  }),
                 ]),
                 const SizedBox(height: 24),
                 _buildSection(context, 'ACCOUNT', [
                   _menuItem(context, Icons.person_outline_rounded, 'Edit Profile', 'Change your information', AppColors.primary, () => Navigator.push(context, MaterialPageRoute(builder: (_) => const EditProfileScreen()))),
                   _menuItem(context, Icons.security_rounded, 'Security', 'Password and biometric', const Color(0xFF14B8A6), () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsPrivacyScreen()))),
-                  _menuItem(context, Icons.account_balance_wallet_outlined, 'Payment Methods', 'Manage cards and UPI', const Color(0xFF2563EB), () {}),
+                  _menuItem(context, Icons.account_balance_wallet_outlined, 'Payment Methods', 'Manage cards and UPI', const Color(0xFF2563EB), () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PaymentMethodsScreen()))),
                   _menuItem(context, Icons.workspace_premium_outlined, 'Subscriptions', 'View and change plans', const Color(0xFFF59E0B), () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ManageSubscriptionsScreen()))),
                   _menuItem(context, Icons.group_add_outlined, 'Refer & Earn', 'Invite friends, get rewards', const Color(0xFF10B981), () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ReferAndEarnScreen()))),
                 ]),
@@ -103,7 +118,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     width: double.infinity,
                     height: 48,
                     child: OutlinedButton.icon(
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            title: Text('Log Out', style: GoogleFonts.inter(fontWeight: FontWeight.w800)),
+                            content: Text('Are you sure you want to log out?', style: GoogleFonts.inter(color: Colors.grey[600])),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(ctx),
+                                child: Text('Cancel', style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: Colors.grey)),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pop(ctx);
+                                  ApiService.setToken(null);
+                                  ApiService.setUserId(null);
+                                  ApiService.setCachedUser(null);
+                                  BuyerLoginScreen.jwtToken = null;
+                                  BuyerLoginScreen.loggedInUser = null;
+                                  Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(builder: (_) => const BuyerLoginScreen()),
+                                    (_) => false,
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                ),
+                                child: Text('Log Out', style: GoogleFonts.inter(fontWeight: FontWeight.w700, color: Colors.white)),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                       icon: const Icon(Icons.logout_rounded, size: 18),
                       label: Text('Log Out', style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 14)),
                       style: OutlinedButton.styleFrom(

@@ -10,7 +10,11 @@ class InternshipsScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Career Center', style: TextStyle(fontWeight: FontWeight.w800, fontSize: 20)),
         actions: [
-          IconButton(icon: const Icon(Icons.bookmark_border_rounded), onPressed: () {}),
+          IconButton(icon: const Icon(Icons.bookmark_border_rounded), onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Saved internships coming soon! 🔖'), behavior: SnackBarBehavior.floating),
+            );
+          }),
           const SizedBox(width: 8),
         ],
       ),
@@ -199,7 +203,15 @@ class _InternshipCard extends StatelessWidget {
                 ],
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Application submitted for ${intern['title']}! 🚀'),
+                      behavior: SnackBarBehavior.floating,
+                      backgroundColor: const Color(0xFF0F172A),
+                    ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0F172A),
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),

@@ -12,6 +12,11 @@ import '../categories/resume_writing_screen.dart';
 import '../categories/research_paper_screen.dart';
 import '../categories/general_projects_screen.dart';
 import '../orders/custom_project_order_screen.dart';
+import '../explore/explore_screen.dart';
+import '../notifications/notifications_screen.dart';
+import '../cart/cart_screen.dart';
+import '../services/service_details_screen.dart';
+import '../projects/presentation/pages/project_detail_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -99,11 +104,17 @@ class HomeScreen extends ConsumerWidget {
                 ],
               ),
               const Spacer(),
-              _buildIconBtn(Icons.search_rounded, () {}),
+              _buildIconBtn(Icons.search_rounded, () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const ExploreScreen()));
+              }),
               const SizedBox(width: 4),
-              _buildIconBtn(Icons.notifications_none_rounded, () {}, badge: 3),
+              _buildIconBtn(Icons.notifications_none_rounded, () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const NotificationsScreen()));
+              }, badge: 3),
               const SizedBox(width: 4),
-              _buildIconBtn(Icons.shopping_bag_outlined, () {}),
+              _buildIconBtn(Icons.shopping_bag_outlined, () {
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const CartScreen()));
+              }),
             ],
           ),
         ],
@@ -541,7 +552,10 @@ class _FeaturedProjectsList extends ConsumerWidget {
             separatorBuilder: (_, __) => const SizedBox(width: 16),
             itemBuilder: (context, index) {
               final project = projects[index];
-              return _FeaturedProjectCard(project: project);
+              return GestureDetector(
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ProjectDetailScreen(project: project))),
+                child: _FeaturedProjectCard(project: project),
+              );
             },
           ),
         );
@@ -702,7 +716,10 @@ class _TrendingServicesList extends ConsumerWidget {
             separatorBuilder: (_, __) => const SizedBox(width: 16),
             itemBuilder: (context, index) {
               final service = services[index];
-              return _TrendingServiceCard(service: service);
+              return GestureDetector(
+                onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ServiceDetailsScreen(service: service))),
+                child: _TrendingServiceCard(service: service),
+              );
             },
           ),
         );
