@@ -120,8 +120,8 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
     }
   }
 
-  final _categories = ['Machine Learning', 'Deep Learning', 'CNN Projects', 'Web Development', 'Mobile Apps', 'IoT Projects', 'Data Science', 'Mini Project', 'Resume'];
-  final _domains = ['AI/ML', 'Computer Science', 'IoT', 'Data Science', 'Web Development', 'Blockchain', 'Cyber Security', 'Mobile App'];
+  final _categories = ['Resume', 'Resume Writing', 'Research Paper', 'Hackathons', 'General Projects', 'Mini Project', 'Web Development', 'Mobile Apps', 'Data Science', 'Machine Learning'];
+  final _domains = ['AI/ML', 'Computer Science', 'IoT', 'Data Science', 'EEE', 'ECE', 'Cyber Security', 'Blockchain', 'Mechanical'];
   final _difficulties = ['Beginner', 'Intermediate', 'Advanced'];
 
   /// Upload a file to Supabase storage and return the public URL
@@ -138,25 +138,8 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
       final url = Supabase.instance.client.storage.from(bucket).getPublicUrl(path);
       return url;
     } catch (e) {
-      print('Upload error ($bucket/$folder): $e');
-      // Fallback: try via backend API
-      try {
-        if (file.bytes == null) return null;
-        final base64Data = base64Encode(file.bytes!);
-        final ext = file.name.split('.').last.toLowerCase();
-        final path = '$folder/${DateTime.now().millisecondsSinceEpoch}_${file.name.replaceAll(' ', '_')}';
-
-        final response = await ApiService.uploadBase64(
-          bucket: bucket,
-          path: path,
-          base64Data: base64Data,
-          contentType: _getContentType(ext),
-        );
-        return response?['publicUrl'];
-      } catch (e2) {
-        print('Backend upload fallback error: $e2');
-        return null;
-      }
+      debugPrint('Upload error ($bucket/$folder): $e');
+      return null;
     }
   }
 

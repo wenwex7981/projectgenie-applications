@@ -7,6 +7,7 @@ import 'resume_templates_screen.dart';
 import 'resume_writing_screen.dart';
 import 'research_paper_screen.dart';
 import 'general_projects_screen.dart';
+import 'hackathons_screen.dart';
 
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({super.key});
@@ -135,6 +136,9 @@ class CategoriesScreen extends StatelessWidget {
         break;
       case 'research_paper':
         screen = const ResearchPaperScreen();
+        break;
+      case 'hackathons':
+        screen = const HackathonsScreen();
         break;
       default:
         screen = const FinalYearProjectsScreen();

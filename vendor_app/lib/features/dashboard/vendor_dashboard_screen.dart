@@ -5,6 +5,8 @@ import '../../core/services/api_service.dart';
 import '../services/vendor_services_screen.dart' as vendor_services_screen;
 import '../orders/vendor_orders_screen.dart' as vendor_orders_screen;
 import '../earnings/vendor_earnings_screen.dart' as vendor_earnings_screen;
+import '../content/manage_banners_screen.dart';
+import '../content/manage_ads_screen.dart';
 
 class VendorDashboardScreen extends StatefulWidget {
   final String vendorId;
@@ -79,6 +81,8 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> with Sing
                         _buildEarningsHeroCard(),
                         const SizedBox(height: 20),
                         _buildQuickActionsRow(),
+                        const SizedBox(height: 12),
+                        _buildContentActionsRow(),
                         const SizedBox(height: 28),
                         _buildStatsGrid(),
                         const SizedBox(height: 28),
@@ -303,6 +307,26 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> with Sing
         const SizedBox(width: 10),
         _quickAction('Earnings\nReport', Icons.account_balance_wallet_rounded, VC.success, VC.successBg, () {
           Navigator.push(context, MaterialPageRoute(builder: (_) => vendor_earnings_screen.VendorEarningsScreen(vendorId: widget.vendorId)));
+        }),
+      ],
+    );
+  }
+
+  // ─── Content Management Quick Actions ────────────────────────────
+  Widget _buildContentActionsRow() {
+    return Row(
+      children: [
+        _quickAction('Manage\nBanners', Icons.view_carousel_rounded, const Color(0xFFEC4899), const Color(0xFFFCE7F3), () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const ManageBannersScreen()));
+        }),
+        const SizedBox(width: 10),
+        _quickAction('Manage\nAds', Icons.campaign_rounded, const Color(0xFF8B5CF6), const Color(0xFFEDE9FE), () {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => const ManageAdsScreen()));
+        }),
+        const SizedBox(width: 10),
+        _quickAction('Content\nHub', Icons.hub_rounded, const Color(0xFF06B6D4), const Color(0xFFCFFAFE), () {
+          // Future: Central content management
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Coming soon: Full content management hub')));
         }),
       ],
     );

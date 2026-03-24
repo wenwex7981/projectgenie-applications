@@ -1,27 +1,11 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
-import 'dart:io' show Platform;
+import 'dart:typed_data';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
+/// Vendor API Service — now connects directly to Supabase
+/// All CRUD operations go through Supabase client, not HTTP backend
 class ApiService {
-  static String get baseUrl {
-    return 'https://projectgenie-api.onrender.com';
-  }
-
-  // ─── Connection Config ────────────────────────────────────────────
-  static const Duration _timeout = Duration(seconds: 60);
-
-  /// Unwrap the enterprise response envelope { success, data, timestamp }
-  static dynamic _unwrap(String body) {
-    try {
-      final decoded = json.decode(body);
-      if (decoded is Map && decoded.containsKey('success') && decoded.containsKey('data')) {
-        return decoded['data'];
-      }
-      return decoded;
-    } catch (_) {
-      return body;
-    }
-  }
+  static SupabaseClient get _client => Supabase.instance.client;
 
   // ─── Stored JWT Token & Vendor ID ──────────────────────────────────
   static String? _token;
@@ -31,470 +15,204 @@ class ApiService {
   static void setToken(String? t) => _token = t;
   static void setVendorId(String? id) => _vendorId = id;
 
-  static Map<String, String> get _authHeaders => {
-    'Content-Type': 'application/json',
-    if (_token != null) 'Authorization': 'Bearer $_token',
-  };
-
   // ═══════════════════════════════════════════════════════════════════
-  //  AUTH
-  // ═══════════════════════════════════════════════════════════════════
-
-  static Future<Map<String, dynamic>> vendorLogin(
-    String email,
-    String password,
-  ) async {
-    try {
-      final res = await http.post(
-        Uri.parse('$baseUrl/auth/vendor/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'password': password}),
-      );
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        final data = _unwrap(res.body);
-        if (data['token'] != null) {
-          _token = data['token'];
-          _vendorId = data['vendor']?['id'];
-        }
-        return data;
-      }
-      final err = _unwrap(res.body);
-      throw Exception(err['message'] ?? 'Login failed');
-    } catch (e) {
-      if (e is Exception) rethrow;
-      throw Exception('Network error: $e');
-    }
-  }
-
-  static Future<Map<String, dynamic>> vendorRegister({
-    required String email,
-    required String password,
-    required String name,
-    required String businessName,
-    String? phone,
-    String? bio,
-  }) async {
-    try {
-      final res = await http.post(
-        Uri.parse('$baseUrl/auth/vendor/register'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': email,
-          'password': password,
-          'name': name,
-          'businessName': businessName,
-          'phone': phone,
-          'bio': bio,
-        }),
-      );
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        final data = _unwrap(res.body);
-        if (data['token'] != null) {
-          _token = data['token'];
-          _vendorId = data['vendor']?['id'];
-        }
-        return data;
-      }
-      final err = _unwrap(res.body);
-      throw Exception(err['message'] ?? 'Registration failed');
-    } catch (e) {
-      if (e is Exception) rethrow;
-      throw Exception('Network error: $e');
-    }
-  }
-
-  static Future<Map<String, dynamic>> verifyOtp(
-    String email,
-    String code,
-  ) async {
-    try {
-      final res = await http.post(
-        Uri.parse('$baseUrl/auth/verify-otp'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'code': code, 'role': 'vendor'}),
-      );
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        final data = _unwrap(res.body);
-        if (data['token'] != null) {
-          _token = data['token'];
-          _vendorId = data['vendor']?['id'];
-        }
-        return data;
-      }
-      final err = _unwrap(res.body);
-      throw Exception(err['message'] ?? 'OTP verification failed');
-    } catch (e) {
-      if (e is Exception) rethrow;
-      throw Exception('Network error: $e');
-    }
-  }
-
-  static Future<Map<String, dynamic>> verifyLoginOtp(
-    String email,
-    String code,
-  ) async {
-    try {
-      final res = await http.post(
-        Uri.parse('$baseUrl/auth/verify-login-otp'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'code': code, 'role': 'vendor'}),
-      );
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        final data = _unwrap(res.body);
-        if (data['token'] != null) {
-          _token = data['token'];
-          _vendorId = data['vendor']?['id'];
-        }
-        return data;
-      }
-      final err = _unwrap(res.body);
-      throw Exception(err['message'] ?? 'OTP verification failed');
-    } catch (e) {
-      if (e is Exception) rethrow;
-      throw Exception('Network error: $e');
-    }
-  }
-
-  static Future<Map<String, dynamic>> resendOtp(
-    String email, {
-    String type = 'login',
-  }) async {
-    try {
-      final res = await http.post(
-        Uri.parse('$baseUrl/auth/resend-otp'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email, 'role': 'vendor', 'type': type}),
-      );
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        return _unwrap(res.body);
-      }
-      throw Exception('Failed to resend OTP');
-    } catch (e) {
-      if (e is Exception) rethrow;
-      throw Exception('Network error: $e');
-    }
-  }
-
-  static Future<Map<String, dynamic>> verifyToken(String token) async {
-    try {
-      final res = await http.post(
-        Uri.parse('$baseUrl/auth/verify'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'token': token}),
-      );
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        return _unwrap(res.body);
-      }
-      throw Exception('Invalid token');
-    } catch (e) {
-      throw Exception('Token verification failed');
-    }
-  }
-
-  // ═══════════════════════════════════════════════════════════════════
-  //  VENDOR DASHBOARD
+  //  VENDOR DASHBOARD (Direct Supabase)
   // ═══════════════════════════════════════════════════════════════════
 
   static Future<Map<String, dynamic>> getDashboard(String vendorId) async {
     try {
-      final res = await http.get(
-        Uri.parse('$baseUrl/vendors/$vendorId/dashboard'),
-        headers: _authHeaders,
-      );
-      if (res.statusCode == 200) return _unwrap(res.body);
+      final vendor = await _client.from('Vendor').select().eq('id', vendorId).maybeSingle();
+      final services = await _client.from('Service').select('id').eq('vendorId', vendorId);
+      final projects = await _client.from('Project').select('id').eq('vendorId', vendorId);
+      final orders = await _client.from('Order').select('id, status').eq('vendorId', vendorId);
+      final customOrders = await _client.from('CustomOrder').select('id, status').eq('vendorId', vendorId);
+      final recentOrders = await _client
+          .from('Order')
+          .select('*, service:Service(title), user:User(name)')
+          .eq('vendorId', vendorId)
+          .order('date', ascending: false)
+          .limit(5);
+      final recentTxns = await _client
+          .from('Transaction')
+          .select()
+          .eq('vendorId', vendorId)
+          .order('createdAt', ascending: false)
+          .limit(5);
+
+      final orderList = orders as List;
+      final customList = customOrders as List;
+      final activeOrders = orderList.where((o) => o['status'] == 'Active' || o['status'] == 'Pending').length;
+      final completedOrders = orderList.where((o) => o['status'] == 'Completed').length;
+      final pendingCustom = customList.where((o) => o['status'] == 'Pending Review').length;
+
+      return {
+        'stats': {
+          'totalOrders': orderList.length,
+          'activeOrders': activeOrders,
+          'completedOrders': completedOrders,
+          'totalServices': (services as List).length,
+          'totalProjects': (projects as List).length,
+          'pendingCustomOrders': pendingCustom,
+          'totalEarnings': vendor?['totalEarnings'] ?? 0,
+        },
+        'recentOrders': recentOrders,
+        'recentTransactions': recentTxns,
+      };
     } catch (e) {
-      print('API Error: $e');
+      print('Dashboard Error: $e');
+      return {
+        'stats': {
+          'totalOrders': 0, 'activeOrders': 0, 'completedOrders': 0,
+          'totalServices': 0, 'totalProjects': 0, 'pendingCustomOrders': 0,
+          'totalEarnings': 0,
+        },
+        'recentOrders': [],
+        'recentTransactions': [],
+      };
     }
-    // Fallback mock
-    return {
-      'stats': {
-        'totalOrders': 0,
-        'activeOrders': 0,
-        'completedOrders': 0,
-        'totalServices': 0,
-        'totalProjects': 0,
-        'pendingCustomOrders': 0,
-        'totalEarnings': 0,
-      },
-      'recentOrders': [],
-      'recentTransactions': [],
-    };
   }
 
   static Future<Map<String, dynamic>> getProfile(String vendorId) async {
-    try {
-      final res = await http.get(
-        Uri.parse('$baseUrl/vendors/$vendorId'),
-        headers: _authHeaders,
-      );
-      if (res.statusCode == 200) return _unwrap(res.body);
-    } catch (e) {
-      print('API Error: $e');
-    }
-    throw Exception('Failed to load profile');
+    final response = await _client.from('Vendor').select().eq('id', vendorId).single();
+    return response;
   }
 
-  static Future<Map<String, dynamic>> updateProfile(
-    String vendorId,
-    Map<String, dynamic> data,
-  ) async {
-    try {
-      final res = await http.put(
-        Uri.parse('$baseUrl/vendors/$vendorId'),
-        headers: _authHeaders,
-        body: jsonEncode(data),
-      );
-      if (res.statusCode == 200) return _unwrap(res.body);
-    } catch (e) {
-      print('API Error: $e');
-    }
-    throw Exception('Failed to update profile');
+  static Future<Map<String, dynamic>> updateProfile(String vendorId, Map<String, dynamic> data) async {
+    data['updatedAt'] = DateTime.now().toIso8601String();
+    final response = await _client.from('Vendor').update(data).eq('id', vendorId).select().single();
+    return response;
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  //  SERVICES CRUD
+  //  SERVICES CRUD (Direct Supabase)
   // ═══════════════════════════════════════════════════════════════════
 
   static Future<List<dynamic>> getVendorServices(String vendorId) async {
     try {
-      final res = await http.get(
-        Uri.parse('$baseUrl/vendors/$vendorId/services'),
-        headers: _authHeaders,
-      );
-      if (res.statusCode == 200) return _unwrap(res.body);
+      final response = await _client
+          .from('Service')
+          .select()
+          .eq('vendorId', vendorId)
+          .order('createdAt', ascending: false);
+      return response;
     } catch (e) {
       print('API Error: $e');
-    }
-    return [];
-  }
-
-  static Future<Map<String, dynamic>> createService(
-    Map<String, dynamic> data,
-  ) async {
-    try {
-      if (_vendorId == null)
-        throw Exception('Vendor Session Expired. Please login again.');
-      data['vendorId'] = _vendorId;
-      final res = await http.post(
-        Uri.parse('$baseUrl/services'),
-        headers: _authHeaders,
-        body: jsonEncode(data),
-      );
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        return _unwrap(res.body);
-      } else {
-        throw Exception(res.body);
-      }
-    } catch (e) {
-      print('API Error (createService): ${e.toString()}');
-      rethrow;
+      return [];
     }
   }
 
-  static Future<Map<String, dynamic>> updateService(
-    String id,
-    Map<String, dynamic> data,
-  ) async {
-    try {
-      final res = await http.put(
-        Uri.parse('$baseUrl/services/$id'),
-        headers: _authHeaders,
-        body: jsonEncode(data),
-      );
-      if (res.statusCode == 200) return _unwrap(res.body);
-    } catch (e) {
-      print('API Error: $e');
-    }
-    throw Exception('Failed to update service');
+  static Future<Map<String, dynamic>> createService(Map<String, dynamic> data) async {
+    if (_vendorId == null) throw Exception('Vendor Session Expired. Please login again.');
+    data['vendorId'] = _vendorId;
+    data['updatedAt'] = DateTime.now().toIso8601String();
+    final response = await _client.from('Service').insert(data).select().single();
+    return response;
+  }
+
+  static Future<Map<String, dynamic>> updateService(String id, Map<String, dynamic> data) async {
+    data['updatedAt'] = DateTime.now().toIso8601String();
+    final response = await _client.from('Service').update(data).eq('id', id).select().single();
+    return response;
   }
 
   static Future<void> deleteService(String id) async {
-    try {
-      final res = await http.delete(
-        Uri.parse('$baseUrl/services/$id'),
-        headers: _authHeaders,
-      );
-      if (res.statusCode != 200) throw Exception('Failed to delete service');
-    } catch (e) {
-      print('API Error: $e');
-      rethrow;
-    }
+    await _client.from('Service').delete().eq('id', id);
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  //  PROJECTS CRUD
+  //  PROJECTS CRUD (Direct Supabase)
   // ═══════════════════════════════════════════════════════════════════
 
   static Future<List<dynamic>> getVendorProjects(String vendorId) async {
     try {
-      final res = await http.get(
-        Uri.parse('$baseUrl/vendors/$vendorId/projects'),
-        headers: _authHeaders,
-      );
-      if (res.statusCode == 200) return _unwrap(res.body);
+      final response = await _client
+          .from('Project')
+          .select()
+          .eq('vendorId', vendorId)
+          .order('createdAt', ascending: false);
+      return response;
     } catch (e) {
       print('API Error: $e');
-    }
-    return [];
-  }
-
-  static Future<Map<String, dynamic>> createProject(
-    Map<String, dynamic> data,
-  ) async {
-    try {
-      if (_vendorId == null)
-        throw Exception('Vendor Session Expired. Please login again.');
-      data['vendorId'] = _vendorId;
-      final res = await http.post(
-        Uri.parse('$baseUrl/projects'),
-        headers: _authHeaders,
-        body: jsonEncode(data),
-      );
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        return _unwrap(res.body);
-      } else {
-        throw Exception(res.body);
-      }
-    } catch (e) {
-      print('API Error (createProject): ${e.toString()}');
-      rethrow;
+      return [];
     }
   }
 
-  static Future<Map<String, dynamic>> updateProject(
-    String id,
-    Map<String, dynamic> data,
-  ) async {
-    try {
-      final res = await http.put(
-        Uri.parse('$baseUrl/projects/$id'),
-        headers: _authHeaders,
-        body: jsonEncode(data),
-      );
-      if (res.statusCode == 200) return _unwrap(res.body);
-    } catch (e) {
-      print('API Error: $e');
-    }
-    throw Exception('Failed to update project');
+  static Future<Map<String, dynamic>> createProject(Map<String, dynamic> data) async {
+    if (_vendorId == null) throw Exception('Vendor Session Expired. Please login again.');
+    data['vendorId'] = _vendorId;
+    data['updatedAt'] = DateTime.now().toIso8601String();
+    final response = await _client.from('Project').insert(data).select().single();
+    return response;
+  }
+
+  static Future<Map<String, dynamic>> updateProject(String id, Map<String, dynamic> data) async {
+    data['updatedAt'] = DateTime.now().toIso8601String();
+    final response = await _client.from('Project').update(data).eq('id', id).select().single();
+    return response;
   }
 
   static Future<void> deleteProject(String id) async {
-    try {
-      final res = await http.delete(
-        Uri.parse('$baseUrl/projects/$id'),
-        headers: _authHeaders,
-      );
-      if (res.statusCode != 200) throw Exception('Failed to delete project');
-    } catch (e) {
-      print('API Error: $e');
-      rethrow;
-    }
+    await _client.from('Project').delete().eq('id', id);
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  //  HACKATHONS CRUD
+  //  HACKATHONS CRUD (Direct Supabase)
   // ═══════════════════════════════════════════════════════════════════
 
   static Future<List<dynamic>> getVendorHackathons(String vendorId) async {
     try {
-      final res = await http.get(
-        Uri.parse('$baseUrl/hackathons?vendorId=$vendorId'),
-        headers: _authHeaders,
-      );
-      if (res.statusCode == 200) return _unwrap(res.body);
+      final response = await _client
+          .from('Hackathon')
+          .select()
+          .eq('vendorId', vendorId)
+          .order('createdAt', ascending: false);
+      return response;
     } catch (e) {
       print('API Error: $e');
-    }
-    return [];
-  }
-
-  static Future<Map<String, dynamic>> createHackathon(
-    Map<String, dynamic> data,
-  ) async {
-    try {
-      if (_vendorId == null)
-        throw Exception('Vendor Session Expired. Please login again.');
-      data['vendorId'] = _vendorId;
-      final res = await http.post(
-        Uri.parse('$baseUrl/hackathons'),
-        headers: _authHeaders,
-        body: jsonEncode(data),
-      );
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        return _unwrap(res.body);
-      } else {
-        throw Exception(res.body);
-      }
-    } catch (e) {
-      print('API Error (createHackathon): ${e.toString()}');
-      rethrow;
+      return [];
     }
   }
 
-  static Future<Map<String, dynamic>> updateHackathon(
-    String id,
-    Map<String, dynamic> data,
-  ) async {
-    try {
-      final res = await http.put(
-        Uri.parse('$baseUrl/hackathons/$id'),
-        headers: _authHeaders,
-        body: jsonEncode(data),
-      );
-      if (res.statusCode == 200) return _unwrap(res.body);
-    } catch (e) {
-      print('API Error: $e');
-    }
-    throw Exception('Failed to update hackathon');
+  static Future<Map<String, dynamic>> createHackathon(Map<String, dynamic> data) async {
+    if (_vendorId == null) throw Exception('Vendor Session Expired. Please login again.');
+    data['vendorId'] = _vendorId;
+    data['updatedAt'] = DateTime.now().toIso8601String();
+    final response = await _client.from('Hackathon').insert(data).select().single();
+    return response;
+  }
+
+  static Future<Map<String, dynamic>> updateHackathon(String id, Map<String, dynamic> data) async {
+    data['updatedAt'] = DateTime.now().toIso8601String();
+    final response = await _client.from('Hackathon').update(data).eq('id', id).select().single();
+    return response;
   }
 
   static Future<void> deleteHackathon(String id) async {
-    try {
-      final res = await http.delete(
-        Uri.parse('$baseUrl/hackathons/$id'),
-        headers: _authHeaders,
-      );
-      if (res.statusCode != 200) throw Exception('Failed to delete hackathon');
-    } catch (e) {
-      print('API Error: $e');
-      rethrow;
-    }
+    await _client.from('Hackathon').delete().eq('id', id);
   }
 
   // ═══════════════════════════════════════════════════════════════════
   //  ORDERS
   // ═══════════════════════════════════════════════════════════════════
 
-  static Future<List<dynamic>> getVendorOrders(
-    String vendorId, {
-    String? status,
-  }) async {
+  static Future<List<dynamic>> getVendorOrders(String vendorId, {String? status}) async {
     try {
-      var url = '$baseUrl/vendors/$vendorId/orders';
-      if (status != null) url += '?status=$status';
-      final res = await http.get(Uri.parse(url), headers: _authHeaders);
-      if (res.statusCode == 200) return _unwrap(res.body);
+      var query = _client
+          .from('Order')
+          .select('*, user:User(name, email), service:Service(title)')
+          .eq('vendorId', vendorId);
+      if (status != null) query = query.eq('status', status);
+      final response = await query.order('date', ascending: false);
+      return response;
     } catch (e) {
       print('API Error: $e');
+      return [];
     }
-    return [];
   }
 
-  static Future<Map<String, dynamic>> updateOrderStatus(
-    String orderId,
-    String status,
-  ) async {
-    try {
-      final res = await http.put(
-        Uri.parse('$baseUrl/orders/$orderId/status'),
-        headers: _authHeaders,
-        body: jsonEncode({'status': status}),
-      );
-      if (res.statusCode == 200) return _unwrap(res.body);
-    } catch (e) {
-      print('API Error: $e');
-    }
-    throw Exception('Failed to update order status');
+  static Future<Map<String, dynamic>> updateOrderStatus(String orderId, String status) async {
+    final response = await _client.from('Order').update({'status': status}).eq('id', orderId).select().single();
+    return response;
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -503,50 +221,36 @@ class ApiService {
 
   static Future<List<dynamic>> getVendorCustomOrders(String vendorId) async {
     try {
-      final res = await http.get(
-        Uri.parse('$baseUrl/vendors/$vendorId/custom-orders'),
-        headers: _authHeaders,
-      );
-      if (res.statusCode == 200) return _unwrap(res.body);
+      final response = await _client
+          .from('CustomOrder')
+          .select()
+          .eq('vendorId', vendorId)
+          .order('createdAt', ascending: false);
+      return response;
     } catch (e) {
       print('API Error: $e');
+      return [];
     }
-    return [];
   }
 
-  static Future<Map<String, dynamic>> acceptCustomOrder(
-    String orderId, {
-    String? notes,
-    double? price,
-  }) async {
-    try {
-      final res = await http.put(
-        Uri.parse('$baseUrl/custom-orders/$orderId/accept'),
-        headers: _authHeaders,
-        body: jsonEncode({'vendorNotes': notes, 'quotedPrice': price}),
-      );
-      if (res.statusCode == 200) return _unwrap(res.body);
-    } catch (e) {
-      print('API Error: $e');
-    }
-    throw Exception('Failed to accept custom order');
+  static Future<Map<String, dynamic>> acceptCustomOrder(String orderId, {String? notes, double? price}) async {
+    final update = <String, dynamic>{
+      'status': 'Accepted',
+      'updatedAt': DateTime.now().toIso8601String(),
+    };
+    if (notes != null) update['vendorNotes'] = notes;
+    if (price != null) update['quotedPrice'] = price;
+    final response = await _client.from('CustomOrder').update(update).eq('id', orderId).select().single();
+    return response;
   }
 
-  static Future<Map<String, dynamic>> rejectCustomOrder(
-    String orderId, {
-    String? notes,
-  }) async {
-    try {
-      final res = await http.put(
-        Uri.parse('$baseUrl/custom-orders/$orderId/reject'),
-        headers: _authHeaders,
-        body: jsonEncode({'vendorNotes': notes}),
-      );
-      if (res.statusCode == 200) return _unwrap(res.body);
-    } catch (e) {
-      print('API Error: $e');
-    }
-    throw Exception('Failed to reject custom order');
+  static Future<Map<String, dynamic>> rejectCustomOrder(String orderId, {String? notes}) async {
+    final response = await _client.from('CustomOrder').update({
+      'status': 'Rejected',
+      'vendorNotes': notes,
+      'updatedAt': DateTime.now().toIso8601String(),
+    }).eq('id', orderId).select().single();
+    return response;
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -555,28 +259,28 @@ class ApiService {
 
   static Future<Map<String, dynamic>> getEarnings(String vendorId) async {
     try {
-      final res = await http.get(
-        Uri.parse('$baseUrl/vendors/$vendorId/earnings'),
-        headers: _authHeaders,
-      );
-      if (res.statusCode == 200) return _unwrap(res.body);
+      final vendor = await _client.from('Vendor').select('totalEarnings').eq('id', vendorId).single();
+      return {
+        'totalEarnings': vendor['totalEarnings'] ?? 0,
+        'pendingEarnings': 0,
+        'thisMonthEarnings': 0,
+      };
     } catch (e) {
-      print('API Error: $e');
+      return {'totalEarnings': 0, 'pendingEarnings': 0, 'thisMonthEarnings': 0};
     }
-    return {'totalEarnings': 0, 'pendingEarnings': 0, 'thisMonthEarnings': 0};
   }
 
   static Future<List<dynamic>> getTransactions(String vendorId) async {
     try {
-      final res = await http.get(
-        Uri.parse('$baseUrl/vendors/$vendorId/transactions'),
-        headers: _authHeaders,
-      );
-      if (res.statusCode == 200) return _unwrap(res.body);
+      final response = await _client
+          .from('Transaction')
+          .select()
+          .eq('vendorId', vendorId)
+          .order('createdAt', ascending: false);
+      return response;
     } catch (e) {
-      print('API Error: $e');
+      return [];
     }
-    return [];
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -585,76 +289,71 @@ class ApiService {
 
   static Future<List<dynamic>> getCategories() async {
     try {
-      final res = await http.get(Uri.parse('$baseUrl/categories'));
-      if (res.statusCode == 200) return _unwrap(res.body);
+      final response = await _client.from('Category').select().order('sortOrder', ascending: true);
+      return response;
     } catch (e) {
-      print('API Error: $e');
+      return [];
     }
-    return [];
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  //  CHAT
+  //  CHAT (Direct Supabase)
   // ═══════════════════════════════════════════════════════════════════
 
-  static Future<List<Map<String, dynamic>>> getChatThreads(
-    String vendorId,
-  ) async {
+  static Future<List<Map<String, dynamic>>> getChatThreads(String vendorId) async {
     try {
-      final res = await http.get(
-        Uri.parse('$baseUrl/chats/threads/vendor/$vendorId'),
-        headers: _authHeaders,
-      );
-      if (res.statusCode == 200) {
-        return List<Map<String, dynamic>>.from(_unwrap(res.body));
+      // Get distinct users who have chatted with this vendor
+      final response = await _client
+          .from('ChatMessage')
+          .select('userId, user:User(name, email)')
+          .eq('vendorId', vendorId)
+          .order('time', ascending: false);
+
+      // Deduplicate by userId
+      final Map<String, Map<String, dynamic>> threads = {};
+      for (final msg in response) {
+        final uid = msg['userId'] as String;
+        if (!threads.containsKey(uid)) {
+          threads[uid] = msg;
+        }
       }
+      return threads.values.toList();
     } catch (e) {
       print('API Error: $e');
+      return [];
     }
-    return [];
   }
 
-  static Future<List<Map<String, dynamic>>> getChatMessages(
-    String userId,
-  ) async {
+  static Future<List<Map<String, dynamic>>> getChatMessages(String userId) async {
     try {
       final vid = _vendorId ?? '';
-      final res = await http.get(
-        Uri.parse('$baseUrl/chats?userId=$userId&vendorId=$vid'),
-        headers: _authHeaders,
-      );
-      if (res.statusCode == 200) {
-        return List<Map<String, dynamic>>.from(_unwrap(res.body));
-      }
+      final response = await _client
+          .from('ChatMessage')
+          .select()
+          .eq('userId', userId)
+          .eq('vendorId', vid)
+          .order('time', ascending: true);
+      return List<Map<String, dynamic>>.from(response);
     } catch (e) {
       print('API Error: $e');
+      return [];
     }
-    return [];
   }
 
-  static Future<Map<String, dynamic>?> sendMessage(
-    String userId,
-    String text,
-  ) async {
+  static Future<Map<String, dynamic>?> sendMessage(String userId, String text) async {
     try {
       final vid = _vendorId ?? '';
-      final res = await http.post(
-        Uri.parse('$baseUrl/chats'),
-        headers: _authHeaders,
-        body: jsonEncode({
-          'userId': userId,
-          'vendorId': vid,
-          'text': text,
-          'isSender': false,
-        }),
-      );
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        return _unwrap(res.body);
-      }
+      final response = await _client.from('ChatMessage').insert({
+        'userId': userId,
+        'vendorId': vid,
+        'text': text,
+        'isSender': false,
+      }).select().single();
+      return response;
     } catch (e) {
       print('API Error: $e');
+      return null;
     }
-    return null;
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -664,47 +363,114 @@ class ApiService {
   static Future<List<Map<String, dynamic>>> getNotifications() async {
     try {
       final vid = _vendorId ?? '';
-      final res = await http.get(
-        Uri.parse('$baseUrl/notifications?targetId=$vid'),
-        headers: _authHeaders,
-      );
-      if (res.statusCode == 200) {
-        return List<Map<String, dynamic>>.from(_unwrap(res.body));
-      }
+      final response = await _client
+          .from('Notification')
+          .select()
+          .eq('targetId', vid)
+          .order('createdAt', ascending: false);
+      return List<Map<String, dynamic>>.from(response);
     } catch (e) {
       print('API Error: $e');
+      return [];
     }
-    return [];
   }
 
   // ═══════════════════════════════════════════════════════════════════
-  //  FILE UPLOAD
+  //  BANNERS CRUD (Admin)
   // ═══════════════════════════════════════════════════════════════════
 
-  static Future<Map<String, dynamic>?> uploadBase64({
+  static Future<List<Map<String, dynamic>>> getBanners() async {
+    try {
+      final response = await _client
+          .from('Banner')
+          .select()
+          .order('sortOrder', ascending: true);
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static Future<Map<String, dynamic>> createBanner(Map<String, dynamic> data) async {
+    data['updatedAt'] = DateTime.now().toIso8601String();
+    final response = await _client.from('Banner').insert(data).select().single();
+    return response;
+  }
+
+  static Future<Map<String, dynamic>> updateBanner(String id, Map<String, dynamic> data) async {
+    data['updatedAt'] = DateTime.now().toIso8601String();
+    final response = await _client.from('Banner').update(data).eq('id', id).select().single();
+    return response;
+  }
+
+  static Future<void> deleteBanner(String id) async {
+    await _client.from('Banner').delete().eq('id', id);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  //  ADVERTISEMENTS CRUD
+  // ═══════════════════════════════════════════════════════════════════
+
+  static Future<List<Map<String, dynamic>>> getAdvertisements() async {
+    try {
+      final vid = _vendorId ?? '';
+      final response = await _client
+          .from('Advertisement')
+          .select()
+          .eq('vendorId', vid)
+          .order('createdAt', ascending: false);
+      return List<Map<String, dynamic>>.from(response);
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static Future<Map<String, dynamic>> createAdvertisement(Map<String, dynamic> data) async {
+    data['vendorId'] = _vendorId;
+    data['updatedAt'] = DateTime.now().toIso8601String();
+    final response = await _client.from('Advertisement').insert(data).select().single();
+    return response;
+  }
+
+  static Future<Map<String, dynamic>> updateAdvertisement(String id, Map<String, dynamic> data) async {
+    data['updatedAt'] = DateTime.now().toIso8601String();
+    final response = await _client.from('Advertisement').update(data).eq('id', id).select().single();
+    return response;
+  }
+
+  static Future<void> deleteAdvertisement(String id) async {
+    await _client.from('Advertisement').delete().eq('id', id);
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  //  FILE UPLOAD (Supabase Storage)
+  // ═══════════════════════════════════════════════════════════════════
+
+  static Future<String?> uploadFile({
     required String bucket,
     required String path,
-    required String base64Data,
-    required String contentType,
+    required Uint8List fileBytes,
+    String contentType = 'image/jpeg',
   }) async {
     try {
-      final res = await http.post(
-        Uri.parse('$baseUrl/upload/base64'),
-        headers: _authHeaders,
-        body: jsonEncode({
-          'bucket': bucket,
-          'path': path,
-          'base64Data': base64Data,
-          'contentType': contentType,
-        }),
+      await _client.storage.from(bucket).uploadBinary(
+        path,
+        fileBytes,
+        fileOptions: FileOptions(contentType: contentType, upsert: true),
       );
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        return _unwrap(res.body);
-      }
+      return _client.storage.from(bucket).getPublicUrl(path);
     } catch (e) {
-      print('API Error (uploadBase64): $e');
+      print('Upload Error: $e');
+      return null;
     }
-    return null;
+  }
+
+  static Future<void> deleteFile(String bucket, String path) async {
+    try {
+      await _client.storage.from(bucket).remove([path]);
+    } catch (e) {
+      print('Delete file error: $e');
+    }
   }
 
   // ═══════════════════════════════════════════════════════════════════
@@ -713,12 +479,20 @@ class ApiService {
 
   static Future<bool> isServerReachable() async {
     try {
-      final res = await http
-          .get(Uri.parse('$baseUrl/health'))
-          .timeout(const Duration(seconds: 60));
-      return res.statusCode == 200;
+      await _client.from('Category').select('id').limit(1);
+      return true;
     } catch (_) {
       return false;
     }
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  //  LOGOUT (Clear session)
+  // ═══════════════════════════════════════════════════════════════════
+
+  static Future<void> logout() async {
+    await _client.auth.signOut();
+    _token = null;
+    _vendorId = null;
   }
 }

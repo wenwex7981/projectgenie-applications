@@ -7,6 +7,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../chat/chat_detail_screen.dart';
 import '../orders/order_details_screen.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ServiceDetailsScreen extends StatefulWidget {
   final ServiceModel service;
@@ -169,15 +170,7 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
             child: IconButton(
               icon: const Icon(Icons.share_outlined, color: Colors.white),
               onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Share link copied! 📋', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
-                    backgroundColor: AppColors.primary,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
+                Share.share('Check out this amazing service: ${service.title} on ProjectGenie! https://projectgenie.com/service/${service.id}');
               },
             ),
           ),
@@ -486,20 +479,42 @@ class _ServiceDetailsScreenState extends State<ServiceDetailsScreen> {
             Expanded(
               child: FadeInRight(
                 duration: const Duration(milliseconds: 500),
-                child: ElevatedButton(
-                  onPressed: _ordering ? null : _handleInvestDownload,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0F172A),
-                    disabledBackgroundColor: Colors.grey[400],
-                    padding: const EdgeInsets.symmetric(vertical: 18),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  ),
-                  child: _ordering
-                      ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white))
-                      : Text(
-                          'Invest & Download',
-                          style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: _ordering ? null : () {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Added to Cart! 🛒')));
+                        },
+                        icon: const Icon(Icons.shopping_cart_outlined, size: 18),
+                        label: Text('Add to Cart', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.bold)),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF0F172A),
+                          padding: const EdgeInsets.symmetric(vertical: 18),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          side: BorderSide(color: const Color(0xFF0F172A).withOpacity(0.3)),
                         ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: _ordering ? null : _handleInvestDownload,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFF0F172A),
+                          disabledBackgroundColor: Colors.grey[400],
+                          padding: const EdgeInsets.symmetric(vertical: 18),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        ),
+                        child: _ordering
+                            ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white))
+                            : Text(
+                                'Buy Now',
+                                style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.white),
+                              ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

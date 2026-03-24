@@ -87,6 +87,15 @@ class AppCategories {
       bgColor: Color(0xFFFEE2E2),
       count: 60,
     ),
+    AppCategory(
+      id: 'hackathons',
+      title: 'Live Hackathons',
+      subtitle: 'Compete & Win Prizes',
+      icon: Icons.emoji_events_rounded,
+      color: Color(0xFF10B981),
+      bgColor: Color(0xFFD1FAE5),
+      count: 15,
+    ),
   ];
 }
 

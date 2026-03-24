@@ -6,6 +6,7 @@ import 'package:buyer_app/core/theme/app_colors.dart';
 import 'package:buyer_app/core/models/models.dart';
 import 'package:buyer_app/features/projects/controllers/projects_controller.dart';
 import '../categories/categories_screen.dart';
+import '../categories/hackathons_screen.dart';
 import '../categories/final_year_projects_screen.dart';
 import '../categories/resume_templates_screen.dart';
 import '../categories/resume_writing_screen.dart';
@@ -596,6 +597,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         break;
       case 'resume':
         screen = const ResumeTemplatesScreen();
+        break;
+      case 'hackathons':
+        screen = const HackathonsScreen();
         break;
       case 'projects':
         screen = const GeneralProjectsScreen();

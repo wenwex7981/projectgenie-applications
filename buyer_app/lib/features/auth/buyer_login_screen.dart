@@ -1,11 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../../core/services/notification_service.dart';
 import '../../core/theme/app_colors.dart';
 import '../dashboard/dashboard_screen.dart';
-import 'otp_verify_screen.dart';
 
 class BuyerLoginScreen extends StatefulWidget {
   const BuyerLoginScreen({super.key});
@@ -18,19 +16,20 @@ class BuyerLoginScreen extends StatefulWidget {
 }
 
 class _BuyerLoginScreenState extends State<BuyerLoginScreen> {
-  static const String baseUrl = 'https://projectgenie-api.onrender.com';
-
   final _emailCtrl = TextEditingController(text: 'vardhan@university.edu');
   final _passwordCtrl = TextEditingController(text: 'password123');
   bool _loading = false;
   bool _obscure = true;
   bool _isRegister = false;
   String? _error;
+  String? _success;
 
   final _nameCtrl = TextEditingController();
   final _phoneCtrl = TextEditingController();
   final _collegeCtrl = TextEditingController();
   final _branchCtrl = TextEditingController();
+
+  SupabaseClient get _supabase => Supabase.instance.client;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +45,7 @@ class _BuyerLoginScreenState extends State<BuyerLoginScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF141A29), // Very dark premium blue
+                  color: const Color(0xFF141A29),
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 15, offset: const Offset(0, 8)),
@@ -58,16 +57,14 @@ class _BuyerLoginScreenState extends State<BuyerLoginScreen> {
                     ShaderMask(
                       shaderCallback: (bounds) => const LinearGradient(
                         colors: [Color(0xFFF3F4F6), Color(0xFF9CA3AF), Color(0xFFD1D5DB)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                        begin: Alignment.topLeft, end: Alignment.bottomRight,
                       ).createShader(bounds),
                       child: Text('P', style: GoogleFonts.montserrat(fontSize: 48, fontWeight: FontWeight.w900, color: Colors.white, height: 1)),
                     ),
                     ShaderMask(
                       shaderCallback: (bounds) => const LinearGradient(
                         colors: [Color(0xFFFDE047), Color(0xFFB45309), Color(0xFFFBBF24)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                        begin: Alignment.topLeft, end: Alignment.bottomRight,
                       ).createShader(bounds),
                       child: Text('G', style: GoogleFonts.montserrat(fontSize: 48, fontWeight: FontWeight.w900, color: Colors.white, height: 1)),
                     ),
@@ -135,16 +132,28 @@ class _BuyerLoginScreenState extends State<BuyerLoginScreen> {
                   ]),
                 ),
               ],
+
+              if (_success != null) ...[
+                const SizedBox(height: 12),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(color: const Color(0xFFF0FDF4), borderRadius: BorderRadius.circular(10)),
+                  child: Row(children: [
+                    const Icon(Icons.check_circle_rounded, size: 16, color: Color(0xFF22C55E)),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(_success!, style: GoogleFonts.inter(fontSize: 13, color: const Color(0xFF22C55E)))),
+                  ]),
+                ),
+              ],
               const SizedBox(height: 16),
 
-              // Email verification notice
               Container(
                 width: double.infinity, padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(color: AppColors.primarySurface, borderRadius: BorderRadius.circular(10)),
                 child: Row(children: [
                   const Icon(Icons.verified_user_rounded, size: 18, color: AppColors.primary),
                   const SizedBox(width: 8),
-                  Expanded(child: Text('Email verification via OTP is required',
+                  Expanded(child: Text('Secure authentication powered by Supabase',
                     style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.primary))),
                 ]),
               ),
@@ -160,7 +169,7 @@ class _BuyerLoginScreenState extends State<BuyerLoginScreen> {
                   ),
                   child: _loading
                       ? const SizedBox(width: 22, height: 22, child: CircularProgressIndicator(strokeWidth: 2.5, color: Colors.white))
-                      : Text(_isRegister ? 'Create Account & Verify' : 'Sign In & Verify', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w800, color: Colors.white)),
+                      : Text(_isRegister ? 'Create Account' : 'Sign In', style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w800, color: Colors.white)),
                 ),
               ),
               const SizedBox(height: 16),
@@ -168,7 +177,7 @@ class _BuyerLoginScreenState extends State<BuyerLoginScreen> {
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 Text(_isRegister ? 'Already have an account? ' : "Don't have an account? ", style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
                 GestureDetector(
-                  onTap: () => setState(() { _isRegister = !_isRegister; _error = null; }),
+                  onTap: () => setState(() { _isRegister = !_isRegister; _error = null; _success = null; }),
                   child: Text(_isRegister ? 'Sign In' : 'Register', style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w700, color: AppColors.primary)),
                 ),
               ]),
@@ -211,60 +220,130 @@ class _BuyerLoginScreenState extends State<BuyerLoginScreen> {
     focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(14), borderSide: const BorderSide(color: AppColors.primary, width: 2)),
   );
 
-  void _goOtp(String email, String type, String? name) {
-    Navigator.push(context, MaterialPageRoute(
-      builder: (_) => BuyerOtpScreen(email: email, type: type, name: name, onVerified: (result) {
-        BuyerLoginScreen.loggedInUser = result['user'];
-        BuyerLoginScreen.jwtToken = result['token'];
-        if (result['user']?['id'] != null) {
-          NotificationService().listenToRealtimeNotifications(result['user']['id']);
-        }
-        Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => const DashboardScreen()), (_) => false);
-      }),
-    ));
-  }
-
+  // ═══════════════════════════════════════════════════════════════════
+  //  SUPABASE AUTH — Direct signIn (session persists automatically)
+  // ═══════════════════════════════════════════════════════════════════
   Future<void> _login() async {
-    if (_emailCtrl.text.isEmpty || _passwordCtrl.text.isEmpty) { setState(() => _error = 'Enter email and password'); return; }
-    setState(() { _loading = true; _error = null; });
+    if (_emailCtrl.text.isEmpty || _passwordCtrl.text.isEmpty) {
+      setState(() => _error = 'Enter email and password');
+      return;
+    }
+    setState(() { _loading = true; _error = null; _success = null; });
+
     try {
-      final res = await http.post(Uri.parse('$baseUrl/auth/buyer/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': _emailCtrl.text, 'password': _passwordCtrl.text}));
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        final raw = jsonDecode(res.body);
-        final data = raw['data'] ?? raw;
-        if (data['requiresVerification'] == true) _goOtp(_emailCtrl.text, 'login', data['userName']);
-      } else {
-        final body = jsonDecode(res.body);
-        final msg = body['message'];
-        setState(() => _error = (msg is List ? msg.join(', ') : msg?.toString()) ?? 'Invalid email or password');
+      final response = await _supabase.auth.signInWithPassword(
+        email: _emailCtrl.text.trim(),
+        password: _passwordCtrl.text,
+      );
+
+      if (response.session != null && response.user != null) {
+        final userId = response.user!.id;
+        // Fetch or create user profile
+        var profile = await _supabase
+            .from('User')
+            .select()
+            .eq('id', userId)
+            .maybeSingle();
+
+        if (profile == null) {
+          // Create profile if it doesn't exist (first-time Supabase Auth user)
+          await _supabase.from('User').upsert({
+            'id': userId,
+            'email': _emailCtrl.text.trim(),
+            'name': response.user!.userMetadata?['name'] ?? _emailCtrl.text.split('@').first,
+            'password': '', // Not needed, Supabase handles auth
+            'updatedAt': DateTime.now().toIso8601String(),
+          });
+          profile = await _supabase.from('User').select().eq('id', userId).single();
+        }
+
+        BuyerLoginScreen.loggedInUser = profile;
+        BuyerLoginScreen.jwtToken = response.session!.accessToken;
+
+        // Start notification listener
+        NotificationService().listenToRealtimeNotifications(userId);
+
+        if (mounted) {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => const DashboardScreen()),
+            (_) => false,
+          );
+        }
       }
-    } catch (e) { setState(() => _error = 'Connection error. Check if backend is running.'); }
+    } on AuthException catch (e) {
+      setState(() => _error = e.message);
+    } catch (e) {
+      setState(() => _error = 'Connection error: ${e.toString()}');
+    }
+
     if (mounted) setState(() => _loading = false);
   }
 
   Future<void> _register() async {
-    if (_nameCtrl.text.isEmpty || _emailCtrl.text.isEmpty || _passwordCtrl.text.isEmpty) { setState(() => _error = 'Fill all required fields'); return; }
-    if (_passwordCtrl.text.length < 6) { setState(() => _error = 'Password min 6 characters'); return; }
-    setState(() { _loading = true; _error = null; });
+    if (_nameCtrl.text.isEmpty || _emailCtrl.text.isEmpty || _passwordCtrl.text.isEmpty) {
+      setState(() => _error = 'Fill all required fields');
+      return;
+    }
+    if (_passwordCtrl.text.length < 6) {
+      setState(() => _error = 'Password min 6 characters');
+      return;
+    }
+    setState(() { _loading = true; _error = null; _success = null; });
+
     try {
-      final res = await http.post(Uri.parse('$baseUrl/auth/buyer/register'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'email': _emailCtrl.text, 'password': _passwordCtrl.text, 'name': _nameCtrl.text,
-          'phone': _phoneCtrl.text, 'college': _collegeCtrl.text, 'branch': _branchCtrl.text,
-        }));
-      if (res.statusCode == 200 || res.statusCode == 201) {
-        final raw = jsonDecode(res.body);
-        final data = raw['data'] ?? raw;
-        if (data['requiresVerification'] == true) _goOtp(_emailCtrl.text, 'register', _nameCtrl.text);
-      } else {
-        final body = jsonDecode(res.body);
-        final msg = body['message'];
-        setState(() => _error = (msg is List ? msg.join(', ') : msg?.toString()) ?? 'Registration failed');
+      final response = await _supabase.auth.signUp(
+        email: _emailCtrl.text.trim(),
+        password: _passwordCtrl.text,
+        data: {
+          'name': _nameCtrl.text,
+          'phone': _phoneCtrl.text,
+          'college': _collegeCtrl.text,
+          'branch': _branchCtrl.text,
+        },
+      );
+
+      if (response.user != null) {
+        final userId = response.user!.id;
+        // Create user profile in our User table
+        await _supabase.from('User').upsert({
+          'id': userId,
+          'email': _emailCtrl.text.trim(),
+          'name': _nameCtrl.text,
+          'phone': _phoneCtrl.text,
+          'college': _collegeCtrl.text,
+          'branch': _branchCtrl.text,
+          'password': '', // Supabase handles auth
+          'updatedAt': DateTime.now().toIso8601String(),
+        });
+
+        if (response.session != null) {
+          // Auto-confirmed, go to dashboard
+          BuyerLoginScreen.loggedInUser = {
+            'id': userId,
+            'email': _emailCtrl.text.trim(),
+            'name': _nameCtrl.text,
+          };
+          BuyerLoginScreen.jwtToken = response.session!.accessToken;
+          NotificationService().listenToRealtimeNotifications(userId);
+
+          if (mounted) {
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => const DashboardScreen()),
+              (_) => false,
+            );
+          }
+        } else {
+          setState(() => _success = 'Account created! Please check your email to verify, then sign in.');
+        }
       }
-    } catch (e) { setState(() => _error = 'Connection error.'); }
+    } on AuthException catch (e) {
+      setState(() => _error = e.message);
+    } catch (e) {
+      setState(() => _error = 'Registration error: ${e.toString()}');
+    }
+
     if (mounted) setState(() => _loading = false);
   }
 }

@@ -12,6 +12,7 @@ import '../orders/orders_screen.dart';
 import '../notifications/notifications_screen.dart';
 import '../auth/buyer_login_screen.dart';
 import '../dashboard/dashboard_screen.dart';
+import 'settings_screen.dart';
 
 class AccountScreen extends ConsumerStatefulWidget {
   const AccountScreen({super.key});
@@ -177,8 +178,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             Navigator.push(context, MaterialPageRoute(builder: (_) => const ChatListScreen()));
                           }),
                           const SizedBox(width: 12),
-                          _buildQuickAction(context, Icons.headset_mic_rounded, 'Support', const Color(0xFFF59E0B), () {
-                            Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()));
+                          _buildQuickAction(context, Icons.volunteer_activism_rounded, 'Refer &\nEarn', const Color(0xFFF59E0B), () {
+                            Navigator.push(context, MaterialPageRoute(builder: (_) => const ReferFriendScreen()));
                           }),
                         ],
                       ),
@@ -216,15 +217,8 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 _buildMenuItem(context, Icons.headset_mic_rounded, 'Help & Support', 'Get help from our team', () {
                   Navigator.push(context, MaterialPageRoute(builder: (_) => const HelpSupportScreen()));
                 }),
-                _buildMenuItem(context, Icons.settings_rounded, 'Settings', 'App preferences', () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Settings coming soon! ⚙️', style: GoogleFonts.inter(fontWeight: FontWeight.w600)),
-                      backgroundColor: AppColors.primary,
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                  );
+                _buildMenuItem(context, Icons.settings_rounded, 'Settings', 'App preferences & permissions', () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
                 }),
                 _buildMenuItem(context, Icons.info_rounded, 'About', 'Version 2.0.0', () {
                   showAboutDialog(
