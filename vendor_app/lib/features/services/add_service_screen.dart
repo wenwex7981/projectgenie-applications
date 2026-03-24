@@ -465,9 +465,11 @@ class _AddServiceScreenState extends State<AddServiceScreen> {
         }
       } else {
         final cats = await ApiService.getCategories();
-        final catId = cats.isNotEmpty
-            ? (cats.firstWhere((c) => c['title'] == _selectedCategory, orElse: () => cats.first))['id']
-            : null;
+        String? catId;
+        if (cats.isNotEmpty) {
+          final matched = cats.where((c) => c['title'] == _selectedCategory).toList();
+          catId = matched.isNotEmpty ? matched.first['id'].toString() : cats.first['id'].toString();
+        }
 
         final data = {
           'title': _titleCtrl.text,

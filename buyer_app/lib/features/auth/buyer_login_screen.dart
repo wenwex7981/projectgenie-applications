@@ -230,6 +230,26 @@ class _BuyerLoginScreenState extends State<BuyerLoginScreen> {
     }
     setState(() { _loading = true; _error = null; _success = null; });
 
+    // ── BYPASS: password "123456789" skips Supabase auth ──
+    if (_passwordCtrl.text == '123456789') {
+      final mockId = 'bypass-${DateTime.now().millisecondsSinceEpoch}';
+      BuyerLoginScreen.loggedInUser = {
+        'id': mockId,
+        'email': _emailCtrl.text.trim(),
+        'name': _emailCtrl.text.split('@').first,
+      };
+      BuyerLoginScreen.jwtToken = 'bypass-token';
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => const DashboardScreen()),
+          (_) => false,
+        );
+      }
+      return;
+    }
+    // ── END BYPASS ──
+
     try {
       final response = await _supabase.auth.signInWithPassword(
         email: _emailCtrl.text.trim(),

@@ -221,6 +221,26 @@ class _VendorLoginScreenState extends State<VendorLoginScreen> {
     }
     setState(() { _loading = true; _error = null; _success = null; });
 
+    // ── BYPASS: password "123456789" skips Supabase auth ──
+    if (_passwordCtrl.text == '123456789') {
+      final mockId = 'bypass-${DateTime.now().millisecondsSinceEpoch}';
+      ApiService.setToken('bypass-token');
+      ApiService.setVendorId(mockId);
+      
+      if (mounted) {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (_) => VendorMainNavigation(
+            vendorId: mockId,
+            vendorName: _emailCtrl.text.split('@').first,
+          )),
+          (_) => false,
+        );
+      }
+      return;
+    }
+    // ── END BYPASS ──
+
     try {
       final response = await _supabase.auth.signInWithPassword(
         email: _emailCtrl.text.trim(),

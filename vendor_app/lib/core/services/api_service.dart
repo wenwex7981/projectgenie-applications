@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:math' as dart_math;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Vendor API Service — now connects directly to Supabase
@@ -101,8 +102,18 @@ class ApiService {
     }
   }
 
+  static String _generateUuid() {
+    final random = dart_math.Random();
+    return '${random.nextInt(0xffffffff).toRadixString(16).padLeft(8, '0')}-'
+        '${random.nextInt(0xffff).toRadixString(16).padLeft(4, '0')}-'
+        '4${random.nextInt(0x0fff).toRadixString(16).padLeft(3, '0')}-'
+        '8${random.nextInt(0x0fff).toRadixString(16).padLeft(3, '0')}-'
+        '${random.nextInt(0xffffffff).toRadixString(16).padLeft(8, '0')}${random.nextInt(0xffff).toRadixString(16).padLeft(4, '0')}';
+  }
+
   static Future<Map<String, dynamic>> createService(Map<String, dynamic> data) async {
     if (_vendorId == null) throw Exception('Vendor Session Expired. Please login again.');
+    data['id'] = _generateUuid();
     data['vendorId'] = _vendorId;
     data['updatedAt'] = DateTime.now().toIso8601String();
     final response = await _client.from('Service').insert(data).select().single();
@@ -139,6 +150,7 @@ class ApiService {
 
   static Future<Map<String, dynamic>> createProject(Map<String, dynamic> data) async {
     if (_vendorId == null) throw Exception('Vendor Session Expired. Please login again.');
+    data['id'] = _generateUuid();
     data['vendorId'] = _vendorId;
     data['updatedAt'] = DateTime.now().toIso8601String();
     final response = await _client.from('Project').insert(data).select().single();
@@ -175,6 +187,7 @@ class ApiService {
 
   static Future<Map<String, dynamic>> createHackathon(Map<String, dynamic> data) async {
     if (_vendorId == null) throw Exception('Vendor Session Expired. Please login again.');
+    data['id'] = _generateUuid();
     data['vendorId'] = _vendorId;
     data['updatedAt'] = DateTime.now().toIso8601String();
     final response = await _client.from('Hackathon').insert(data).select().single();
